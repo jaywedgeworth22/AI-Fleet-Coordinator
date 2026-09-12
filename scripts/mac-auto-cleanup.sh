@@ -104,10 +104,25 @@ if command -v brew &>/dev/null; then
     brew cleanup -s 2>/dev/null || true
 fi
 
-# 2c. CleanMyMac CLI (system junk, development junk, AI cache, trash, and RAM optimization)
+# 2c. CleanMyMac CLI (development junk, AI cache, trash, and RAM optimization)
+# 2026-09-13 (Claude): this ran bare `cleanmymac clean --force` unconditionally
+# every 4h (RunAtLoad too, no free-space gate at all), which runs EVERY clean
+# module including `junk` (system junk). `junk` classes files under
+# ~/Library/Logs as junk with no regard for whether launchd still holds one
+# open for append, and deleted the always-on com.jay.botfleet-server
+# LaunchAgent's live server.log out from under it on 2026-09-12 ~12:31 (see
+# scripts/disk-janitor.sh's matching 2026-09-13 fix, PR #207, which hit the
+# same bug gated on low free space). Scoped to `dev`/`ai`/`trash` -- regenerable
+# build caches, AI-tool scratch, and already-deleted trash, never a file a
+# running process still has open -- and dropped `junk` outright. Belt-and-
+# suspenders: ~/Library/Logs, ~/Library/Logs/botfleet, and ~/.botfleet are also
+# on CleanMyMac's own ignore list now (added in PR #207; shared across every
+# caller of the CLI on this Mac, this script included).
 if command -v cleanmymac &>/dev/null; then
     echo "Running CleanMyMac automated cleanup..."
-    cleanmymac clean --force 2>/dev/null || true
+    cleanmymac clean dev --force 2>/dev/null || true
+    cleanmymac clean ai --force 2>/dev/null || true
+    cleanmymac clean trash --force 2>/dev/null || true
     if [ "$PRESSURE" = "1" ]; then
         echo "Running CleanMyMac purge (dev artifacts)..."
         cleanmymac purge --force 2>/dev/null || true
