@@ -16,6 +16,20 @@
 # 2026-08-22: all fleet Code repos; standing-lane KEEP_RE; retired-KIMI seat /
 # nested / tmp may reap when idle even if unmerged.  Never skip the idle check.
 # Do not substring-match "kimi" (that reaps cursor/kimi-audit-def / ST #3044).
+# 2026-09-13: `cleanmymac clean --force` ran ALL of clean's modules, including
+# `junk` (system junk, which classes ~/Library/Logs user logs as junk with no
+# regard for whether launchd still has the file open for append). That deleted
+# the always-on com.jay.botfleet-server LaunchAgent's live
+# ~/Library/Logs/botfleet/server.log out from under it on 2026-09-12 ~12:31 --
+# every harness log line until the 20:38 restart went to an unlinked inode, and
+# the desktop error page pointed at a file that no longer existed. Scoped the
+# CLI call to the three modules that only ever touch regenerable caches/build
+# artifacts/trash (never a file a running process still has open), and added
+# ~/Library/Logs, ~/Library/Logs/botfleet, and ~/.botfleet to CleanMyMac's own
+# ignore list (`cleanmymac ignore add`, belt-and-suspenders alongside dropping
+# `junk`) so any future `clean junk` call -- from this script, from
+# ~/apps/mac-auto-cleanup.sh's own unconditional `cleanmymac clean --force`, or
+# from CleanMyMac's own background Smart Care agent -- skips them too.
 
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:$HOME/.local/bin:$HOME/.npm-global/bin"
 # git must never block on a credential prompt (no tty under launchd) or a network stall:
@@ -238,7 +252,18 @@ fi
 # --- LOW FREE: clear regenerable caches + prod/dev build caches ---
 if [ "$free" -lt "$LOW_FREE" ]; then
   if command -v cleanmymac &>/dev/null; then
-    cleanmymac clean --force 2>/dev/null || true
+    # 2026-09-13: never run bare `cleanmymac clean --force` (or its `junk`
+    # module) here -- system junk includes ~/Library/Logs, which a launchd
+    # LaunchAgent can hold open for the life of the machine (com.jay.botfleet-
+    # server's server.log was deleted mid-write this way). `dev`/`ai`/`trash`
+    # only ever touch regenerable build caches, AI-tool scratch, and already-
+    # deleted trash items -- never a file a running process still has open --
+    # so those three stay and `junk` is dropped outright rather than gated on
+    # free-space, since a threshold gate would still hit `junk` at the exact
+    # moment disk pressure is worst and a launchd log is most likely mid-write.
+    cleanmymac clean dev --force 2>/dev/null || true
+    cleanmymac clean ai --force 2>/dev/null || true
+    cleanmymac clean trash --force 2>/dev/null || true
     cleanmymac optimize ram 2>/dev/null || true
     actions="${actions}cleanmymac "
   fi
