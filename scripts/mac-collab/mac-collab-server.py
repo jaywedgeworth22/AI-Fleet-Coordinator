@@ -1625,8 +1625,8 @@ load();
 """
 
 
-def _port_holder_pids() -> list[int]:
-    """PIDs LISTENing on our exact bind port, per lsof.  Empty on any failure --
+def _port_holder_pids():
+    """PIDs LISTENing on our exact bind port, per lsof.  None on any failure --
     this is a best-effort recovery aid, never a hard dependency."""
     try:
         out = subprocess.run(
@@ -1634,7 +1634,7 @@ def _port_holder_pids() -> list[int]:
             capture_output=True, text=True, timeout=10,
         ).stdout
     except Exception:
-        return []
+        return None
     pids = []
     for line in out.split():
         try:
@@ -1643,6 +1643,28 @@ def _port_holder_pids() -> list[int]:
             continue
         if pid != os.getpid():
             pids.append(pid)
+    return pids
+
+
+def _all_board_server_pids() -> list[int]:
+    """Fallback when lsof fails: finds all running mac-collab-server.py PIDs."""
+    try:
+        out = subprocess.run(
+            ["/bin/ps", "-A", "-o", "pid,command"],
+            capture_output=True, text=True, timeout=10,
+        ).stdout
+    except Exception:
+        return []
+    pids = []
+    for line in out.splitlines():
+        parts = line.strip().split(maxsplit=1)
+        if len(parts) == 2 and "mac-collab-server.py" in parts[1]:
+            try:
+                pid = int(parts[0])
+                if pid != os.getpid():
+                    pids.append(pid)
+            except ValueError:
+                pass
     return pids
 
 
@@ -1692,6 +1714,9 @@ def _bind_or_reclaim():
         if exc.errno != errno.EADDRINUSE:
             raise
     holders = _port_holder_pids()
+    if holders is None:
+        print("mac-collab: lsof failed (likely timeout under load), falling back to ps scanning", file=sys.stderr, flush=True)
+        holders = _all_board_server_pids()
     stale = [pid for pid in holders if _is_stale_board_server(pid)]
     if not stale:
         if any(_is_board_server(pid) for pid in holders):
