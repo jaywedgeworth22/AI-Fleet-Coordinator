@@ -101,7 +101,7 @@ APP_ALIASES: dict[str, str] = {
     "contact-logo": "contactlogo",
     "contactlogo.com": "contactlogo",
     "AFC": "fleet-infra",
-    "AFC": "fleet-infra",
+    "AFL": "fleet-infra",
     "AI Fleet Coordinator": "fleet-infra",
     "ai-fleet-coordinator": "fleet-infra",
     "fleet": "fleet-infra",

@@ -441,6 +441,10 @@ def init_db() -> None:
         # preventing oscillation when the board is ahead of the effort-log file.
         if "writeback_at" not in existing_cols:
             conn.execute("ALTER TABLE findings ADD COLUMN writeback_at TEXT")
+        if "claimed_at" not in existing_cols:
+            conn.execute("ALTER TABLE findings ADD COLUMN claimed_at TEXT")
+        if "claimed_at" not in existing_cols:
+            conn.execute("ALTER TABLE findings ADD COLUMN claimed_at TEXT")
 
         comment_cols = {row["name"] for row in conn.execute("PRAGMA table_info(comments)")}
         if "location" not in comment_cols:
@@ -947,6 +951,24 @@ class Handler(BaseHTTPRequestHandler):
             finding_id = self._resolved_finding_id(finding_id, conn)
             if not finding_id:
                 return
+            row = conn.execute("SELECT * FROM findings WHERE id = ?", (finding_id,)).fetchone()
+            if not row:
+                return self._send(404, {"error": "not_found"})
+
+            if data.get("status") == "in_progress":
+                from datetime import datetime, timezone
+                now_dt = datetime.now(timezone.utc)
+                if row["status"] == "in_progress" and row["claimed_at"]:
+                    claimed_dt = datetime.fromisoformat(row["claimed_at"].replace("Z", "+00:00"))
+                    if (now_dt - claimed_dt).total_seconds() < 20 * 60:
+                        existing_agent = row["addressed_by"]
+                        incoming_agent = data.get("addressed_by")
+                        if existing_agent and incoming_agent and existing_agent != incoming_agent:
+                            mins_left = str(int(20 - (now_dt - claimed_dt).total_seconds()/60))
+                            msg = "Finding is already claimed by " + str(existing_agent) + ". Lease expires in " + mins_left + " minutes."
+                            return self._send(409, {"error": "conflict", "message": msg})
+                fields["claimed_at"] = now_iso()
+
             set_clause = ", ".join(f"{k} = ?" for k in fields)
             conn.execute(f"UPDATE findings SET {set_clause} WHERE id = ?", (*fields.values(), finding_id))
             conn.commit()
