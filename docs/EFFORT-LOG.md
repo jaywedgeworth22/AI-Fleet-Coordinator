@@ -1,5 +1,6 @@
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+- **2026-09-13 — FX — IN PROGRESS — Skip pointless Vercel production deploys (`fx/vercel-skip-pointless`, worktree `~/apps/fleet-fx-deploy-docs`, board `0934111e`).**
 - **2026-09-13 — FX — IN PROGRESS — Merge to main is Vercel production (`fx/merge-equals-live-docs`, worktree `~/apps/fleet-fx-deploy-docs`, board `ef71d6c1`).**
 
 - **2026-09-13 — FX — IN PROGRESS — Register FX seat and HogHunter in fleet-apps.json (`fx/registry-fx-hoghunter`, worktree `~/apps/fleet-fx-registry`, board `22164b50`).**  FX row in Agent Seat table + Available (normal).  HogHunter `HH` local-only.  KIMI marked retired.
