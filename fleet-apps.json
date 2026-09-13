@@ -142,6 +142,19 @@
       "kind": "product"
     },
     {
+      "repo": "HogHunter",
+      "acronym": "HH",
+      "displayName": "Hog Hunter",
+      "slackRepo": "HogHunter",
+      "codeDir": "HogHunter",
+      "liveBoard": "HOGHUNTER-EFFORT-LOG.md",
+      "worktreePrefix": "hoghunter",
+      "badgeClass": "repo-hh",
+      "digestColor": "#b45309",
+      "hasAppIcon": false,
+      "kind": "product"
+    },
+    {
       "repo": "fleet-ops",
       "acronym": "OPS",
       "displayName": "Fleet Ops",
@@ -239,12 +252,21 @@
       ]
     },
     {
+      "tag": "FX",
+      "notesName": "Fx",
+      "worktreeSuffix": "fx",
+      "branchPrefixes": [
+        "fx/"
+      ]
+    },
+    {
       "tag": "KIMI",
-      "notesName": "Kimi",
+      "notesName": "Kimi (retired 2026-08-21)",
       "worktreeSuffix": "kimi",
       "branchPrefixes": [
         "kimi/"
-      ]
+      ],
+      "retired": true
     },
     {
       "tag": "MM",
