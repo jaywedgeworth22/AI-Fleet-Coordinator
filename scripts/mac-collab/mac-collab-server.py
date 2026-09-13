@@ -220,21 +220,36 @@ def load_agent_logos() -> dict:
 AGENT_LOGOS = load_agent_logos()
 
 
-def load_token() -> str:
-    env = os.environ.get("MAC_COLLAB_TOKEN", "").strip()
-    if env:
-        return env
+def load_tokens() -> dict[str, str]:
+    '''Returns a mapping of {token: identity}. 
+    MAC_COLLAB_TOKEN maps to None (legacy admin/root), 
+    MAC_COLLAB_TOKEN_X maps to "X" (e.g. "AG", "CODEX").'''
+    tokens = {}
+    # 1. From env vars directly (less common for the full list)
+    for k, v in os.environ.items():
+        if k.startswith("MAC_COLLAB_TOKEN") and v.strip():
+            identity = k[len("MAC_COLLAB_TOKEN_"):] if k != "MAC_COLLAB_TOKEN" else None
+            tokens[v.strip()] = identity
+            
+    # 2. From secrets file
     if SECRETS.is_file():
         for line in SECRETS.read_text().splitlines():
             s = line.strip()
             if s.startswith("export "):
                 s = s[7:]
-            if s.startswith("MAC_COLLAB_TOKEN="):
-                return s.split("=", 1)[1].strip().strip('"').strip("'")
-    return ""
+            if s.startswith("MAC_COLLAB_TOKEN"):
+                parts = s.split("=", 1)
+                if len(parts) == 2:
+                    k = parts[0].strip()
+                    v = parts[1].strip().strip('"').strip("'")
+                    if v:
+                        identity = k[len("MAC_COLLAB_TOKEN_"):] if k != "MAC_COLLAB_TOKEN" else None
+                        tokens[v] = identity
+    return tokens
 
+TOKENS = load_tokens()
+TOKEN = next((t for t, ident in TOKENS.items() if ident is None), None) # Fallback for legacy basic auth checks
 
-TOKEN = load_token()
 
 
 def token_matches(got: str, want: str) -> bool:
@@ -443,8 +458,6 @@ def init_db() -> None:
             conn.execute("ALTER TABLE findings ADD COLUMN writeback_at TEXT")
         if "claimed_at" not in existing_cols:
             conn.execute("ALTER TABLE findings ADD COLUMN claimed_at TEXT")
-        if "claimed_at" not in existing_cols:
-            conn.execute("ALTER TABLE findings ADD COLUMN claimed_at TEXT")
 
         comment_cols = {row["name"] for row in conn.execute("PRAGMA table_info(comments)")}
         if "location" not in comment_cols:
@@ -489,34 +502,41 @@ def findings_open_by_app() -> dict:
         conn.close()
 
 
-def authorized(handler: BaseHTTPRequestHandler) -> bool:
-    if not TOKEN:
-        return False
+def authorized(handler: BaseHTTPRequestHandler):
+    '''Returns the identity (str) if authorized, else None.'''
+    if not TOKENS:
+        return None
     auth = handler.headers.get("Authorization", "")
     if auth.lower().startswith("bearer "):
-        return token_matches(auth[7:].strip(), TOKEN)
-    if auth.lower().startswith("basic ") and basic_authorized(handler):
-        # Same browser session that unlocked /board also gets API access —
-        # the browser re-sends its cached Basic credentials automatically.
-        return True
-    return False
+        token_val = auth[7:].strip()
+        for t, ident in TOKENS.items():
+            if token_matches(token_val, t):
+                return ident or "OWNER"
+    if auth.lower().startswith("basic "):
+        ident = basic_authorized(handler)
+        if ident:
+            return ident
+    return None
 
 
-def basic_authorized(handler: BaseHTTPRequestHandler) -> bool:
+def basic_authorized(handler: BaseHTTPRequestHandler):
     """Gate the /board page itself (not just its data fetches). Username is
-    ignored; password is checked against the same MAC_COLLAB_TOKEN. Native
+    ignored; password is checked against any MAC_COLLAB_TOKEN. Native
     browser login dialog via 401 + WWW-Authenticate."""
-    if not TOKEN:
-        return False
+    if not TOKENS:
+        return None
     auth = handler.headers.get("Authorization", "")
     if not auth.lower().startswith("basic "):
-        return False
+        return None
     try:
         decoded = base64.b64decode(auth[6:].strip()).decode("utf-8", "replace")
     except Exception:
-        return False
+        return None
     _, _, password = decoded.partition(":")
-    return token_matches(password, TOKEN)
+    for t, ident in TOKENS.items():
+        if token_matches(password, t):
+            return ident or "OWNER"
+    return None
 
 
 def finding_row_to_dict(row: sqlite3.Row) -> dict:
@@ -918,7 +938,8 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(code, finding_row_to_dict(row))
 
     def _handle_finding_update(self, finding_id: str):
-        if not authorized(self):
+        ident = authorized(self)
+        if not ident:
             return self._deny_auth()
         data, err = self._read_json_body()
         if err:
@@ -929,8 +950,12 @@ class Handler(BaseHTTPRequestHandler):
                 return self._send(400, {"error": "invalid_status", "allowed": STATUSES})
             fields["status"] = data["status"]
         if "addressed_by" in data:
+            if ident != "OWNER" and data["addressed_by"] and data["addressed_by"] != ident:
+                return self._send(403, {"error": "forbidden", "message": f"Token is scoped to '{ident}'"})
             fields["addressed_by"] = data["addressed_by"]
         if "reported_by" in data:
+            if ident != "OWNER" and data["reported_by"] and data["reported_by"] != ident:
+                return self._send(403, {"error": "forbidden", "message": f"Token is scoped to '{ident}'"})
             fields["reported_by"] = data["reported_by"]
         if "location" in data:
             fields["location"] = data["location"]
@@ -993,12 +1018,15 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(200, {"comments": [comment_row_to_dict(r) for r in rows]})
 
     def _handle_comment_create(self, finding_id: str):
-        if not authorized(self):
+        ident = authorized(self)
+        if not ident:
             return self._deny_auth()
         data, err = self._read_json_body()
         if err:
             return self._send(400, {"error": err})
         author = str(data.get("author", "")).strip()
+        if ident != "OWNER" and author and author != ident:
+            return self._send(403, {"error": "forbidden", "message": f"Token is scoped to '{ident}'"})
         text = str(data.get("text", "")).strip()
         if not author or not text:
             return self._send(400, {"error": "author_and_text_required"})
