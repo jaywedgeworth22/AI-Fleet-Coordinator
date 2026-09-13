@@ -60,6 +60,15 @@ listing the `/recall/*` routes, both BotFleet routines present, the last ingest 
 30 h with `ok=true`, and the Qdrant sentinel age; `--box` adds the Hetzner health rows over
 ssh.  Only file names, route names, ages, and booleans are printed.  Exit 1 on any FAIL.
 
+**Tailscale down.**  `recall_search` / `recall_stats` / `recall_contribute` fall back to the
+public twin (`recall.jays.services`) automatically when Tailscale is down on this Mac, but
+`recall ingest`, `recall eval`, and the `doctor --platforms` sentinel row need the direct
+Qdrant/TEI path -- there is no public route for ingest and the public twin drops the
+rerank/per_doc knobs eval needs.  Those three fail fast with one actionable line instead of a
+multi-minute retry storm.  Fix it with `tailscale login`, or run `recall-tunnel up` then
+`eval "$(recall-tunnel env)"` to forward Qdrant/TEI over SSH to the box and try the direct path
+first regardless of Tailscale's status.
+
 **Claude Code hooks.**  `bash scripts/install-fleet-rag.sh --hooks` copies two hooks into
 `~/.claude/hooks/` and appends one entry each to `hooks.SessionStart` and `hooks.Stop` in
 `~/.claude/settings.json` (existing entries untouched, backup first, idempotent, `--uninstall`
