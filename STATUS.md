@@ -1,5 +1,11 @@
 # Status
 
+Updated: 2026-09-13 (FX — register FX seat and HogHunter)
+
+## 2026-09-13 FX — FX seat + HogHunter in fleet-apps.json
+
+`fleet-apps.json` now lists seat FX (`fx/`, `~/apps/<prefix>-fx`) and app HogHunter (`HH`, local-only).  KIMI is marked retired.  Agent Seat table and Available (normal) list include FX in both AGENT-SYNC copies.  Board `22164b50`.  Branch `fx/registry-fx-hoghunter`.  Rollout: `docs/rollouts/2026-09-13-fx-seat-and-hoghunter.md`.
+
 Updated: 2026-09-04 (GROK — MiniMax Slack tag MM; DeepSeek Harness DSH)
 
 ## 2026-09-04 GROK — seat acronyms MM and DSH

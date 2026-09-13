@@ -42,6 +42,7 @@ DEFAULT_REPOS = [
     "ContactLogo",
     "ai-fleet-coordinator",
     "BotFleet",
+    "HogHunter",
     "fleet-ops",
 ]
 

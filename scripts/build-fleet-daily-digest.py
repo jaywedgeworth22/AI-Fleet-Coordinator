@@ -55,6 +55,7 @@ DEFAULT_REPOS = [
     "ContactLogo",
     "ai-fleet-coordinator",
     "BotFleet",
+    "HogHunter",
     "fleet-ops",
 ]
 
@@ -70,6 +71,7 @@ LIVE_EFFORT_FILES = {
     "ContactLogo": "CONTACTLOGO-EFFORT-LOG.md",
     "ai-fleet-coordinator": "FLEET-INFRA-EFFORT-LOG.md",
     "BotFleet": "BOTFLEET-EFFORT-LOG.md",
+    "HogHunter": "HOGHUNTER-EFFORT-LOG.md",
     "fleet-ops": "FLEET-OPS-EFFORT-LOG.md",
 }
 
