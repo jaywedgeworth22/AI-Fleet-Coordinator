@@ -1,5 +1,11 @@
 # Status
 
+Updated: 2026-09-13 (FX — skip pointless Vercel deploys)
+
+## 2026-09-13 FX — Skip pointless Vercel production deploys
+
+Owner: agents were burning Hobby with empty site deploys, multiple times an hour.  Restore skip-if-no-site-files + 1/hour cap.  Previews still skipped.  Board `0934111e`.  Branch `fx/vercel-skip-pointless`.
+
 Updated: 2026-09-13 (FX — merge = live on Vercel)
 
 ## 2026-09-13 FX — Merge to main is Vercel production
