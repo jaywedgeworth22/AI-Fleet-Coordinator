@@ -28,7 +28,7 @@
 #     bare `lsof` was a no-op and watch treated lock-held as DOWN).
 #   - grok-leader status=errored while lock-held -> pm2 stop (not restart)
 #     so the job is stopped instead of a 355-restart storm.
-#   - local /health not 200 for mac-collab/xcode-health/agent-sync/senate-relay
+#   - local /health not 200 for mac-collab/xcode-health/agent-sync
 #     -> pm2 restart that job
 #   - shellular ioreg-missing / retry-without-Connected -> bounce pid
 #   - shellular process up but relay 1006/handshake-fail -> kill pid (God autorestarts)
@@ -77,11 +77,10 @@ grok_leader_lock_held() {
   pgrep -f '/[.]grok/bin/grok .* leader' >/dev/null 2>&1
 }
 
+# Deprecated / off-Mac (do not watch or resurrect): scout, senate-relay,
+# senate-tunnel, residential-proxy, Congress/Socratic/Usage mac-xcode runners.
 expect_pm2=(
   shellular
-  scout
-  senate-relay
-  senate-tunnel
   agent-sync-push
   code-main-keeper
   vision-worker
@@ -93,7 +92,9 @@ expect_pm2=(
   mac-collab
   mac-collab-sync
   mac-collab-writeback
+  mac-collab-litestream
   dsh-web
+  seat-mcp
 )
 
 # "label plist-basename"  (plists live in ~/Library/LaunchAgents)
@@ -101,9 +102,6 @@ expect_launchd=(
   "com.jay.claude-remote-control com.jay.claude-remote-control.plist"
   "com.jay.slack-agent-inbox com.jay.slack-agent-inbox.plist"
   "homebrew.mxcl.moshi-hook homebrew.mxcl.moshi-hook.plist"
-  "actions.runner.jaywedgeworth22-Congress.Trade.mac-xcode26-congress actions.runner.jaywedgeworth22-Congress.Trade.mac-xcode26-congress.plist"
-  "actions.runner.jaywedgeworth22-Socratic.Trade.mac-xcode26-socratic actions.runner.jaywedgeworth22-Socratic.Trade.mac-xcode26-socratic.plist"
-  "actions.runner.jaywedgeworth22-Usage-Monitor.mac-xcode26-usage actions.runner.jaywedgeworth22-Usage-Monitor.mac-xcode26-usage.plist"
 )
 
 # Timers / calendar / interval jobs.  Must be loaded so they can fire.
@@ -588,7 +586,6 @@ expect_http=(
   "mac-collab http://127.0.0.1:8792/health"
   "xcode-health http://127.0.0.1:8791/health"
   "agent-sync-push http://127.0.0.1:8787/health"
-  "senate-relay http://127.0.0.1:8899/health"
 )
 if pm2_daemon_up; then
   for spec in "${expect_http[@]}"; do

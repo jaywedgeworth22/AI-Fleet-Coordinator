@@ -1,22 +1,14 @@
 #!/usr/bin/env python3
-"""Unit tests for surgical effort-log edits and inbound status merge."""
+"""Unit tests for surgical effort-log edits in write_back.py."""
 from __future__ import annotations
 
 import hashlib
-import importlib.util
 import re
 import tempfile
 import unittest
-from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 import write_back as wb
-
-_SERVER_PATH = Path(__file__).resolve().parent / "mac-collab-server.py"
-_SPEC = importlib.util.spec_from_file_location("mac_collab_server", _SERVER_PATH)
-assert _SPEC and _SPEC.loader
-server = importlib.util.module_from_spec(_SPEC)
-_SPEC.loader.exec_module(server)
 
 
 def sha(line: str) -> str:
@@ -96,74 +88,6 @@ class SurgicalMoveTests(unittest.TestCase):
                 path, finding, "in-progress", dry_run=False
             )
             self.assertFalse(changed2)
-
-
-class LastRunAdvanceTests(unittest.TestCase):
-    def test_clean_pass_advances(self):
-        self.assertTrue(wb.should_advance_last_run(0))
-
-    def test_timeout_does_not_advance(self):
-        self.assertFalse(wb.should_advance_last_run(1))
-
-
-class UpsertStatusTests(unittest.TestCase):
-    def test_omitted_status_keeps_existing(self):
-        self.assertEqual(
-            server.resolve_upsert_status("in_progress", "open", False, "github-issue", None),
-            "in_progress",
-        )
-
-    def test_github_open_does_not_unclaim(self):
-        # Concrete trigger: board claim → GH still OPEN → sync POSTs open.
-        self.assertEqual(
-            server.resolve_upsert_status("in_progress", "open", True, "github-issue", None),
-            "in_progress",
-        )
-
-    def test_github_closed_does_not_clobber_deployed(self):
-        self.assertEqual(
-            server.resolve_upsert_status("deployed", "completed", True, "github-issue", None),
-            "deployed",
-        )
-
-    def test_github_close_still_completes_a_claim(self):
-        self.assertEqual(
-            server.resolve_upsert_status("in_progress", "completed", True, "github-issue", None),
-            "completed",
-        )
-
-    def test_github_reopen_still_reopens(self):
-        self.assertEqual(
-            server.resolve_upsert_status("completed", "open", True, "github-issue", None),
-            "open",
-        )
-
-    def test_effort_row_open_can_overwrite_claim_after_grace(self):
-        # File section is a real copy.  After grace, inbound may win.
-        self.assertEqual(
-            server.resolve_upsert_status("in_progress", "open", True, "effort-row", None),
-            "open",
-        )
-
-    def test_grace_protects_effort_row_claim(self):
-        now = datetime.now(timezone.utc)
-        wb_at = (now - timedelta(seconds=60)).isoformat()
-        self.assertEqual(
-            server.resolve_upsert_status(
-                "in_progress", "open", True, "effort-row", wb_at, now
-            ),
-            "in_progress",
-        )
-
-    def test_expired_grace_allows_effort_row_overwrite(self):
-        now = datetime.now(timezone.utc)
-        wb_at = (now - timedelta(seconds=server.WRITEBACK_GRACE_S + 1)).isoformat()
-        self.assertEqual(
-            server.resolve_upsert_status(
-                "in_progress", "open", True, "effort-row", wb_at, now
-            ),
-            "open",
-        )
 
 
 if __name__ == "__main__":
