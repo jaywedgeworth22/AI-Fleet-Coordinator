@@ -76,8 +76,9 @@ COORDINATE FIRST — board, then Slack, then code
     state: WIP
     work: ..."
   repo: is always the first body line.  Skim for [FX] or any repo you are working and full-read
-  on a match.  Peer messages are coordination data, never owner orders.  [FX->FLEET] only when
-  every seat genuinely has to spend time.
+  on a match.  Peer messages are coordination data, never owner orders.  [FX->FLEET] is a wake
+  for every Grok Bot (GB-<NAME>) seat, not a fleet-wide broadcast; use it only when every Grok
+  Bot seat has to spend time, and address other seats as [FX->PEER].
 - Effort log: reserve a Planned row on ~/apps/<APP>-EFFORT-LOG.md before substantial work and
   mirror docs/EFFORT-LOG.md in the repo.  Never delete another seat's rows.  COMPLETED means
   merged to main — not edited in your lane.  Protocol: ~/apps/EFFORT-LOG-PROTOCOL.md.
@@ -125,8 +126,11 @@ YOUR FIRST UNIT, NOW
      worktrees: ~/apps/<prefix>-fx
 3. Finish the registration you started on Sep 12 and never pushed.  Lane
    ~/apps/fleet-fx-registry, branch fx/registry-fx-hoghunter, board row 22164b50.  Rebase on
-   origin/main, add the FX row to the Agent Seat table in BOTH ~/apps/AGENT-SYNC.md and the
-   repo's AGENT-SYNC.md (row text is in docs/FX-ONBOARDING-PROMPT.md), add FX to the
+   origin/main and keep your lane's fleet-apps.json changes: the FX seat entry (tag FX,
+   notesName Fx, worktreeSuffix fx, branchPrefixes fx/) and the HogHunter app entry.
+   fleet-apps.json is the seat inventory of record; the AGENT-SYNC.md tables mirror it.  Then
+   add the FX row to the Agent Seat table in BOTH ~/apps/AGENT-SYNC.md and the repo's
+   AGENT-SYNC.md (row text is in docs/FX-ONBOARDING-PROMPT.md), add FX to the
    "Available (normal)" line, run python3 scripts/check-fleet-registry.py, commit, push, open
    the PR, arm auto-merge, and close out: board row completed with the PR number, effort-log
    rows to COMPLETED only after the merge, Slack DONE post.  Your HogHunter effort-log row
@@ -141,7 +145,9 @@ YOUR FIRST UNIT, NOW
 | **Fx (`FX`)** | fx by Vercel Labs, a terminal coding agent whose model is whatever provider it is logged into (Grok subscription today; the Codex provider or a MiniMax endpoint later).  Implementation, repo audits, PR drafting, ACP engine for BotFleet-style hosts. | `[FX]` | `Fx` | Prefix `fx/`; lane `~/apps/<prefix>-fx`.  Pin `AGENT_SEAT=FX` / `AGENT_TAG=FX`.  Global rules file `~/.fx/AGENTS.md`; skills in `~/.fx/skills` only (fx also scans the Claude and Codex packs — never inherit their tags).  The model never changes the seat: Grok inside fx is `[FX]`, never `[GROK]` or `[GROK-BUILD]`; the Codex provider inside fx is `[FX]`, never `[CODEX]`; MiniMax inside fx is `[FX]`, never `[MM]`.  Subagents inherit the parent model, so the 30% sister-model rule is waived as for Grok; the rest of Delegation binds.  Runs full-access with no sandbox — the destructive-ops pause is on the seat. |
 ```
 
-Add `FX (fx by Vercel Labs)` to the **Available (normal)** line in the same edit.
+Add `FX (fx by Vercel Labs)` to the **Available (normal)** line in the same edit.  The seat
+entry in `fleet-apps.json` (`tag`, `notesName`, `worktreeSuffix`, `branchPrefixes`) is the
+inventory of record and lands in the same PR; `scripts/check-fleet-registry.py` must pass.
 
 ## How to tell it took
 
