@@ -1,5 +1,11 @@
 # Status
 
+Updated: 2026-09-13 (FX — merge = live on Vercel)
+
+## 2026-09-13 FX — Merge to main is Vercel production
+
+Owner: jays.services and the other Vercel sites go live on merge.  `vercel-ignore-hourly.sh` only skips preview auto-deploys.  deploy-verify + land-lane skills updated.  Board `ef71d6c1`.  Branch `fx/merge-equals-live-docs`.
+
 Updated: 2026-09-13 (FX — register FX seat and HogHunter)
 
 ## 2026-09-13 FX — FX seat + HogHunter in fleet-apps.json

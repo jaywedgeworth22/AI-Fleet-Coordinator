@@ -1,5 +1,7 @@
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+- **2026-09-13 — FX — IN PROGRESS — Merge to main is Vercel production (`fx/merge-equals-live-docs`, worktree `~/apps/fleet-fx-deploy-docs`, board `ef71d6c1`).**
+
 - **2026-09-13 — FX — IN PROGRESS — Register FX seat and HogHunter in fleet-apps.json (`fx/registry-fx-hoghunter`, worktree `~/apps/fleet-fx-registry`, board `22164b50`).**  FX row in Agent Seat table + Available (normal).  HogHunter `HH` local-only.  KIMI marked retired.
 
 - **2026-09-04 — GROK — IN PROGRESS — MiniMax Slack tag is MM; DeepSeek Harness is DSH (`grok/mm-dsh-acronyms`, worktree `~/apps/fleet-grok-mm-dsh`, board `f9df420d`).**  Owner 2026-09-04: anywhere a MiniMax acronym is used, it is `MM` (Slack `[MM]`; former `MINIMAX` retired).  DeepSeek Harness is `DSH` (Slack `[DSH]`; former harness tag `DEEPSEEK` retired).  Cursor running a DeepSeek *model* stays `[CURSOR]`.  Branch prefixes stay `minimax/` and `deepseek/`.  Rollout: `docs/rollouts/2026-09-04-mm-dsh-seat-acronyms.md`.
