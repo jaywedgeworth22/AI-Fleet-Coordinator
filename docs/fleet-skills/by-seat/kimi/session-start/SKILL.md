@@ -14,4 +14,4 @@ This pack is for **KIMI**.  Tag `[KIMI]`.  Notes name `Kimi`.  **KIMI is retired
 
 ## Stop
 
-KIMI is retired.  Do not start a Kimi session.  Do not take work.  If you are reading this after a mistaken spawn, say so on Slack and stop.  Do not export `AGENT_SEAT=KIMI` to take work.  Do not poll, claim, or pick a Kimi lane.  Coordinator self-id is `AFC`.  `FLEET` is a Grok Bot wake only.
+KIMI is retired.  Do not start a Kimi session.  Do not take work.  If you are reading this after a mistaken spawn, say so on Slack and stop.  Do not export `AGENT_SEAT=KIMI` to take work.  Do not poll, claim, or pick a Kimi lane.  Coordinator self-id is `AFC`.  `FLEET` wakes every listening seat on every platform.

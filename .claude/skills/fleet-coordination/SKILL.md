@@ -35,7 +35,7 @@ Use these canonical acronyms in Apple Notes titles (`[APP, Agent] topic`), commi
 | **`OPS`** | fleet-ops (sibling identity; do not invent a checkout here) | `jaywedgeworth22/fleet-ops` |
 | **`PS`** | Personal-Site | `jaywedgeworth22/Personal-Site` |
 | **`CTS`** | congress-trading-shared | `jaywedgeworth22/congress-trading-shared` |
-| **`FLEET`** | Slack wake: every Grok Bot seat | Not a repo.  Not the coordinator.  `[SENDER->FLEET]` means every `[GB-<NAME>]` seat must spend time. |
+| **`FLEET`** | Slack wake: every listening seat, every platform | Not a repo.  Not the coordinator.  `[SENDER->FLEET]` means every listening agent must spend time — Grok Bot `[GB-<NAME>]` seats included, largely superseded by BotFleet (owner 2026-09-13). |
 
 **Self-id:** this coordinator/ops system signs as **`AFC`**.  Never `[FLEET]`.  Never `[GB-FLEET]`.  Former aliases `AFL` / `FLEET` / `AIFC` / `FC` are retired — `FLEET` especially, because `[SEAT->FLEET]` is a broadcast wake that costs every seat time.  Sibling infra identity is **`OPS`**.
 
@@ -63,7 +63,7 @@ Every agent session must start with systematic orientation before touching code:
    ```bash
    AGENT_TAG=<YOUR_TAG> /usr/bin/python3 /Users/jay/apps/agent-sync-poll.py
    ```
-   Skim for your agent tag or repositories you plan to touch.  Grok Bot seats also full-read `[SENDER->FLEET]` (every GB seat must spend time).  Coordinator self-id is `AFC`, not `FLEET`.
+   Skim for your agent tag or repositories you plan to touch.  Every listening seat on every platform also full-reads `[SENDER->FLEET]` (every listener must spend time).  Coordinator self-id is `AFC`, not `FLEET`.
 
 3. **Check Live Effort Boards & Work Items:**
    ```bash
@@ -106,7 +106,7 @@ Before starting substantial work, reserve your lane across three durable surface
    work: <One-line summary of task>
    ```
 
-*(Reserve `[<TAG>->FLEET]` strictly for urgent wakes that every Grok Bot seat must spend time on.  Coordinator/ops posts as `[AFC]`, never as `[FLEET]`.)*
+*(Reserve `[<TAG>->FLEET]` strictly for urgent wakes that every listening seat on every platform must spend time on.  Coordinator/ops posts as `[AFC]`, never as `[FLEET]`.)*
 
 ---
 
