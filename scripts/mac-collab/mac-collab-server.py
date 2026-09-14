@@ -21,6 +21,7 @@ from __future__ import annotations
 import base64
 import collections
 import errno
+import hashlib
 import hmac
 import json
 import os
@@ -33,6 +34,7 @@ import time
 import urllib.request
 import uuid
 from datetime import datetime, timedelta, timezone
+from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import parse_qs, unquote, urlparse
@@ -249,6 +251,15 @@ def load_tokens() -> dict[str, str]:
 
 TOKENS = load_tokens()
 TOKEN = next((t for t, ident in TOKENS.items() if ident is None), None) # Fallback for legacy basic auth checks
+
+# Browser session cookie so THE BOARD does not ask for MAC_COLLAB_TOKEN on
+# every load.  HMAC key is derived from the live tokens (rotating them
+# invalidates cookies).  The cookie value is never the collab token itself.
+SESSION_COOKIE = "mac_collab_session"
+SESSION_MAX_AGE = 30 * 24 * 3600
+SESSION_KEY = hashlib.sha256(
+    b"mac-collab-session-v1\0" + b"\0".join(sorted(t.encode("utf-8") for t in TOKENS))
+).digest() if TOKENS else hashlib.sha256(b"mac-collab-session-v1-empty").digest()
 
 
 
@@ -516,7 +527,76 @@ def authorized(handler: BaseHTTPRequestHandler):
         ident = basic_authorized(handler)
         if ident:
             return ident
+    ident = cookie_authorized(handler)
+    if ident:
+        return ident
     return None
+
+
+def _session_ident(ident: str | None) -> str:
+    return ident or "OWNER"
+
+
+def mint_session_value(ident: str | None, now: float | None = None) -> str:
+    ident_s = _session_ident(ident)
+    exp = int((now if now is not None else time.time()) + SESSION_MAX_AGE)
+    payload = f"{ident_s}:{exp}"
+    sig = hmac.new(SESSION_KEY, payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    return f"{sig}.{ident_s}.{exp}"
+
+
+def parse_session_value(val: str, now: float | None = None) -> str | None:
+    if not val or val.count(".") < 2:
+        return None
+    sig, ident_s, exp_s = val.split(".", 2)
+    try:
+        exp = int(exp_s)
+    except ValueError:
+        return None
+    if exp < int(now if now is not None else time.time()):
+        return None
+    if not ident_s or any(c in ident_s for c in " \r\n"):
+        return None
+    payload = f"{ident_s}:{exp}"
+    expect = hmac.new(SESSION_KEY, payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    if not hmac.compare_digest(sig, expect):
+        return None
+    return ident_s
+
+
+def cookie_authorized(handler: BaseHTTPRequestHandler) -> str | None:
+    raw = handler.headers.get("Cookie", "")
+    if not raw:
+        return None
+    jar = SimpleCookie()
+    try:
+        jar.load(raw)
+    except Exception:
+        return None
+    morsel = jar.get(SESSION_COOKIE)
+    if morsel is None:
+        return None
+    return parse_session_value(morsel.value)
+
+
+def session_cookie_header(handler: BaseHTTPRequestHandler, ident: str | None) -> str:
+    value = mint_session_value(ident)
+    parts = [
+        f"{SESSION_COOKIE}={value}",
+        "Path=/",
+        f"Max-Age={SESSION_MAX_AGE}",
+        "HttpOnly",
+        "SameSite=Lax",
+    ]
+    proto = (handler.headers.get("X-Forwarded-Proto") or "").split(",")[0].strip().lower()
+    host = (handler.headers.get("Host") or "").split(":")[0].lower()
+    if proto == "https" or host.endswith("jays.services"):
+        parts.append("Secure")
+    return "; ".join(parts)
+
+
+def session_headers(handler: BaseHTTPRequestHandler, ident: str | None) -> dict[str, str]:
+    return {"Set-Cookie": session_cookie_header(handler, ident)}
 
 
 def basic_authorized(handler: BaseHTTPRequestHandler):
@@ -596,6 +676,32 @@ class Handler(BaseHTTPRequestHandler):
 
     # ---- routing ---------------------------------------------------
 
+    def do_HEAD(self):
+        parsed = urlparse(self.path)
+        path = unquote(parsed.path).rstrip("/") or "/"
+        if path in ("/", "/health"):
+            self.send_response(200)
+            self.send_header("Content-Type", "application/json; charset=utf-8")
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
+        if path == "/board":
+            ident = basic_authorized(self) or cookie_authorized(self)
+            if not ident:
+                self.send_response(401)
+                self.send_header("WWW-Authenticate", 'Basic realm="Fleet Findings Board"')
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.end_headers()
+                return
+            self.send_response(200)
+            self.send_header("Content-Type", "text/html; charset=utf-8")
+            self.send_header("Set-Cookie", session_cookie_header(self, ident))
+            self.send_header("Cache-Control", "no-store")
+            self.end_headers()
+            return
+        self.send_response(404)
+        self.end_headers()
+
     def do_GET(self):
         parsed = urlparse(self.path)
         path = unquote(parsed.path).rstrip("/") or "/"
@@ -606,12 +712,18 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/files/key-names":
             return self._handle_key_names()
         if path == "/board":
-            if not basic_authorized(self):
+            ident = basic_authorized(self) or cookie_authorized(self)
+            if not ident:
                 return self._require_basic_auth()
             page = BOARD_HTML.replace("__AGENT_LOGOS_JSON__", json.dumps(AGENT_LOGOS))
             page = page.replace("__AGENT_SEATS_JSON__", json.dumps(AGENT_SEATS))
             page = page.replace("__AGENT_ENVS_JSON__", json.dumps(AGENT_ENVS))
-            return self._send(200, page, "text/html; charset=utf-8")
+            return self._send(
+                200,
+                page,
+                "text/html; charset=utf-8",
+                extra_headers=session_headers(self, ident),
+            )
         if path in ("/files", "/effort-logs"):
             return self._handle_files_list()
         if path.startswith("/files/") or path.startswith("/effort-logs/"):
@@ -1202,7 +1314,7 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:16px;color:v
   <span class="lbl">Token</span>
   <input type="password" id="token" placeholder="MAC_COLLAB_TOKEN" style="width:16em">
   <button class="primary" onclick="saveToken()">Unlock</button>
-  <span class="count">You already authenticated to load this page &mdash; this unlocks the API calls the page itself makes (a browser quirk keeps it from reusing that login automatically).</span>
+  <span class="count">Needed only if this browser has no saved board session.  After one unlock it stays signed in on this device for 30 days.</span>
 </div>
 <div class="filters">
   <span class="lbl">App</span><select id="fApp"><option value="">all</option></select>
@@ -1261,9 +1373,17 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:16px;color:v
 </div>
 <footer><div class="wrap"><p>Any agent can file a finding (<code>POST /findings</code>), mark one addressed, or comment on a fix &mdash; see <code>AGENT-SYNC.md</code> &sect; Findings tool.</p></div></footer>
 <script>
-function tok(){ return sessionStorage.getItem('mac_collab_token') || ''; }
+function tok(){
+  try {
+    const saved = localStorage.getItem('mac_collab_token') || sessionStorage.getItem('mac_collab_token') || '';
+    if (saved && !localStorage.getItem('mac_collab_token')) localStorage.setItem('mac_collab_token', saved);
+    return saved;
+  } catch (e) { return sessionStorage.getItem('mac_collab_token') || ''; }
+}
 function saveToken(){
-  sessionStorage.setItem('mac_collab_token', document.getElementById('token').value.trim());
+  const v = document.getElementById('token').value.trim();
+  try { localStorage.setItem('mac_collab_token', v); } catch (e) {}
+  sessionStorage.setItem('mac_collab_token', v);
   document.getElementById('tokenBar').style.display = 'none';
   load();
 }
@@ -1273,15 +1393,14 @@ function needsToken(){
 }
 async function api(path, opts){
   opts = opts || {};
-  // Explicit Bearer token, not relying on the browser re-attaching /board's
-  // Basic Auth credentials to fetch(). Also build a fresh absolute URL from
-  // location.origin rather than passing the bare relative path: if this
-  // document was ever reached via a URL with embedded userinfo (some
-  // browsers end up here even via the "proper" login-prompt flow), a plain
-  // relative fetch() throws "Request cannot be constructed from a URL that
-  // includes credentials" -- a freshly-built origin+path string carries no
-  // userinfo and sidesteps that check entirely. Verified empirically.
-  opts.headers = Object.assign({'Content-Type': 'application/json', 'Authorization': 'Bearer ' + tok()}, opts.headers || {});
+  // Prefer the HttpOnly session cookie (set when /board loaded).  Fall back to
+  // a stored Bearer so an old tab that never got the cookie still works.
+  // Absolute origin+path avoids "URL that includes credentials" on some browsers.
+  const headers = Object.assign({'Content-Type': 'application/json'}, opts.headers || {});
+  const t = tok();
+  if (t) headers['Authorization'] = 'Bearer ' + t;
+  opts.headers = headers;
+  opts.credentials = 'include';
   const r = await fetch(location.origin + path, opts);
   if (r.status === 401) { needsToken(); throw new Error('unauthorized'); }
   if (!r.ok) throw new Error(path + ' -> ' + r.status);
@@ -1429,10 +1548,13 @@ async function renderList(){
   document.getElementById('list').innerHTML = data.findings.map(renderFinding).join('') || '<p>No items match these filters.</p>';
 }
 async function load(){
-  if (!tok()) { needsToken(); return; }
-  await loadStats();
-  applyUrlFilters();
-  await renderList();
+  try {
+    await loadStats();
+    applyUrlFilters();
+    await renderList();
+  } catch (e) {
+    if (!tok()) needsToken();
+  }
 }
 ['fApp','fKind','fStatus','fSev'].forEach(id => document.getElementById(id).addEventListener('change', renderList));
 document.getElementById('fSearch').addEventListener('input', () => {
