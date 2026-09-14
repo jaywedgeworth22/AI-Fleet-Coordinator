@@ -1,5 +1,11 @@
 # Status
 
+Updated: 2026-09-14 (FX — THE BOARD remembers collab session)
+
+## 2026-09-14 FX — THE BOARD remembers collab token
+
+HttpOnly `mac_collab_session` cookie (30 days) after one Basic unlock.  No in-page token bar on later loads.  Board `7d3605e2`.  Branch `fx/board-remember-token`.
+
 Updated: 2026-09-14 (FX — Safari start page Settings)
 
 ## 2026-09-14 FX — Safari start page Settings and Mac defaults
