@@ -6,6 +6,10 @@
 <meta name="theme-color" content="#f5f5f7" media="(prefers-color-scheme: light)">
 <meta name="theme-color" content="#161617" media="(prefers-color-scheme: dark)">
 <meta name="apple-mobile-web-app-title" content="Start">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<link rel="apple-touch-icon" href="/app-icons/fleet.png">
+
 <meta name="color-scheme" content="light dark">
 <title>Start Page</title>
 <link rel="icon" href="data:,">
@@ -133,6 +137,64 @@
     .sub { font-size: 12.5px; }
     footer { display: none; }
   }
+
+  :root[data-theme="light"] {
+    --bg: #f5f5f7;
+    --card: #ffffff;
+    --text: #1d1d1f;
+    --muted: #6e6e73;
+    --faint: #a1a1a6;
+    --line: rgba(0, 0, 0, .07);
+    --hover: rgba(0, 0, 0, .045);
+    --shadow: 0 1px 2px rgba(0, 0, 0, .04), 0 8px 24px rgba(0, 0, 0, .05);
+  }
+  .hdr-actions { display: flex; align-items: flex-start; gap: 16px; }
+  .gear {
+    flex: none; width: 40px; height: 40px; margin-top: 4px; border: 1px solid var(--line);
+    border-radius: 12px; background: var(--card); color: var(--muted); box-shadow: var(--shadow);
+    display: grid; place-items: center; cursor: pointer; -webkit-appearance: none; appearance: none;
+  }
+  .gear:hover, .gear:active { background: var(--hover); color: var(--text); }
+  .gear:focus-visible { outline: 2px solid var(--ring); outline-offset: 2px; }
+  .gear svg { width: 20px; height: 20px; }
+  .sheet {
+    display: none; position: fixed; inset: 0; z-index: 40; background: rgba(0,0,0,.28);
+    padding: max(24px, env(safe-area-inset-top)) 16px max(24px, env(safe-area-inset-bottom));
+    overflow: auto;
+  }
+  .sheet.open { display: grid; place-items: start center; }
+  .panel {
+    width: min(560px, 100%); margin: 8vh auto; background: var(--card); color: var(--text);
+    border-radius: 18px; border: 1px solid var(--line); box-shadow: var(--shadow); padding: 20px 20px 16px;
+  }
+  .panel h2 { margin: 0 0 4px; font-size: 20px; font-weight: 700; color: var(--text); }
+  .panel .lede { margin: 0 0 18px; color: var(--muted); font-size: 14px; }
+  .panel h3 { margin: 18px 0 8px; font-size: 13px; font-weight: 600; color: var(--muted); }
+  .seg { display: flex; gap: 6px; flex-wrap: wrap; }
+  .seg button {
+    border: 1px solid var(--line); background: transparent; color: var(--text); border-radius: 10px;
+    padding: 8px 12px; font: inherit; font-size: 14px; font-weight: 500; cursor: pointer;
+  }
+  .seg button[aria-pressed="true"] { background: var(--text); color: var(--bg); border-color: var(--text); }
+  .checks { display: grid; gap: 4px; }
+  .checks label { display: flex; align-items: center; gap: 10px; padding: 6px 4px; font-size: 14.5px; }
+  .checks input { width: 16px; height: 16px; accent-color: var(--ring); }
+  .add { display: grid; gap: 8px; }
+  .add input, .add select {
+    height: 42px; border-radius: 10px; border: 1px solid var(--line); background: var(--bg);
+    color: var(--text); padding: 0 12px; font: inherit;
+  }
+  .row-btns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 18px; flex-wrap: wrap; }
+  .row-btns button {
+    height: 40px; padding: 0 14px; border-radius: 10px; font: inherit; font-size: 14px; font-weight: 600;
+    cursor: pointer; border: 1px solid var(--line); background: var(--card); color: var(--text);
+  }
+  .row-btns .primary { background: var(--text); color: var(--bg); border-color: var(--text); }
+  @media (max-width: 560px) {
+    .hdr-actions { width: 100%; justify-content: space-between; align-items: flex-end; }
+    .gear { margin-top: 0; }
+    .panel { margin: 4vh auto; }
+  }
 </style>
 </head>
 <body>
@@ -142,10 +204,17 @@
       <h1 id="greeting">Hello, Jay.</h1>
       <p class="date" id="date"></p>
     </div>
-    <div class="clock">
-      <div class="time"><span id="time"></span><small id="meridiem"></small></div>
-      <div class="zone" id="zone" hidden></div>
-      <div class="utc"><span id="central" hidden></span><span id="utc"></span></div>
+    <div class="hdr-actions">
+      <div class="clock">
+        <div class="time"><span id="time"></span><small id="meridiem"></small></div>
+        <div class="zone" id="zone" hidden></div>
+        <div class="utc"><span id="central" hidden></span><span id="utc"></span></div>
+      </div>
+      <button type="button" class="gear" id="open-settings" aria-label="Settings" title="Settings">
+        <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+          <path d="M11.5 1.6a1.6 1.6 0 0 0-3 0l-.2 1.1a6.6 6.6 0 0 0-1.6.7L5.6 2.6a1.6 1.6 0 0 0-2.2.7L2.2 5.6a1.6 1.6 0 0 0 .7 2.2l1 .5a6.6 6.6 0 0 0 0 1.4l-1 .5a1.6 1.6 0 0 0-.7 2.2l1.2 2.3a1.6 1.6 0 0 0 2.2.7l1.1-.7c.5.3 1 .5 1.6.7l.2 1.1a1.6 1.6 0 0 0 3 0l.2-1.1c.6-.2 1.1-.4 1.6-.7l1.1.7a1.6 1.6 0 0 0 2.2-.7l1.2-2.3a1.6 1.6 0 0 0-.7-2.2l-1-.5a6.6 6.6 0 0 0 0-1.4l1-.5a1.6 1.6 0 0 0 .7-2.2L16.6 3.3a1.6 1.6 0 0 0-2.2-.7l-1.1.8a6.6 6.6 0 0 0-1.6-.7l-.2-1.1ZM10 12.2A2.2 2.2 0 1 1 10 7.8a2.2 2.2 0 0 1 0 4.4Z"/>
+        </svg>
+      </button>
     </div>
   </header>
 
@@ -164,6 +233,36 @@
   </p>
 
   <main class="grid" id="grid"></main>
+
+
+<div class="sheet" id="settings" hidden>
+  <div class="panel" role="dialog" aria-labelledby="settings-title" aria-modal="true">
+    <h2 id="settings-title">Settings</h2>
+    <p class="lede">Choose the theme and which links show on this Start Page.  Changes stay on this device.</p>
+    <h3>Theme</h3>
+    <div class="seg" id="theme-seg">
+      <button type="button" data-theme="light">Light</button>
+      <button type="button" data-theme="dark">Dark</button>
+      <button type="button" data-theme="system">System</button>
+    </div>
+    <h3>Links</h3>
+    <div class="checks" id="link-checks"></div>
+    <h3>Add A Link</h3>
+    <form class="add" id="add-link">
+      <input id="add-name" placeholder="Name" maxlength="40" required>
+      <input id="add-url" placeholder="https://" type="url" required>
+      <input id="add-sub" placeholder="Subtitle (optional)" maxlength="60">
+      <select id="add-section" aria-label="Section"></select>
+      <div class="row-btns" style="margin-top:0;justify-content:flex-start">
+        <button type="submit" class="primary">Add Link</button>
+      </div>
+    </form>
+    <div class="row-btns">
+      <button type="button" id="reset-settings">Reset To Defaults</button>
+      <button type="button" class="primary" id="close-settings">Done</button>
+    </div>
+  </div>
+</div>
 
   <footer>Source: <code>ai-fleet-coordinator/scripts/safari-start</code></footer>
 </div>
@@ -261,9 +360,47 @@
   const enc = s => encodeURIComponent(s.trim());
   const el = (tag, cls, text) => { const n = document.createElement(tag); if (cls) n.className = cls; if (text != null) n.textContent = text; return n; };
 
+  const STORE = "jay-safari-start-v1";
+  const loadSettings = () => {
+    try { return JSON.parse(localStorage.getItem(STORE) || "null") || {}; } catch (e) { return {}; }
+  };
+  const saveSettings = s => { try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {} };
+  let settings = Object.assign({ theme: "light", hidden: {}, extras: [] }, loadSettings());
+
+  function applyTheme() {
+    const t = settings.theme || "light";
+    if (t === "system") document.documentElement.removeAttribute("data-theme");
+    else document.documentElement.setAttribute("data-theme", t);
+    document.querySelectorAll("#theme-seg button").forEach(b => {
+      b.setAttribute("aria-pressed", b.dataset.theme === t ? "true" : "false");
+    });
+  }
+
+  function visibleSections() {
+    const extras = Array.isArray(settings.extras) ? settings.extras : [];
+    return SECTIONS.map(sec => {
+      const more = extras.filter(x => x.section === sec.title);
+      const links = sec.links.concat(more.map(x => ({
+        name: x.name, sub: x.sub || hostOf(x.url), url: x.url, mono: initials(x.name), color: x.color || "#6e6e73", custom: true
+      })));
+      return Object.assign({}, sec, { links: links.filter(l => !settings.hidden[l.url]) });
+    }).filter(sec => sec.links.length);
+  }
+
+  function hostOf(url) {
+    try { return new URL(url).host.replace(/^www\./, ""); } catch (e) { return url; }
+  }
+  function initials(name) {
+    const p = String(name || "").trim().split(/\s+/).filter(Boolean);
+    if (!p.length) return "+";
+    if (p.length === 1) return p[0].slice(0, 2).toUpperCase();
+    return (p[0][0] + p[1][0]).toUpperCase();
+  }
+
   function render() {
     const grid = document.getElementById("grid");
-    for (const sec of SECTIONS) {
+    grid.replaceChildren();
+    for (const sec of visibleSections()) {
       const s = el("section");
       if (sec.wide) s.classList.add("wide");
       s.appendChild(el("h2", null, sec.title));
@@ -274,14 +411,74 @@
         const m = el("span", "mono");
         if (l.icon) { m.classList.add("app"); const i = el("img"); i.src = l.icon; i.alt = ""; m.appendChild(i); }
         else { m.style.background = l.color; if (l.glyph) { const i = el("img"); i.src = l.glyph; i.alt = ""; m.appendChild(i); } else m.textContent = l.mono; }
-        const t = el("span", "txt");
-        t.appendChild(el("span", "name", l.name));
-        t.appendChild(el("span", "sub", l.sub));
-        a.append(m, t);
+        const tx = el("span", "txt");
+        tx.appendChild(el("span", "name", l.name));
+        tx.appendChild(el("span", "sub", l.sub));
+        a.append(m, tx);
         const li = el("li"); li.appendChild(a); ul.appendChild(li);
       }
       s.appendChild(ul); grid.appendChild(s);
     }
+  }
+
+  function paintSettings() {
+    const box = document.getElementById("link-checks");
+    box.replaceChildren();
+    const extras = Array.isArray(settings.extras) ? settings.extras : [];
+    for (const sec of SECTIONS) {
+      box.appendChild(el("h3", null, sec.title));
+      const more = extras.filter(x => x.section === sec.title);
+      const links = sec.links.concat(more.map(x => ({ name: x.name, url: x.url, custom: true })));
+      for (const l of links) {
+        const lab = el("label");
+        const cb = document.createElement("input");
+        cb.type = "checkbox";
+        cb.checked = !settings.hidden[l.url];
+        cb.addEventListener("change", () => {
+          if (cb.checked) delete settings.hidden[l.url];
+          else settings.hidden[l.url] = true;
+          saveSettings(settings);
+          render();
+        });
+        lab.append(cb, document.createTextNode(" " + l.name));
+        if (l.custom) {
+          const rm = el("button");
+          rm.type = "button";
+          rm.textContent = "Remove";
+          rm.style.marginLeft = "auto";
+          rm.style.fontSize = "12px";
+          rm.addEventListener("click", () => {
+            settings.extras = extras.filter(x => x.url !== l.url);
+            delete settings.hidden[l.url];
+            saveSettings(settings);
+            paintSettings();
+            render();
+          });
+          lab.appendChild(rm);
+        }
+        box.appendChild(lab);
+      }
+    }
+    const sel = document.getElementById("add-section");
+    sel.replaceChildren();
+    for (const sec of SECTIONS) {
+      const o = document.createElement("option");
+      o.value = sec.title; o.textContent = sec.title;
+      sel.appendChild(o);
+    }
+  }
+
+  function openSettings() {
+    const sheet = document.getElementById("settings");
+    sheet.hidden = false;
+    sheet.classList.add("open");
+    paintSettings();
+    applyTheme();
+  }
+  function closeSettings() {
+    const sheet = document.getElementById("settings");
+    sheet.classList.remove("open");
+    sheet.hidden = true;
   }
 
   function tick() {
@@ -352,6 +549,48 @@
     if (e.key === "/") { e.preventDefault(); input.focus(); return; }
     if (e.key.length === 1) input.focus();
   });
+
+  document.getElementById("open-settings").addEventListener("click", openSettings);
+  document.getElementById("close-settings").addEventListener("click", closeSettings);
+  document.getElementById("settings").addEventListener("click", e => { if (e.target.id === "settings") closeSettings(); });
+  document.getElementById("theme-seg").addEventListener("click", e => {
+    const b = e.target.closest("button[data-theme]");
+    if (!b) return;
+    settings.theme = b.dataset.theme;
+    saveSettings(settings);
+    applyTheme();
+  });
+  document.getElementById("reset-settings").addEventListener("click", () => {
+    settings = { theme: "light", hidden: {}, extras: [] };
+    saveSettings(settings);
+    applyTheme();
+    paintSettings();
+    render();
+  });
+  document.getElementById("add-link").addEventListener("submit", e => {
+    e.preventDefault();
+    const name = document.getElementById("add-name").value.trim();
+    let url = document.getElementById("add-url").value.trim();
+    const sub = document.getElementById("add-sub").value.trim();
+    const section = document.getElementById("add-section").value;
+    if (!name || !url) return;
+    if (!/^[a-z][a-z0-9+.-]*:\/\//i.test(url)) url = "https://" + url;
+    try { url = new URL(url).href; } catch (err) { return; }
+    if (!/^https?:/i.test(url)) return;
+    settings.extras = (settings.extras || []).filter(x => x.url !== url);
+    settings.extras.push({ name, url, sub, section });
+    delete settings.hidden[url];
+    saveSettings(settings);
+    document.getElementById("add-link").reset();
+    paintSettings();
+    render();
+  });
+  document.addEventListener("keydown", e => {
+    if (e.key === "Escape" && document.getElementById("settings").classList.contains("open")) {
+      e.preventDefault(); closeSettings();
+    }
+  });
+  applyTheme();
 
   render();
   tick();

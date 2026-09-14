@@ -1,5 +1,11 @@
 # Status
 
+Updated: 2026-09-14 (FX — Safari start page Settings)
+
+## 2026-09-14 FX — Safari start page Settings and Mac defaults
+
+Settings gear on Claude's start page.  `install.sh` writes the sandboxed Safari plist and quits Safari so new tabs actually load it.  Phone copy at `https://jays.services/start/`.  Board `970746b9`.  Branch `fx/safari-start-settings`.
+
 Updated: 2026-09-13 (FX — skip pointless Vercel deploys)
 
 ## 2026-09-13 FX — Skip pointless Vercel production deploys
