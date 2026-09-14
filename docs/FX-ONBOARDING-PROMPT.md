@@ -137,6 +137,14 @@ YOUR FIRST UNIT, NOW
    already says COMPLETED — that was premature; make it true.
 4. Then take board row 56fea494 (jays.services advertises Autorotate.Codes, which does not
    resolve): claim it, fix it or file the DNS work for the owner, land, close out.
+5. Your other lanes from Sep 12 are all dirty with zero commits.  For each one, finish or
+   discard, then land or close out every board row you claimed: congress-fx-runtime (the
+   fleet-sqlite-backup.sh edit — the copy you installed on the coolify host is being landed
+   by CLAUDE in Congress.Trade, so drop yours once that PR merges), trading-fx-liveness,
+   usage-fx-ready (two Usage-Monitor security fixes, board rows 48334ff1 and 68013aab),
+   personal-fx-links, botfleet-fx-title, contactlogo-fx-landing, dealdex-fx-health, and
+   usage-fx-import-tap.  Never install anything on a host from an uncommitted edit again:
+   commit, open the PR, merge, then deploy.
 ```
 
 ## Seat row for the Agent Seat table (both copies of AGENT-SYNC.md)
@@ -157,6 +165,7 @@ inventory of record and lands in the same PR; `scripts/check-fleet-registry.py` 
   by FX with a lane path in the location field.
 - `recall digest --days 7` shows an `FX` line once it has contributed a lesson.
 - `git -C ~/apps/fleet-fx-registry status -sb` is clean and the registration PR is merged.
+- `for l in ~/apps/*-fx*; do git -C "$l" status --short; done` prints nothing.
 
 ## Switching the model later
 
