@@ -1,5 +1,7 @@
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+- **2026-09-14 — FX — IN PROGRESS — Safari start page Settings plus Mac and iPhone defaults (`fx/safari-start-settings`, worktree `~/apps/fleet-fx-safari-start`, board `970746b9`).**
+
 - **2026-09-13 — FX — IN PROGRESS — Skip pointless Vercel production deploys (`fx/vercel-skip-pointless`, worktree `~/apps/fleet-fx-deploy-docs`, board `0934111e`).**
 - **2026-09-13 — FX — IN PROGRESS — Merge to main is Vercel production (`fx/merge-equals-live-docs`, worktree `~/apps/fleet-fx-deploy-docs`, board `ef71d6c1`).**
 
