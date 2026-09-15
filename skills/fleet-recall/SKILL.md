@@ -67,7 +67,10 @@ Qdrant/TEI path -- there is no public route for ingest and the public twin drops
 rerank/per_doc knobs eval needs.  Those three fail fast with one actionable line instead of a
 multi-minute retry storm.  Fix it with `tailscale login`, or run `recall-tunnel up` then
 `eval "$(recall-tunnel env)"` to forward Qdrant/TEI over SSH to the box and try the direct path
-first regardless of Tailscale's status.
+first regardless of Tailscale's status.  macOS `CLIError 3` (GUI failed to start from a
+LaunchAgent / no-Aqua session) is treated as down, not as unknown, so stats does not wait 120s
+on private Qdrant.  `RECALL_SKIP_PRIVATE=1` skips Tailscale.app entirely and skips the private
+path; BotFleet sets it on `recall stats --json`.
 
 **Claude Code hooks.**  `bash scripts/install-fleet-rag.sh --hooks` copies two hooks into
 `~/.claude/hooks/` and appends one entry each to `hooks.SessionStart` and `hooks.Stop` in

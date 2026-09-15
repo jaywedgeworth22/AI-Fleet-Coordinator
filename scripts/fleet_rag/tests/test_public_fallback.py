@@ -26,6 +26,14 @@ PUBLIC_ENV = {"RECALL_API_TOKEN": "tok-123", "CF_ACCESS_CLIENT_ID": "id-123",
 # --------------------------------------------------------------------------- tailscale status
 
 class TailscaleStatusTextTests(unittest.TestCase):
+    def setUp(self):
+        self.env = mock.patch.dict(os.environ, {}, clear=False)
+        self.env.start()
+        os.environ.pop(public_fallback.SKIP_PRIVATE_ENV, None)
+
+    def tearDown(self):
+        self.env.stop()
+
     def test_missing_binary_returns_none(self):
         def boom(*a, **k):
             raise FileNotFoundError("no such file")
@@ -42,10 +50,11 @@ class TailscaleStatusTextTests(unittest.TestCase):
         self.assertIsNone(public_fallback.tailscale_status_text(run=boom))
 
     def test_combines_stdout_and_stderr(self):
-        def fake_run(cmd, capture_output, text, timeout):
+        def fake_run(cmd, capture_output, text, timeout, env=None):
             self.assertEqual(cmd, [public_fallback.TAILSCALE_BIN, "status"])
             self.assertTrue(capture_output)
             self.assertTrue(text)
+            self.assertEqual((env or {}).get("TAILSCALE_BE_CLI"), "1")
             return SimpleNamespace(stdout="100.1.2.3  mac  online\n", stderr="# Health check:\n")
         out = public_fallback.tailscale_status_text(run=fake_run)
         self.assertIn("online", out)
@@ -55,8 +64,23 @@ class TailscaleStatusTextTests(unittest.TestCase):
         out = public_fallback.tailscale_status_text(run=lambda *a, **k: SimpleNamespace(stdout=None, stderr=None))
         self.assertEqual(out, "")
 
+    def test_skip_private_does_not_start_tailscale(self):
+        def boom(*a, **k):
+            raise AssertionError("must not invoke Tailscale.app")
+        os.environ[public_fallback.SKIP_PRIVATE_ENV] = "1"
+        out = public_fallback.tailscale_status_text(run=boom)
+        self.assertIn("RECALL_SKIP_PRIVATE", out)
+
 
 class TailscaleBelievedDownTests(unittest.TestCase):
+    def setUp(self):
+        self.env = mock.patch.dict(os.environ, {}, clear=False)
+        self.env.start()
+        os.environ.pop(public_fallback.SKIP_PRIVATE_ENV, None)
+
+    def tearDown(self):
+        self.env.stop()
+
     def test_none_is_never_down(self):
         self.assertFalse(public_fallback.tailscale_believed_down(None))
 
@@ -75,6 +99,19 @@ class TailscaleBelievedDownTests(unittest.TestCase):
     def test_logged_out_is_down_case_insensitive(self):
         text = "# Health check:\n#     - You are LOGGED OUT. The last login error was: ...\n"
         self.assertTrue(public_fallback.tailscale_believed_down(text))
+
+    def test_clierror_3_is_down(self):
+        text = ("The Tailscale GUI failed to start: The operation couldn’t be completed. "
+                "(Tailscale.CLIError error 3.)\n")
+        self.assertTrue(public_fallback.tailscale_believed_down(text))
+
+    def test_gui_failed_to_start_is_down(self):
+        self.assertTrue(public_fallback.tailscale_believed_down(
+            "The Tailscale GUI failed to start: The operation couldn’t be completed.\n"))
+
+    def test_skip_private_env_is_down_even_for_unknown(self):
+        os.environ[public_fallback.SKIP_PRIVATE_ENV] = "1"
+        self.assertTrue(public_fallback.tailscale_believed_down(None))
 
 
 # --------------------------------------------------------------------------- connection errors
@@ -148,6 +185,7 @@ class GuardMayRunTests(unittest.TestCase):
         self.env.start()
         os.environ.pop("QDRANT_URL", None)
         os.environ.pop("TEI_URL", None)
+        os.environ.pop(public_fallback.SKIP_PRIVATE_ENV, None)
 
     def tearDown(self):
         self.env.stop()
@@ -184,6 +222,16 @@ class GuardMayRunTests(unittest.TestCase):
         with mock.patch.object(public_fallback, "tailscale_status_text",
                                side_effect=AssertionError("must not probe Tailscale with an override active")):
             self.assertTrue(public_fallback.guard_may_run())
+
+    def test_skip_private_may_not_run_even_with_override(self):
+        os.environ.pop("FLEET_RECALL_FAKE", None)
+        recall_api.Qdrant = core.Qdrant
+        os.environ["QDRANT_URL"] = "http://127.0.0.1:16333"
+        os.environ["TEI_URL"] = "http://127.0.0.1:18081"
+        os.environ[public_fallback.SKIP_PRIVATE_ENV] = "1"
+        with mock.patch.object(public_fallback, "tailscale_status_text",
+                               side_effect=AssertionError("must not probe Tailscale when skip-private is set")):
+            self.assertFalse(public_fallback.guard_may_run())
 
 
 class LocalOverrideActiveTests(unittest.TestCase):
@@ -227,6 +275,7 @@ class RequireDirectPathTests(unittest.TestCase):
         os.environ.pop("QDRANT_URL", None)
         os.environ.pop("TEI_URL", None)
         os.environ.pop("FLEET_RECALL_FAKE", None)
+        os.environ.pop(public_fallback.SKIP_PRIVATE_ENV, None)
         recall_api.Qdrant = core.Qdrant
 
     def tearDown(self):
@@ -251,6 +300,13 @@ class RequireDirectPathTests(unittest.TestCase):
     def test_no_op_when_tailscale_status_is_unknown(self):
         with mock.patch.object(public_fallback, "tailscale_status_text", return_value=None):
             public_fallback.require_direct_path("ingest")     # must not raise
+
+    def test_clierror_3_fail_fasts_without_the_private_path(self):
+        with mock.patch.object(public_fallback, "tailscale_status_text",
+                               return_value="The Tailscale GUI failed to start: (Tailscale.CLIError error 3.)"):
+            with self.assertRaises(FleetRagError) as ctx:
+                public_fallback.require_direct_path("ingest")
+        self.assertIn("recall ingest", str(ctx.exception))
 
     def test_no_op_when_tailscale_is_up(self):
         with mock.patch.object(public_fallback, "tailscale_status_text", return_value="online\n"):
@@ -385,6 +441,7 @@ class CallWithFallbackTests(unittest.TestCase):
         os.environ.pop("FLEET_RECALL_FAKE", None)
         os.environ.pop("QDRANT_URL", None)
         os.environ.pop("TEI_URL", None)
+        os.environ.pop(public_fallback.SKIP_PRIVATE_ENV, None)
         # Isolate from whatever handoff files genuinely exist on the machine running the
         # suite -- these tests control credentials via os.environ only.
         self.no_files = mock.patch.object(public_fallback, "_read_named_line", return_value=None)
@@ -413,6 +470,30 @@ class CallWithFallbackTests(unittest.TestCase):
         local.assert_not_called()
         pub.assert_called_once_with("recall_stats", {})
         self.assertEqual(res, {"points": 1})
+
+    def test_clierror_3_skips_local_and_does_not_wait_on_qdrant(self):
+        local = mock.Mock(side_effect=AssertionError("must not run the 120s private path"))
+        with mock.patch.object(public_fallback, "call_public", return_value={"points": 2}) as pub:
+            res = public_fallback.call_with_fallback(
+                "recall_stats", {}, local,
+                status_probe=lambda: "The Tailscale GUI failed to start: (Tailscale.CLIError error 3.)")
+        local.assert_not_called()
+        pub.assert_called_once_with("recall_stats", {})
+        self.assertEqual(res, {"points": 2})
+
+    def test_skip_private_skips_local_even_with_override(self):
+        os.environ[public_fallback.SKIP_PRIVATE_ENV] = "1"
+        os.environ["QDRANT_URL"] = "http://127.0.0.1:16333"
+        os.environ["TEI_URL"] = "http://127.0.0.1:18081"
+        local = mock.Mock(side_effect=AssertionError("must not run the local path"))
+        with mock.patch.object(public_fallback, "call_public", return_value={"points": 7}) as pub:
+            res = public_fallback.call_with_fallback(
+                "recall_stats", {}, local,
+                status_probe=lambda: (_ for _ in ()).throw(
+                    AssertionError("must not probe Tailscale when skip-private is set")))
+        local.assert_not_called()
+        pub.assert_called_once_with("recall_stats", {})
+        self.assertEqual(res, {"points": 7})
 
     def test_connection_error_falls_back(self):
         local = mock.Mock(side_effect=FleetRagError("RemoteDisconnected reaching 100.69.77.26:8081"))
