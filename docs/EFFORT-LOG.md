@@ -1,5 +1,7 @@
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+- **2026-09-15 — GROK — IN PROGRESS — recall-cli skip Tailscale GUI / 120s private Qdrant on stats (`grok/recall-skip-private`, worktree `~/apps/fleet-grok-recall-deadline`).**  CLIError 3 is down (public twin).  `RECALL_SKIP_PRIVATE=1` never starts Tailscale.app.  BotFleet #271 / board `2d627f55`.
+
 - **2026-09-14 — FX — IN PROGRESS — THE BOARD remembers collab token (`fx/board-remember-token`, worktree `~/apps/fleet-fx-board-session`, board `7d3605e2`).**
 
 - **2026-09-14 — FX — IN PROGRESS — Safari start page Settings plus Mac and iPhone defaults (`fx/safari-start-settings`, worktree `~/apps/fleet-fx-safari-start`, board `970746b9`).**

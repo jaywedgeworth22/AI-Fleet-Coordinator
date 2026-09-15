@@ -16,7 +16,12 @@ This module gives those two surfaces a fast, actionable alternative:
      already-known-down Tailscale skips the slow local retry storm entirely and goes straight
      to the public path.  A machine with no Tailscale.app (Linux, CI, a relocated binary)
      reports "unknown", which is treated as "assume up" -- this module only ever *skips* the
-     local path on positive evidence, never on the absence of the binary.
+     local path on positive evidence, never on the absence of the binary.  macOS GUI IPC
+     failure is positive evidence: `tailscale status` from a LaunchAgent / no-Aqua session
+     tries to start Tailscale.app and returns `CLIError 3` instead of "logged out"; that is
+     treated as down so `recall stats` does not wait on private Qdrant's 120s per-call
+     timeout.  `RECALL_SKIP_PRIVATE=1` skips the Tailscale binary entirely (no GUI start)
+     and skips the private path even when QDRANT_URL/TEI_URL are set.
   2. Otherwise the local path still runs first -- Tailscale can flap, and "believed up" is a
      hint, not a guarantee -- but a CONNECTION-LEVEL failure from it (never an HTTP 4xx/5xx,
      which is a real answer from a reachable server) is caught and retried once against
@@ -59,6 +64,9 @@ from .core import FleetRagError
 
 TAILSCALE_BIN = "/Applications/Tailscale.app/Contents/MacOS/Tailscale"
 TAILSCALE_STATUS_TIMEOUT = 3.0
+# BotFleet LaunchAgent / other GUI-less callers set this so `recall stats --json` never
+# starts Tailscale.app and never waits 120s on private Qdrant.
+SKIP_PRIVATE_ENV = "RECALL_SKIP_PRIVATE"
 
 PUBLIC_BASE = "https://recall.jays.services"
 PUBLIC_ENV_KEYS = ("RECALL_API_TOKEN", "CF_ACCESS_CLIENT_ID", "CF_ACCESS_CLIENT_SECRET")
@@ -118,6 +126,12 @@ StatusProbe = Callable[[], "str | None"]
 
 # --------------------------------------------------------------------------- Tailscale status
 
+def skip_private_requested() -> bool:
+    """True when the caller asked to skip Tailscale.app and the private Qdrant/TEI path."""
+    v = (os.environ.get(SKIP_PRIVATE_ENV) or "").strip().lower()
+    return v in {"1", "true", "yes", "on"}
+
+
 def tailscale_status_text(run: Callable[..., Any] | None = None,
                           timeout: float = TAILSCALE_STATUS_TIMEOUT) -> "str | None":
     """`tailscale status` output (stdout+stderr), or None when it could not be determined.
@@ -126,21 +140,45 @@ def tailscale_status_text(run: Callable[..., Any] | None = None,
     treat None as "unknown", never as "down", so a machine with no Tailscale.app keeps today's
     behavior instead of every call being routed to the public fallback.  `run` is injectable
     (defaults to `subprocess.run`) so tests never shell out for real.
+
+    `RECALL_SKIP_PRIVATE` never invokes the Tailscale.app binary (LaunchAgent plist env would
+    otherwise try to start the GUI).  The probe also sets TAILSCALE_BE_CLI=1 so a GUI-less
+    parent does not flip the macOS binary into GUI-launch mode.
     """
+    if skip_private_requested():
+        return "RECALL_SKIP_PRIVATE: Tailscale probe skipped"
     runner = run or subprocess.run
+    ts_env = os.environ.copy()
+    ts_env["TAILSCALE_BE_CLI"] = "1"
+    ts_env.setdefault("TERM", "dumb")
     try:
-        proc = runner([TAILSCALE_BIN, "status"], capture_output=True, text=True, timeout=timeout)
+        proc = runner([TAILSCALE_BIN, "status"], capture_output=True, text=True,
+                      timeout=timeout, env=ts_env)
     except (OSError, subprocess.TimeoutExpired):
         return None
     return (proc.stdout or "") + (proc.stderr or "")
 
 
 def tailscale_believed_down(status_text: "str | None") -> bool:
-    """True only on positive evidence in the status text -- None (unknown) is never "down"."""
+    """True on positive evidence Tailscale cannot carry the private Qdrant path.
+
+    None / empty (unknown) is never "down" -- Linux and CI have no Tailscale.app and still
+    use local Qdrant.  `RECALL_SKIP_PRIVATE` is an explicit skip.  macOS `CLIError 3` /
+    "GUI failed to start" is the LaunchAgent case: the binary exists but cannot talk to
+    the GUI, and treating that as unknown used to wait 120s on private Qdrant.
+    """
+    if skip_private_requested():
+        return True
     if not status_text:
         return False
     low = status_text.lower()
-    return "tailscale is stopped" in low or "logged out" in low
+    if "tailscale is stopped" in low or "logged out" in low:
+        return True
+    if "clierror" in low and "error 3" in low:
+        return True
+    if "the tailscale gui failed to start" in low:
+        return True
+    return False
 
 
 # --------------------------------------------------------------------------- connection errors
@@ -159,7 +197,11 @@ def guard_may_run() -> bool:
     fake backend or with an operator override active (local_override_active()), and yes against
     a real one unless Tailscale is believed down -- in which case skip the guard and let the
     contribute call itself decide whether to fall back."""
-    if using_fake_backend() or local_override_active():
+    if using_fake_backend():
+        return True
+    if skip_private_requested():
+        return False
+    if local_override_active():
         return True
     return not tailscale_believed_down(tailscale_status_text())
 
@@ -187,7 +229,7 @@ def require_direct_path(what: str) -> None:
     """
     if using_fake_backend() or local_override_active():
         return
-    if tailscale_believed_down(tailscale_status_text()):
+    if skip_private_requested() or tailscale_believed_down(tailscale_status_text()):
         raise FleetRagError(
             f"Tailscale is logged out on this Mac and `recall {what}` needs the direct Qdrant/TEI "
             "path (no public fallback for it).  Either run `tailscale login`, or open the SSH "
@@ -298,6 +340,10 @@ def call_with_fallback(name: str, kwargs: dict, run_local: RunLocal,
     """
     if using_fake_backend():
         return run_local()
+    if skip_private_requested():
+        return _fallback(
+            name, kwargs,
+            "RECALL_SKIP_PRIVATE is set; skipping Tailscale and the private Qdrant path")
     if not local_override_active():
         probe = status_probe or tailscale_status_text
         if tailscale_believed_down(probe()):
