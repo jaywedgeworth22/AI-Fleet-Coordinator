@@ -382,7 +382,7 @@ Owner ruling 2026-08-13.  Canonical: `~/apps/AGENT-SYNC.md` § iOS agent build l
 - **`xcodebuild` / `xcrun simctl` via bash are pre-approved.**  Run them.  Do not ask.  Do not narrate missing MCP.
 - **Verify** user-visible iOS changes with `xcrun simctl io booted screenshot …`.  Compile success is not visual QA.  Do not hardcode a simulator name.
 - **Do not hand-edit** `.pbxproj`, `.xcodeproj/`, `.xcworkspace/`, `.xib`, `.storyboard`, `.entitlements`.  New `.swift` files: create the file and report target membership.  XcodeGen apps: edit `project.yml` then `xcodegen generate`.
-- Claude seats: copy `scripts/block-xcode-project-writes.py` to `.claude/hooks/` and the PreToolUse snippet from `github-workflows-template/claude-ios-settings.json`.
+- Claude seats: copy `scripts/hooks/block-xcode-project-writes.py` to `scripts/hooks/` and the PreToolUse snippet from `github-workflows-template/claude-ios-settings.json`.
 - Per-app annotated tree: `ios/CLAUDE.md` (or `clients/ios/CLAUDE.md` / `native/ios/CLAUDE.md`).
 - `@Observable` + `@MainActor`; `NavigationStack`; light theme default.
 - **Debug vs TestFlight (owner 2026-08-21):** do Xcode-console debug autonomously via `bash ~/apps/ios-fleet/ios-debug.sh <app>`.  Simulator `--console` is the default.  Device `--logs-only` keeps TestFlight.  `--target device --install-debug` replaces TestFlight for that bundle — say so.  Ask the owner to press Run in Xcode only for LLDB / a paste of the IDE console.  Canonical: `~/apps/AGENT-SYNC.md` § iOS agent build loop.

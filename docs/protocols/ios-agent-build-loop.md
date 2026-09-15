@@ -8,7 +8,7 @@ Owner: do **not** stand up, debug, or "fix" Xcode MCP (`XcodeBuildMCP`, `xcrun m
 
 **Verify:** a simulator screenshot (`xcrun simctl io booted screenshot …`) is required before claiming a user-visible iOS client change is done.  `BUILD SUCCEEDED` is not visual QA.  Discover simulators with `xcrun simctl list devices available` — do not hardcode a device name.
 
-**Do not hand-edit** `.pbxproj`, anything inside `.xcodeproj/` or `.xcworkspace/`, `.xib`, `.storyboard`, or `.entitlements`.  Create the `.swift` file and report that it needs target membership.  Where the app uses XcodeGen (ST `ios/project.yml`, UM `ios/UsageMonitor/project.yml`), edit `project.yml` and run `xcodegen generate` — do not patch the generated `project.pbxproj` by hand.  Claude seats: a PreToolUse hook (`.claude/hooks/block-xcode-project-writes.py`, template in ai-fleet-coordinator + `/Users/jay/apps/ios-fleet/`) enforces the write block.
+**Do not hand-edit** `.pbxproj`, anything inside `.xcodeproj/` or `.xcworkspace/`, `.xib`, `.storyboard`, or `.entitlements`.  Create the `.swift` file and report that it needs target membership.  Where the app uses XcodeGen (ST `ios/project.yml`, UM `ios/UsageMonitor/project.yml`), edit `project.yml` and run `xcodegen generate` — do not patch the generated `project.pbxproj` by hand.  Claude seats: a PreToolUse hook (`scripts/hooks/block-xcode-project-writes.py`, template in ai-fleet-coordinator + `/Users/jay/apps/ios-fleet/`) enforces the write block.
 
 Architecture unless the file you are editing already differs:
 

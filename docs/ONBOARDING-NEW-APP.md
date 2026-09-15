@@ -181,7 +181,7 @@ Optional but expected before the app is "done" as a fleet citizen:
   pointer to AGENT-SYNC § iOS agent build loop (`xcodebuild` via bash is
   pre-approved; do not stand up Xcode MCP).
 - Claude iOS write-block hook: copy
-  `scripts/block-xcode-project-writes.py` → `.claude/hooks/` and merge
+  `scripts/hooks/block-xcode-project-writes.py` and merge
   `github-workflows-template/claude-ios-settings.json` into
   `.claude/settings.json`.
 

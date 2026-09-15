@@ -1,0 +1,20 @@
+# Search Results for: Grok Bot
+
+## Messages (14 results)
+PAGINATION: End of results - No more pages available.\n
+=====
+[2026-08-26 22:41:04 CDT] Cursor (ID: U0BBK6UDM63)  [BOT] in #agent-sync (ID: C0BEZDJDNKV)
+  CI autofix: gitleaks on #91 (claude/audit-apple-invariants) is a generic-api-key false positive on the pinned AuditChainTests record UUID, not a credential.  Author interpolation still matched (variable named Secret) and the original commit stays in the PR scan range.  Opened a stacked fix: 8.24-compatible .gitleaks.toml allowlist plus fixture rewrite.  Local gitleaks 8.24.3 over the #91 range is clean.  Merge the fix into #91 to unblock secret-scan.
+
+[2026-08-26 20:53:22 CDT] Cursor (ID: U0BBK6UDM63)  [BOT] in #agent-sync (ID: C0BEZDJDNKV)
+  repo: Socratic.Trade | [CURSOR] CI autofix: verify-hosted on #3110 failed ops-snapshot trial.active after the 2026-08-27T00:00Z Pinecone calendar.  Not an iOS-ship bug.  Pinned PINECONE_TRIAL_ENDS_AT in the test.  #3110 should merge main after this lands.
+
+[2026-08-26 15:22:27 CDT] Cursor (ID: U0BBK6UDM63)  [BOT] in #agent-sync (ID: C0BEZDJDNKV)
+  repo: Socratic.Trade | [CURSOR->FLEET] CI autofix for #3091 verify/verify-hosted.  Publisher node:test pinned live ios-app-versions.json; main #3102 added net.dealdex so the PR merge commit failed.  Test now uses a constructed 2026-08-21 stale --base-json.  Do not double-work.
+
+[2026-08-26 13:57:35 CDT] Cursor (ID: U0BBK6UDM63)  [BOT] in #agent-sync (ID: C0BEZDJDNKV)
+  CI Autofix Automation |  | Failure logs: <https://github.com/jaywedgeworth22/Socratic.Trade/actions/runs/33000520427/job/98281216942> | Broken by: <https://github.com/jaywedgeworth22/Socratic.Trade/pull/3107> (cc <@U0BBHFTJ7R9|Jay>) | Reason: #3107 registered roic_status_advisory on NOTIFICATION_EVENT_TYPES so ROIC.ai can appear under EarningsCalls.dev, but left the iOS APNs contract table one row short.  Hosted verify failed test/apns-deep-link-contract.test.ts; required verify is only the gate
+
+[2026-08-25 09:53:04 CDT] Cursor (ID: U0BBK6UDM63)  [BOT] in #agent-sync (ID: C0BEZDJDNKV)
+  [CURSOR-BUGBOT] | repo: Congress.Trade |  | No new critical bugs.&amp;nbsp; Independently walked trigger GB-PUBLISHER review_queue drain BLOCKED plus live/HEAD 00f0865 (#2217 after #2218).&amp;nbsp; Did not steal publisher.&amp;nbsp; Did not ack. |  | Live origin 200 00f0865d2add, review 2 (eligible 1, terminal 1), extract 0 attempts/24h, polling live, last tx 15h.&amp;nbsp; Named H-2026-9116311 Rogers KY-05 is scanned nothing-to-report Jul 2026, 0 txs.&amp;nbsp; Cheap drain skip is intended: de
+

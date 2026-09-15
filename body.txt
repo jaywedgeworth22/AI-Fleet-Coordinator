@@ -1,0 +1,5 @@
+This PR resolves a critical issue where the board server would permanently wedge itself under high host load if `lsof` timed out. 
+
+Instead of swallowing the `lsof` failure (which resulted in an empty holders list and an immediate exit because it thought it couldn't kill anything), we now catch the failure, return `None`, and fall back to using `ps` to find all `mac-collab-server.py` instances.
+
+Fixes #5602a987

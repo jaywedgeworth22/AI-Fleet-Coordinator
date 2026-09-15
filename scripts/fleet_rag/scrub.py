@@ -165,7 +165,17 @@ def gitleaks_flagged(jsonl_path: str, timeout: int = 300) -> set[int]:
             raise GitleaksError(f"gitleaks report unreadable: {type(e).__name__}") from None
         if not isinstance(findings, list):
             raise GitleaksError("gitleaks report is not a JSON list")
-        return {int(f.get("StartLine", 0)) for f in findings if isinstance(f, dict) and f.get("StartLine")}
+        
+        flagged_lines = set()
+        for f in findings:
+            if not isinstance(f, dict) or not f.get("StartLine"):
+                continue
+            secret = str(f.get("Secret", "")).strip()
+            # Ignore 8-hex ids (like board ids, Coolify uuids)
+            if re.fullmatch(r"[0-9a-fA-F]{8}", secret):
+                continue
+            flagged_lines.add(int(f["StartLine"]))
+        return flagged_lines
     finally:
         try:
             os.unlink(report)
