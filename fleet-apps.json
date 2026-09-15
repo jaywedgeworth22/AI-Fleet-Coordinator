@@ -16,7 +16,7 @@
       "badgeClass": "repo-st",
       "digestColor": "#2563eb",
       "hasAppIcon": true,
-      "iconFile": "agent-logos/app-st.png",
+      "iconFile": "agent-logos/app-st.svg",
       "kind": "product"
     },
     {
@@ -138,7 +138,8 @@
       "worktreePrefix": "botfleet",
       "badgeClass": "repo-bf",
       "digestColor": "#0284c7",
-      "hasAppIcon": false,
+      "hasAppIcon": true,
+      "iconFile": "agent-logos/app-bf.png",
       "kind": "product"
     },
     {

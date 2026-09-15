@@ -475,13 +475,14 @@ REPO_BADGE: dict[str, tuple[str, str]] = {
 
 # Latest product app icons (copied into site/agent-logos/ with agent marks)
 REPO_APP_ICON: dict[str, str] = {
-    "Socratic.Trade": "agent-logos/app-st.png",  # white-bg candlestick ST
+    "Socratic.Trade": "agent-logos/app-st.svg",  # offset ST logo
     "Congress.Trade": "agent-logos/app-ct.png",  # latest CT iOS app icon
     "Usage-Monitor": "agent-logos/app-um.png",   # latest Usage Monitor client icon
     "DealDex": "agent-logos/app-dd.png",         # DealDex favicon (card/ask mark)
     "Autorotate": "agent-logos/app-ar.png",      # Autorotate shield/lock icon
     "ContactLogo": "agent-logos/app-cl.png",     # ContactLogo crest mark
     "Personal-Site": "agent-logos/app-ps.png",   # Jay's headshot for jays.services
+    "BotFleet": "agent-logos/app-bf.png",        # BotFleet app icon
 }
 
 # Aliases used only to strip *redundant leading* labels that duplicate the badge.
@@ -658,6 +659,9 @@ AGENT_LOGO: dict[str, tuple[str, str]] = {
     "ag": ("ag", "Antigravity"),
     "antigravity": ("ag", "Antigravity"),
     "gemini": ("gemini", "Gemini"),
+    "minimax": ("minimax", "MiniMax"),
+    "mm": ("minimax", "MiniMax"),
+    "sentry": ("sentry", "Sentry"),
     # Monet / Renoir / Fable seats collapse to Claude logo + label
     "monet": ("claude", "Claude"),
     "renoir": ("claude", "Claude"),
@@ -674,6 +678,8 @@ _AGENT_ALT = (
     r"|CODEX(?:-[A-Za-z0-9]+)?"
     r"|CLAUDE(?:\s+CODE)?"
     r"|CURSOR"
+    r"|MINIMAX|MM"
+    r"|SENTRY"
     r"|AG|ANTIGRAVITY|GEMINI|MONET|RENOIR|FABLE"
 )
 # One or more slash-separated seat tokens (CURSOR/AG, Codex/Claude/Monet/AG/Cursor)
@@ -731,6 +737,10 @@ def _normalize_agent_token(raw: str) -> str:
         return "gemini"
     if t.startswith("fable"):
         return "claude"
+    if t.startswith("minimax") or t == "mm":
+        return "minimax"
+    if t.startswith("sentry"):
+        return "sentry"
     return t
 
 
@@ -1276,7 +1286,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
     <div class="legend-section" aria-label="Repositories">
       <span class="legend-heading">Repos</span>
       <div class="legend-items">
-        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-st" title="Socratic Trade"><img class="repo-app-icon" src="agent-logos/app-st.png" alt="Socratic Trade" width="14" height="14" /></span><span class="legend-label">Socratic Trade</span></span>
+        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-st" title="Socratic.Trade"><img class="repo-app-icon" src="agent-logos/app-st.svg" alt="Socratic.Trade" width="14" height="14" /></span><span class="legend-label">Socratic.Trade</span></span>
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-ct" title="Congress.Trade"><img class="repo-app-icon" src="agent-logos/app-ct.png" alt="Congress.Trade" width="14" height="14" /></span><span class="legend-label">Congress.Trade</span></span>
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-um" title="Usage Monitor"><img class="repo-app-icon" src="agent-logos/app-um.png" alt="Usage Monitor" width="14" height="14" /></span><span class="legend-label">Usage Monitor</span></span>
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-dd" title="DealDex.net"><img class="repo-app-icon" src="agent-logos/app-dd.png" alt="DealDex.net" width="14" height="14" /></span><span class="legend-label">DealDex.net</span></span>
@@ -1285,7 +1295,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-ps" title="Personal Site"><img class="repo-app-icon" src="agent-logos/app-ps.png" alt="Personal Site" width="14" height="14" /></span><span class="legend-label">Personal Site</span></span>
         <span class="legend-item"><span class="repo repo-shared">CTS</span><span class="legend-label">congress-trading-shared</span></span>
         <span class="legend-item"><span class="repo repo-fleet">AFC</span><span class="legend-label">AI Fleet Coordinator</span></span>
-        <span class="legend-item"><span class="repo repo-bf">BF</span><span class="legend-label">BotFleet.app</span></span>
+        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-bf" title="BotFleet.app"><img class="repo-app-icon" src="agent-logos/app-bf.png" alt="BotFleet.app" width="14" height="14" /></span><span class="legend-label">BotFleet.app</span></span>
         <span class="legend-item"><span class="repo repo-ops">OPS</span><span class="legend-label">Fleet Ops</span></span>
       </div>
     </div>
@@ -1301,6 +1311,8 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
         <span class="legend-item"><span class="agent" title="Gemini"><img src="agent-logos/gemini.svg" alt="" width="12" height="12" /></span><span class="legend-label">Gemini</span></span>
         <span class="legend-item"><span class="agent" title="Kimi"><img src="agent-logos/kimi.svg" alt="" width="12" height="12" /></span><span class="legend-label">Kimi</span></span>
         <span class="legend-item"><span class="agent" title="DeepSeek"><img src="agent-logos/deepseek.svg" alt="" width="12" height="12" /></span><span class="legend-label">DeepSeek</span></span>
+        <span class="legend-item"><span class="agent" title="MiniMax"><img src="agent-logos/minimax.png" alt="" width="12" height="12" /></span><span class="legend-label">MiniMax</span></span>
+        <span class="legend-item"><span class="agent" title="Sentry"><img src="agent-logos/sentry.svg" alt="" width="12" height="12" /></span><span class="legend-label">Sentry</span></span>
       </div>
     </div>
   </div>

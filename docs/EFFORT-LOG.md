@@ -56,6 +56,7 @@ protocol docs), not a git repo. Cross-repo efforts that land IN a repo get rows 
 repo's board too. As of 2026-08-17. 2026-08-17 GROK board hygiene: one In Progress section (hygiene + FDA/Xcode/iMessage).
 
 ## Deployed
+- [AG] COMPLETED add MiniMax and Sentry agents to fleet, update ST and BotFleet app icons in activity digest 2026-09-15
 - **2026-08-26 — AG — DEPLOYED/MERGED #123 — Audit and resolve reviewer comments across past 2 weeks.**  Claimed Wed, Aug 26, 2026.  Fixed mac-auto-cleanup worktree idle/clean checks and agent-sync runtime preservation (#122), dsh-acp watchdog timeout, session/load resume, supported mode restriction (#110, #111), cursor_acp_cloud_bridge authMethods and follow-up response wait (#75), and registry consistency.  Resolved all 19 open review threads via GraphQL.  PR #123 merged to main.
 - (n/a — machine-side infra is "deployed" when running under pm2/hooks; see Completed)
 
