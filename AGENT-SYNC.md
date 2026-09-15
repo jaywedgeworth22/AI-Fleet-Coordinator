@@ -1662,6 +1662,7 @@ enabled for BotFleet only** (`autofixAutomationTuning=always`).  Hold
 Autofix on every other project.  Slack `3930668` notifies `#agent-sync`
 on `rca_completed` / `pr_ready_for_review`.  Do not mint extra Seer
 *user* seats for bot GitHub accounts.
+**Do not dismiss Sentry Seer findings on their literal claim.** Even if the exact symptom or literal claim Seer makes seems inaccurate, investigate the surrounding code and context. Seer often flags real underlying structural issues or hazards.
 
 ### Datadog vs Sentry (do not double-pay)
 
