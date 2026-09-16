@@ -203,9 +203,22 @@ and does not go through the fallback.
 
 ### From BotFleet bots
 
-BotFleet's Claude driver imports `~/.claude.json` `mcpServers`, and the Codex and Grok drivers
-read their CLIs' global configs, so Mac-side bots get the three tools once the installer has
-run.  Oracle owns the ongoing work (see *Routines*).
+BotFleet mounts its own first-party recall MCP proxy (`server/drivers/qdrant-proxy.ts`, over
+`server/recall-transport.ts`), exposing `recall_search`, `recall_contribute`, and `recall_stats`
+on the Claude, Codex, and Antigravity drivers, and on all nine ACP engines (Grok ACP, Cursor,
+DeepSeek Harness, DeepSeek, Kimi, Qwen, Droid, Hermes, OpenCode).  The Claude driver runs with
+`--strict-mcp-config`, so a bot never sees the user's global MCP servers.  The Codex driver
+layers `-c mcp_servers.<name>` overrides onto `~/.codex/config.toml` with no `CODEX_HOME`
+isolation, so a Codex bot sees both the user's global fleet-recall MCP and BotFleet's proxy.
+There is no Grok driver that reads a global MCP config -- `server/drivers/grok.ts` is the xAI
+HTTP driver with no MCP client; `server/drivers/acp/grok.ts` is the one BotFleet mounts.  The
+HTTP engines (MiniMax, OpenAI-compatible, Grok HTTP), the pi engine (until BotFleet PR
+`claude/rag-basics` lands), and the Computer engine cannot reach the corpus.  The transport is
+chosen by `qdrant.url`: set, a bot uses the cloud service at `https://recall.jays.services` with
+a Cloudflare Access service token pair; empty, it uses the local `recall` CLI on the Mac.
+Oracle owns the ongoing work (see *Routines*).
+
+Verified Wed, Sep 16, 2026 against BotFleet e8fb9a97.
 
 iOS / a phone / a bot that is not on this Mac should use the public hop below, not stdio
 Python.  Do not paste Infisical keys into a BotFleet room.
