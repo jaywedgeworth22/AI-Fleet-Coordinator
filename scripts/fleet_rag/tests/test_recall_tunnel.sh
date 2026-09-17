@@ -164,6 +164,87 @@ PATH="$TMP/bin:$PATH" FAKE_SSH_MARKER="$TMP/marker" FAKE_SSH_OPEN_LOG="$TMP/open
 assert "up (supervise=0) exits 0" test "$rc" = "0"
 assert "no supervisor pid file is created" bash -c "[[ ! -f '${NOSUP_SOCK}.supervisor.pid' ]]"
 
+echo "== supervisor self-check: an orphaned supervisor (pid file no longer its own) exits within one poll interval"
+# Bypasses start_supervisor's lock entirely to simulate exactly the race it normally prevents:
+# two processes sharing one SUP_PID_FILE, the second's write clobbering the first's.  Covers
+# fix (a) -- the loop's own self-termination -- independently of fix (b), the lock.
+rm -f "$TMP/marker" "$TMP/open.log"
+SELFCHECK_HOME="$TMP/selfcheck-home"
+mkdir -p "$SELFCHECK_HOME"
+SELFCHECK_SOCK="$SELFCHECK_HOME/state/tunnel.sock"
+mkdir -p "$(dirname "$SELFCHECK_SOCK")"
+: > "$TMP/marker"   # tunnel already "up" so the loop never tries to reopen it
+
+# Process A: a real `__supervise__` process, told (via a poll interval of 1s, RECALL_TUNNEL_
+# SUPERVISE_INTERVAL) to check ownership often so this test stays fast.  Its own pid is written
+# to SUP_PID_FILE right after backgrounding, exactly like start_supervisor does.
+PATH="$TMP/bin:$PATH" FAKE_SSH_MARKER="$TMP/marker" FLEET_RAG_HOME="$SELFCHECK_HOME" \
+  RECALL_TUNNEL_SUPERVISE_INTERVAL=1 \
+  bash "$TUNNEL" __supervise__ > "$TMP/selfcheck_a.log" 2>&1 &
+PID_A=$!
+SUP_PIDS_TO_REAP+=("$PID_A")
+echo "$PID_A" > "${SELFCHECK_SOCK}.supervisor.pid"
+sleep 0.3   # let A clear its startup grace-wait and enter the main loop
+assert "process A is running once it owns the pid file" kill -0 "$PID_A"
+
+# Simulate a concurrent second start_supervisor clobbering the pid file with a different pid
+# (a plain `sleep`, standing in for "process B" -- only its liveness matters here).
+sleep 5 &
+PID_B=$!
+SUP_PIDS_TO_REAP+=("$PID_B")
+echo "$PID_B" > "${SELFCHECK_SOCK}.supervisor.pid"
+
+sleep 2   # >= 2 poll intervals at RECALL_TUNNEL_SUPERVISE_INTERVAL=1
+assert "orphaned process A has exited on its own" bash -c "! kill -0 '$PID_A' 2>/dev/null"
+SELFCHECK_PID_FILE_CONTENT="$(cat "${SELFCHECK_SOCK}.supervisor.pid" 2>/dev/null || echo)"
+assert "pid file still names B -- A did not delete state it no longer owns" \
+  test "$SELFCHECK_PID_FILE_CONTENT" = "$PID_B"
+kill "$PID_B" 2>/dev/null || true
+
+echo "== supervisor lock: two concurrent \`up\`s -- exactly one supervisor survives a poll interval, \`down\` leaves zero"
+rm -f "$TMP/marker" "$TMP/open.log"
+CONC_HOME="$TMP/conc-home"
+mkdir -p "$CONC_HOME"
+CONC_SOCK="$CONC_HOME/state/tunnel.sock"
+
+run_conc_up() {
+  PATH="$TMP/bin:$PATH" FAKE_SSH_MARKER="$TMP/marker" FAKE_SSH_OPEN_LOG="$TMP/open.log" \
+    FAKE_SSH_FAIL_UNTIL=0 RECALL_TUNNEL_ATTEMPTS=5 RECALL_TUNNEL_RETRY_SLEEP=0 \
+    RECALL_TUNNEL_SUPERVISE_INTERVAL=1 \
+    FLEET_RAG_HOME="$CONC_HOME" \
+    bash "$TUNNEL" up
+}
+run_conc_up > "$TMP/conc_up_1.out" 2> "$TMP/conc_up_1.err" &
+CONC_PID_1=$!
+run_conc_up > "$TMP/conc_up_2.out" 2> "$TMP/conc_up_2.err" &
+CONC_PID_2=$!
+rc1=0; rc2=0
+wait "$CONC_PID_1" || rc1=$?
+wait "$CONC_PID_2" || rc2=$?
+assert "first concurrent up exits 0" test "$rc1" = "0"
+assert "second concurrent up exits 0" test "$rc2" = "0"
+
+assert "pid file exists after both ups return" test -f "${CONC_SOCK}.supervisor.pid"
+CONC_SUP_PID="$(cat "${CONC_SOCK}.supervisor.pid" 2>/dev/null || echo)"
+SUP_PIDS_TO_REAP+=("$CONC_SUP_PID")
+assert "supervisor named in the pid file is alive" \
+  bash -c "[[ -n '$CONC_SUP_PID' ]] && kill -0 '$CONC_SUP_PID' 2>/dev/null"
+
+sleep 2   # >= 2 poll intervals: an orphan the old, unlocked start_supervisor could have left
+          # behind would already have exited by now (belt-and-suspenders check); the lock
+          # should mean there never was one.
+SUP_COUNT="$(pgrep -f "$TUNNEL __supervise__" 2>/dev/null | wc -l | tr -d '[:space:]' || true)"
+assert "exactly one supervisor process exists for this pid file" test "$SUP_COUNT" = "1"
+
+rc=0
+PATH="$TMP/bin:$PATH" FAKE_SSH_MARKER="$TMP/marker" FLEET_RAG_HOME="$CONC_HOME" \
+  bash "$TUNNEL" down > "$TMP/conc_down.out" 2>&1 || rc=$?
+assert "down exits 0" test "$rc" = "0"
+assert "down stops the surviving supervisor" bash -c "! kill -0 '$CONC_SUP_PID' 2>/dev/null"
+assert "down removes the pid file" bash -c "[[ ! -f '${CONC_SOCK}.supervisor.pid' ]]"
+SUP_COUNT_AFTER_DOWN="$(pgrep -f "$TUNNEL __supervise__" 2>/dev/null | wc -l | tr -d '[:space:]' || true)"
+assert "down leaves zero supervisor processes" test "$SUP_COUNT_AFTER_DOWN" = "0"
+
 echo "== env: exports the wider HTTP retry budget for the tunnel path"
 bash "$TUNNEL" env > "$TMP/env.out"
 assert "exports QDRANT_URL" grep -q "^export QDRANT_URL=http://127.0.0.1:16333$" "$TMP/env.out"

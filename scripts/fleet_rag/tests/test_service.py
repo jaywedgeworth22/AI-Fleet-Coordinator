@@ -505,6 +505,27 @@ class RestTests(_ServiceCase):
         self.assertIn({"key": "source", "match": {"value": "meta"}}, flt["must_not"])
         self.assertIn({"key": "app", "match": {"value": "fleet"}}, flt["must"])
 
+    def test_search_per_doc_rerank_prefer_lessons_wired(self):
+        # rerank=False, prefer_lessons=False must reach recall_search unchanged (mode stays
+        # plain "hybrid", never "+rerank"), proving these are not silently dropped server-side.
+        status, _, body = self.request("POST", "/recall/search",
+                                       {"query": "leaking credentials handoff", "limit": 2,
+                                        "per_doc": 2, "rerank": False, "prefer_lessons": False})
+        self.assertEqual(status, 200)
+        self.assertTrue(body["ok"])
+        self.assertEqual(body["mode"], "hybrid")
+
+    def test_search_per_doc_rerank_prefer_lessons_validation(self):
+        status, _, body = self.request("POST", "/recall/search", {"query": "x", "per_doc": "lots"})
+        self.assertEqual(status, 400)
+        self.assertIn("per_doc", body["error"])
+        status, _, body = self.request("POST", "/recall/search", {"query": "x", "rerank": "yes"})
+        self.assertEqual(status, 400)
+        self.assertIn("rerank", body["error"])
+        status, _, body = self.request("POST", "/recall/search", {"query": "x", "prefer_lessons": "no"})
+        self.assertEqual(status, 400)
+        self.assertIn("prefer_lessons", body["error"])
+
     def test_search_errors(self):
         status, _, body = self.request("POST", "/recall/search", {})
         self.assertEqual(status, 400)
