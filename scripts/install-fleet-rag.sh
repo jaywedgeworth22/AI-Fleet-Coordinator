@@ -306,14 +306,26 @@ PY
 toml_cfg() {
   local path="$1" action="$2" extra="$3"
   "$PY" - "$path" "$action" "$extra" "$DRY" "$SERVER_NAME" "$MCP_SERVER" "$TS" "$MARK" <<'PY'
-import json, os, re, shutil, sys
+import json, os, re, shutil, sys, tomllib
 path, action, extra, dry, name, server, ts, mark = sys.argv[1:9]
 dry = dry == "1"
 header = f"[mcp_servers.{name}]"
+
+def parses(s: str) -> bool:
+    try:
+        tomllib.loads(s)
+        return True
+    except tomllib.TOMLDecodeError:
+        return False
+
 if not os.path.exists(path):
     print("absent"); sys.exit(0)
 with open(path, encoding="utf-8") as fh:
     text = fh.read()
+if not parses(text):
+    # 2026-09-16: JSON-style \\" inside a TOML basic string made Codex refuse
+    # the whole file ("missing comma between array elements").  Do not append.
+    print("skipped-invalid-toml"); sys.exit(0)
 lines = text.split("\n")
 has_header = any(l.strip() == header for l in lines)
 if action == "add":
@@ -330,6 +342,8 @@ if action == "add":
     if new and not new.endswith("\n\n"):
         new += "\n"
     new += "\n".join(block) + "\n"
+    if not parses(new):
+        print("skipped-invalid-toml"); sys.exit(0)
 else:
     if not has_header:
         print("absent"); sys.exit(0)

@@ -296,7 +296,7 @@ listed — those die with the branch.
 | `~/Code/Congress.Trade/scout/run-senate-relay.sh` | Git copy. Live Mac origin is `~/apps/senate-relay-runtime/run.sh`. |
 | `~/Code/Congress.Trade/scout/run-senate-tunnel.sh` | Senate tunnel (also pm2). |
 | `~/apps/agent-sync-push/start.sh` | #agent-sync relay (also pm2). |
-| `~/apps/mcp-servers/*-launch.sh` | Per-session MCP launchers.  Die with the parent. |
+| `~/apps/mcp-servers/*-launch.sh` | Per-session MCP launchers.  Die with the parent.  Codex `mcp_servers.github` / `mcp_servers.render` must use `github-mcp-launch.sh` / `render-mcp-launch.sh` — never inline `mcp-remote --header` in `~/.codex/config.toml` (JSON-style `\\"` is a TOML parse error; Codex then cannot load any config).  2026-09-17. |
 | `~/apps/congress-publish.sh` | **Stale** — still SSHes the decommissioned Oracle box.  Do not run.  Use Coolify / `app/scripts/ship.sh`. |
 | `~/apps/socratic-publish.sh` | **Stale** — Oracle.  Do not run. |
 | `~/apps/trading-publish.sh` | **Stale** — Oracle.  Do not run. |

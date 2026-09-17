@@ -233,6 +233,9 @@ DeepSeek Harness, DeepSeek, Kimi, Qwen, Droid, Hermes, OpenCode).  The Claude dr
 `--strict-mcp-config`, so a bot never sees the user's global MCP servers.  The Codex driver
 layers `-c mcp_servers.<name>` overrides onto `~/.codex/config.toml` with no `CODEX_HOME`
 isolation, so a Codex bot sees both the user's global fleet-recall MCP and BotFleet's proxy.
+`mcp_servers.github` / `mcp_servers.render` in that file must call `~/apps/mcp-servers/github-mcp-launch.sh`
+and `render-mcp-launch.sh` (no inline `mcp-remote --header`; JSON-style `\\"` is a TOML parse
+error and Codex refuses the whole file).
 There is no Grok driver that reads a global MCP config -- `server/drivers/grok.ts` is the xAI
 HTTP driver with no MCP client; `server/drivers/acp/grok.ts` is the one BotFleet mounts.  The
 HTTP engines (MiniMax, OpenAI-compatible, Grok HTTP), the pi engine (until BotFleet PR
