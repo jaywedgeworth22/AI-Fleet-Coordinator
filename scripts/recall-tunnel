@@ -8,16 +8,36 @@
 # what `tailscale status` says.  See docs/RAG-FLEET-INFRA.md "Operational notes".
 #
 # Usage:
-#   recall-tunnel up      open the tunnel (idempotent) and health-check each forwarded port
-#   recall-tunnel status  ssh -O check: is the control master still alive
-#   recall-tunnel down    ssh -O exit: close the tunnel
-#   recall-tunnel env     print export lines for QDRANT_URL / TEI_URL / TEI_RERANK_URL --
-#                         nothing else on stdout, so `eval "$(recall-tunnel env)"` is safe
+#   recall-tunnel up      open the tunnel (idempotent), health-check each forwarded port, and
+#                         start the background supervisor (RECALL_TUNNEL_SUPERVISE=0 to skip it)
+#   recall-tunnel status  ssh -O check: is the control master still alive, plus the supervisor
+#   recall-tunnel down    stop the supervisor, then ssh -O exit: close the tunnel
+#   recall-tunnel env     print export lines for QDRANT_URL / TEI_URL / TEI_RERANK_URL /
+#                         RECALL_HTTP_RETRIES / RECALL_HTTP_BACKOFF_MAX -- nothing else on
+#                         stdout, so `eval "$(recall-tunnel env)"` is safe
 #
 # The tunnel forwards:
 #   127.0.0.1:16333 -> 100.69.77.26:6333   (Qdrant)
 #   127.0.0.1:18081 -> 100.69.77.26:8081   (TEI embed)
 #   127.0.0.1:18082 -> 100.69.77.26:8082   (TEI rerank)
+#
+# `up` retries the SSH connect: on this network a transparent TCP proxy makes a dead port
+# "succeed" fast while ping RTT runs 330-680ms, and about half of fresh SSH attempts fail
+# with "Connection timed out during banner exchange" or "Connection closed by <ip> port 22"
+# (the box's sshd journal shows those attempts never arrive, so retrying is not a fail2ban /
+# PerSourcePenalties risk).  RECALL_TUNNEL_ATTEMPTS (default 5) bounds the attempts;
+# RECALL_TUNNEL_RETRY_SLEEP (default 60s) is the gap between them.  Every failed attempt is
+# logged to stderr; `up` exits non-zero only after the last attempt fails, and stays
+# idempotent throughout via master_alive().  ServerAliveInterval=15 / ServerAliveCountMax=8
+# tolerate about 2 minutes of a stalled link before ssh itself gives up on a connection that
+# WAS established (the same proxy can stall an established session, not just new connects).
+#
+# `up` also starts a small background supervisor (RECALL_TUNNEL_SUPERVISE=0 disables it): it
+# polls master_alive every 10s and reruns the same retried SSH open if the master has died, so
+# a long-running caller (the nightly ingest routine) keeps a live tunnel without babysitting it
+# by hand.  `down` stops the supervisor before closing the master; `status` reports whether the
+# supervisor is running.  Its pid lives in "$SOCK.supervisor.pid", its stop signal in
+# "$SOCK.supervisor.stop", and its log in "$SOCK.supervisor.log".
 #
 # No secrets here: SSH auth is the box's own key-based access (the "coolify" ~/.ssh/config
 # alias), and QDRANT_URL / TEI_URL carry no credential -- Qdrant/TEI auth, if any, still comes
@@ -26,9 +46,12 @@ set -euo pipefail
 
 HOST="coolify"
 SOCK="${FLEET_RAG_HOME:-$HOME/apps/fleet-rag}/state/tunnel.sock"
+SUP_PID_FILE="${SOCK}.supervisor.pid"
+SUP_STOP_FILE="${SOCK}.supervisor.stop"
+SUP_LOG="${SOCK}.supervisor.log"
 
 usage() {
-  sed -n '2,20p' "$0"
+  sed -n '2,38p' "$0"
 }
 
 master_alive() {
@@ -44,30 +67,124 @@ check_port() {
   fi
 }
 
-cmd_up() {
-  mkdir -p "$(dirname "$SOCK")"
-  if master_alive; then
-    echo "tunnel already up ($SOCK)"
-  else
-    ssh -f -N -M -S "$SOCK" -o ExitOnForwardFailure=yes -o ServerAliveInterval=30 -o BatchMode=yes \
-      -L 16333:100.69.77.26:6333 -L 18081:100.69.77.26:8081 -L 18082:100.69.77.26:8082 "$HOST"
-    echo "tunnel opened ($SOCK)"
-  fi
+report_up() {
   check_port qdrant     "http://127.0.0.1:16333/healthz"
   check_port tei-embed  "http://127.0.0.1:18081/health"
   check_port tei-rerank "http://127.0.0.1:18082/health"
 }
 
+# The retried SSH open, factored out of cmd_up so the supervisor can reuse it: returns 0/1,
+# never calls `exit` (a supervisor loop iteration that fails must keep looping, not die).
+open_tunnel() {
+  if master_alive; then
+    return 0
+  fi
+  local attempts="${RECALL_TUNNEL_ATTEMPTS:-5}" retry_sleep="${RECALL_TUNNEL_RETRY_SLEEP:-60}" attempt
+  for ((attempt = 1; attempt <= attempts; attempt++)); do
+    if ssh -f -N -M -S "$SOCK" -o ExitOnForwardFailure=yes -o ConnectTimeout=60 \
+         -o ServerAliveInterval=15 -o ServerAliveCountMax=8 -o BatchMode=yes \
+         -L 16333:100.69.77.26:6333 -L 18081:100.69.77.26:8081 -L 18082:100.69.77.26:8082 "$HOST" \
+       || master_alive; then
+      return 0
+    fi
+    echo "recall-tunnel: attempt $attempt/$attempts failed to open the SSH tunnel to $HOST" >&2
+    if (( attempt < attempts )); then
+      echo "recall-tunnel: retrying in ${retry_sleep}s ($((attempts - attempt)) attempt(s) left)" >&2
+      sleep "$retry_sleep"
+    fi
+  done
+  echo "recall-tunnel: giving up after $attempts attempt(s) -- SSH to $HOST did not succeed" >&2
+  return 1
+}
+
+# --------------------------------------------------------------------------- supervisor
+
+supervisor_running() {
+  [[ -f "$SUP_PID_FILE" ]] || return 1
+  local pid; pid="$(cat "$SUP_PID_FILE" 2>/dev/null)"
+  [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null
+}
+
+start_supervisor() {
+  if supervisor_running; then
+    return 0
+  fi
+  rm -f "$SUP_STOP_FILE"
+  nohup bash "$0" __supervise__ >>"$SUP_LOG" 2>&1 &
+  disown
+  echo "$!" > "$SUP_PID_FILE"
+}
+
+stop_supervisor() {
+  [[ -f "$SUP_PID_FILE" ]] || return 0
+  local pid; pid="$(cat "$SUP_PID_FILE" 2>/dev/null)"
+  : > "$SUP_STOP_FILE"           # belt-and-suspenders: a loop between iterations self-cleans too
+  if [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null; then
+    kill "$pid" 2>/dev/null || true   # SIGTERM: don't wait up to 10s for the poll to notice
+    local waited=0
+    while kill -0 "$pid" 2>/dev/null && (( waited < 20 )); do
+      sleep 0.1
+      waited=$((waited + 1))
+    done
+    if kill -0 "$pid" 2>/dev/null; then
+      kill -9 "$pid" 2>/dev/null || true   # bounded 2s grace period, then force it
+    fi
+  fi
+  rm -f "$SUP_PID_FILE" "$SUP_STOP_FILE"
+}
+
+# Internal subcommand (`recall-tunnel __supervise__`), started by start_supervisor via `nohup
+# bash "$0" __supervise__ &` -- never invoked directly.
+cmd_supervise_loop() {
+  trap 'rm -f "$SUP_PID_FILE"; exit 0' TERM INT
+  while true; do
+    if [[ -f "$SUP_STOP_FILE" ]]; then
+      rm -f "$SUP_STOP_FILE" "$SUP_PID_FILE"
+      exit 0
+    fi
+    if ! master_alive; then
+      echo "recall-tunnel: supervisor: tunnel is down, reopening" >&2
+      open_tunnel || echo "recall-tunnel: supervisor: reopen failed, will retry in 10s" >&2
+    fi
+    sleep 10
+  done
+}
+
+# --------------------------------------------------------------------------- commands
+
+cmd_up() {
+  mkdir -p "$(dirname "$SOCK")"
+  local already_up=0
+  master_alive && already_up=1
+  if open_tunnel; then
+    if (( already_up )); then echo "tunnel already up ($SOCK)"; else echo "tunnel opened ($SOCK)"; fi
+    report_up
+  else
+    exit 1
+  fi
+  if [[ "${RECALL_TUNNEL_SUPERVISE:-1}" != "0" ]]; then
+    start_supervisor
+  fi
+}
+
 cmd_status() {
+  local rc=0
   if master_alive; then
     echo "up ($SOCK)"
   else
     echo "down"
-    exit 1
+    rc=1
   fi
+  if supervisor_running; then
+    echo "supervisor: running (pid $(cat "$SUP_PID_FILE" 2>/dev/null))"
+  else
+    echo "supervisor: not running"
+  fi
+  return "$rc"
 }
 
 cmd_down() {
+  stop_supervisor
   if ssh -S "$SOCK" -O exit "$HOST" 2>&1; then
     echo "tunnel closed"
   else
@@ -80,6 +197,8 @@ cmd_env() {
 export QDRANT_URL=http://127.0.0.1:16333
 export TEI_URL=http://127.0.0.1:18081
 export TEI_RERANK_URL=http://127.0.0.1:18082
+export RECALL_HTTP_RETRIES=8
+export RECALL_HTTP_BACKOFF_MAX=60
 EOF
 }
 
@@ -88,6 +207,7 @@ case "${1:-}" in
   status) cmd_status ;;
   down) cmd_down ;;
   env) cmd_env ;;
+  __supervise__) cmd_supervise_loop ;;
   -h|--help) usage ;;
   *) usage; exit 2 ;;
 esac

@@ -61,7 +61,7 @@ final class AppDelegate: NSObject, NSApplicationDelegate, NSWindowDelegate, WKNa
             backing: .buffered,
             defer: false
         )
-        window.title = "DeepSeek Harness"
+        window.title = "Harness"
         window.isReleasedWhenClosed = false
         window.delegate = self
         window.setFrameAutosaveName("DshHarnessMain")
