@@ -106,6 +106,47 @@ janitor_is_retired_kimi_or_scratch() {
   return 1
 }
 
+# Squash-safe GitHub owner/repo from `git remote get-url origin`.
+# ssh, https, and ssh:// forms all collapse to owner/repo.
+janitor_github_repo() {
+  local url
+  url=$(git -C "$1" remote get-url origin 2>/dev/null) || return 1
+  url=${url%.git}
+  url=${url#git@github.com:}
+  url=${url#https://github.com/}
+  url=${url#http://github.com/}
+  url=${url#ssh://git@github.com/}
+  case "$url" in
+    */*) printf '%s\n' "$url"; return 0 ;;
+    *) return 1 ;;
+  esac
+}
+
+# True when GitHub has a MERGED PR whose head is this branch.  Squash-merge
+# rewrites SHAs so merge-base --is-ancestor is the WRONG test (board 059f65b3).
+# Bounded to 15s so a hung `gh` cannot pin the launchd tick.
+janitor_pr_merged() {
+  local wt="$1" br="${2#refs/heads/}" repo n
+  [ -n "$br" ] && [ "$br" != "HEAD" ] || return 1
+  repo=$(janitor_github_repo "$wt") || return 1
+  n=$(python3 -c '
+import subprocess, sys
+repo, br = sys.argv[1], sys.argv[2]
+try:
+    r = subprocess.run(
+        ["gh", "pr", "list", "--repo", repo, "--head", br,
+         "--state", "merged", "--json", "number", "--jq", "length"],
+        capture_output=True, text=True, timeout=15,
+    )
+except (subprocess.TimeoutExpired, FileNotFoundError, OSError):
+    sys.exit(1)
+if r.returncode != 0:
+    sys.exit(1)
+print((r.stdout or "0").strip() or "0")
+' "$repo" "$br" 2>/dev/null) || return 1
+  [ "${n:-0}" -gt 0 ]
+}
+
 if [ "${JANITOR_LIB_ONLY:-0}" = "1" ]; then
   return 0 2>/dev/null || exit 0
 fi
@@ -187,6 +228,7 @@ fi
 #     files beyond node_modules/.next/build receipts/logs (see wt_blocking_dirt)
 #   * no non-generated file modified within STALE_DAYS (genuinely "old" / idle)
 #   * its HEAD is already contained in origin's default branch (merge-base --is-ancestor), OR
+#     GitHub has a MERGED PR for this head (squash-safe; ancestry lies after squash), OR
 #     its upstream is [gone] (branch pushed then deleted on origin — the squash-merge signature)
 if [ "${REAP_WORKTREES:-0}" = "1" ]; then
   stale_min=$(( STALE_DAYS * 1440 ))
@@ -213,6 +255,11 @@ if [ "${REAP_WORKTREES:-0}" = "1" ]; then
     base=$(git -C "$wt" rev-parse --abbrev-ref origin/HEAD 2>/dev/null); base=${base:-origin/main}
     merged=no
     git -C "$wt" merge-base --is-ancestor HEAD "$base" 2>/dev/null && merged=yes
+    # Squash-merge rewrites SHAs: ancestry fails even when the PR is MERGED.
+    # `gh pr list --head` is the authoritative check (board 059f65b3).
+    if [ "$merged" = no ] && janitor_pr_merged "$wt" "$br"; then
+      merged=yes
+    fi
     if [ "$merged" = no ]; then
       href=$(git -C "$wt" symbolic-ref -q HEAD 2>/dev/null)
       [ -n "$href" ] && [ "$(git -C "$wt" for-each-ref --format='%(upstream:track)' "$href" 2>/dev/null)" = "[gone]" ] && merged=yes

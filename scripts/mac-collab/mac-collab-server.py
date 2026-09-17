@@ -222,44 +222,130 @@ def load_agent_logos() -> dict:
 AGENT_LOGOS = load_agent_logos()
 
 
-def load_tokens() -> dict[str, str]:
-    '''Returns a mapping of {token: identity}. 
-    MAC_COLLAB_TOKEN maps to None (legacy admin/root), 
-    MAC_COLLAB_TOKEN_X maps to "X" (e.g. "AG", "CODEX").'''
+def _parse_token_assignments(lines) -> dict:
+    """Parse MAC_COLLAB_TOKEN*= lines into {token: identity}.  Identity is
+    None for the root token and the suffix for MAC_COLLAB_TOKEN_X."""
     tokens = {}
-    # 1. From env vars directly (less common for the full list)
+    for line in lines:
+        s = line.strip()
+        if s.startswith("export "):
+            s = s[7:]
+        if s.startswith("MAC_COLLAB_TOKEN"):
+            parts = s.split("=", 1)
+            if len(parts) == 2:
+                k = parts[0].strip()
+                v = parts[1].strip().strip('"').strip("'")
+                if v:
+                    identity = k[len("MAC_COLLAB_TOKEN_"):] if k != "MAC_COLLAB_TOKEN" else None
+                    tokens[v] = identity
+    return tokens
+
+
+def _env_tokens() -> dict:
+    tokens = {}
     for k, v in os.environ.items():
         if k.startswith("MAC_COLLAB_TOKEN") and v.strip():
             identity = k[len("MAC_COLLAB_TOKEN_"):] if k != "MAC_COLLAB_TOKEN" else None
             tokens[v.strip()] = identity
-            
-    # 2. From secrets file
-    if SECRETS.is_file():
-        for line in SECRETS.read_text().splitlines():
-            s = line.strip()
-            if s.startswith("export "):
-                s = s[7:]
-            if s.startswith("MAC_COLLAB_TOKEN"):
-                parts = s.split("=", 1)
-                if len(parts) == 2:
-                    k = parts[0].strip()
-                    v = parts[1].strip().strip('"').strip("'")
-                    if v:
-                        identity = k[len("MAC_COLLAB_TOKEN_"):] if k != "MAC_COLLAB_TOKEN" else None
-                        tokens[v] = identity
     return tokens
 
-TOKENS = load_tokens()
-TOKEN = next((t for t, ident in TOKENS.items() if ident is None), None) # Fallback for legacy basic auth checks
+
+def _file_tokens() -> dict:
+    if not SECRETS.is_file():
+        return {}
+    try:
+        return _parse_token_assignments(SECRETS.read_text().splitlines())
+    except OSError:
+        return {}
+
+
+# Logged at most once per process so a rotated file is a restart signal,
+# not a line of noise on every request.
+_LOGGED_FILE_WINS = False
+
+AUTH_FAIL_HINT = (
+    "token rejected.  If MAC_COLLAB_TOKEN was rotated, unset the env var "
+    "(file ~/.secrets/mac-collab.env is canonical) and restart long-running "
+    "processes that cached it at start.  mac-collab itself: "
+    "pm2 restart mac-collab --update-env"
+)
+
+
+def load_tokens() -> dict:
+    """Return {token: identity}.
+
+    ~/.secrets/mac-collab.env is canonical when it has any MAC_COLLAB_TOKEN*
+    assignment, so rotating the file takes effect on the next request without
+    a server restart.  Process-env tokens are used only when the file is
+    missing (cloud / test).  Never cache this at import -- that was the
+    029f6346 silent-401 after rotation.
+    """
+    global _LOGGED_FILE_WINS
+    file_tokens = _file_tokens()
+    env_tokens = _env_tokens()
+    if file_tokens:
+        if env_tokens and not _LOGGED_FILE_WINS:
+            _LOGGED_FILE_WINS = True
+            mtime = None
+            try:
+                mtime = int(SECRETS.stat().st_mtime)
+            except OSError:
+                pass
+            print(
+                "mac-collab: ~/.secrets/mac-collab.env is canonical; "
+                "ignoring process-env MAC_COLLAB_TOKEN* "
+                "(unset the env var or restart after rotation).  "
+                "mtime=%s pid=%d"
+                % (mtime, os.getpid()),
+                flush=True,
+            )
+        return file_tokens
+    return env_tokens
+
+
+def token_auth_meta() -> dict:
+    """Staleness signal for /health.  Never includes token values."""
+    mtime = None
+    try:
+        if SECRETS.is_file():
+            mtime = int(SECRETS.stat().st_mtime)
+    except OSError:
+        mtime = None
+    file_tokens = _file_tokens()
+    env_tokens = _env_tokens()
+    if file_tokens:
+        source = "file"
+        count = len(file_tokens)
+    elif env_tokens:
+        source = "env"
+        count = len(env_tokens)
+    else:
+        source = "missing"
+        count = 0
+    return {
+        "token_source": source,
+        "token_count": count,
+        "secrets_mtime": mtime,
+        "secrets_newer_than_process": bool(mtime and mtime > STARTED),
+        "pid": os.getpid(),
+        "restart_hint": "pm2 restart mac-collab --update-env",
+    }
+
 
 # Browser session cookie so THE BOARD does not ask for MAC_COLLAB_TOKEN on
 # every load.  HMAC key is derived from the live tokens (rotating them
 # invalidates cookies).  The cookie value is never the collab token itself.
 SESSION_COOKIE = "mac_collab_session"
 SESSION_MAX_AGE = 30 * 24 * 3600
-SESSION_KEY = hashlib.sha256(
-    b"mac-collab-session-v1\0" + b"\0".join(sorted(t.encode("utf-8") for t in TOKENS))
-).digest() if TOKENS else hashlib.sha256(b"mac-collab-session-v1-empty").digest()
+
+
+def get_session_key() -> bytes:
+    tokens = load_tokens()
+    if tokens:
+        return hashlib.sha256(
+            b"mac-collab-session-v1\0" + b"\0".join(sorted(t.encode("utf-8") for t in tokens))
+        ).digest()
+    return hashlib.sha256(b"mac-collab-session-v1-empty").digest()
 
 
 
@@ -513,18 +599,25 @@ def findings_open_by_app() -> dict:
         conn.close()
 
 
-def authorized(handler: BaseHTTPRequestHandler):
-    '''Returns the identity (str) if authorized, else None.'''
-    if not TOKENS:
+def authorized(handler: BaseHTTPRequestHandler, tokens: dict | None = None):
+    '''Returns the identity (str) if authorized, else None.
+
+    Pass a tokens snapshot to keep one request on a single load_tokens()
+    result.  Cookie HMAC still uses live tokens via get_session_key --
+    rotating the file is supposed to invalidate cookies.
+    '''
+    if tokens is None:
+        tokens = load_tokens()
+    if not tokens:
         return None
     auth = handler.headers.get("Authorization", "")
     if auth.lower().startswith("bearer "):
         token_val = auth[7:].strip()
-        for t, ident in TOKENS.items():
+        for t, ident in tokens.items():
             if token_matches(token_val, t):
                 return ident or "OWNER"
     if auth.lower().startswith("basic "):
-        ident = basic_authorized(handler)
+        ident = basic_authorized(handler, tokens)
         if ident:
             return ident
     ident = cookie_authorized(handler)
@@ -541,7 +634,7 @@ def mint_session_value(ident: str | None, now: float | None = None) -> str:
     ident_s = _session_ident(ident)
     exp = int((now if now is not None else time.time()) + SESSION_MAX_AGE)
     payload = f"{ident_s}:{exp}"
-    sig = hmac.new(SESSION_KEY, payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    sig = hmac.new(get_session_key(), payload.encode("utf-8"), hashlib.sha256).hexdigest()
     return f"{sig}.{ident_s}.{exp}"
 
 
@@ -558,7 +651,7 @@ def parse_session_value(val: str, now: float | None = None) -> str | None:
     if not ident_s or any(c in ident_s for c in " \r\n"):
         return None
     payload = f"{ident_s}:{exp}"
-    expect = hmac.new(SESSION_KEY, payload.encode("utf-8"), hashlib.sha256).hexdigest()
+    expect = hmac.new(get_session_key(), payload.encode("utf-8"), hashlib.sha256).hexdigest()
     if not hmac.compare_digest(sig, expect):
         return None
     return ident_s
@@ -599,11 +692,12 @@ def session_headers(handler: BaseHTTPRequestHandler, ident: str | None) -> dict[
     return {"Set-Cookie": session_cookie_header(handler, ident)}
 
 
-def basic_authorized(handler: BaseHTTPRequestHandler):
+def basic_authorized(handler: BaseHTTPRequestHandler, tokens: dict | None = None):
     """Gate the /board page itself (not just its data fetches). Username is
     ignored; password is checked against any MAC_COLLAB_TOKEN. Native
     browser login dialog via 401 + WWW-Authenticate."""
-    if not TOKENS:
+    tokens = tokens if tokens is not None else load_tokens()
+    if not tokens:
         return None
     auth = handler.headers.get("Authorization", "")
     if not auth.lower().startswith("basic "):
@@ -613,7 +707,7 @@ def basic_authorized(handler: BaseHTTPRequestHandler):
     except Exception:
         return None
     _, _, password = decoded.partition(":")
-    for t, ident in TOKENS.items():
+    for t, ident in tokens.items():
         if token_matches(password, t):
             return ident or "OWNER"
     return None
@@ -762,8 +856,10 @@ class Handler(BaseHTTPRequestHandler):
 
     def _handle_health(self):
         files_ok = sum(1 for p in ALLOW.values() if p.is_file())
+        tokens = load_tokens()
+        token = next((t for t, ident in tokens.items() if ident is None), None)
         body = {
-            "status": "ok" if TOKEN and files_ok else "degraded",
+            "status": "ok" if token and files_ok else "degraded",
             "service": "mac-collab",
             "host": "mac.jays.services",
             "uptime_s": int(time.time() - STARTED),
@@ -771,14 +867,15 @@ class Handler(BaseHTTPRequestHandler):
         # Anonymous callers (uptime monitors etc.) get bare status only.
         # Filenames and finding counts are reconnaissance — don't hand them
         # out for free.
-        if authorized(self):
+        if authorized(self, tokens=tokens):
             body.update({
-                "token_configured": bool(TOKEN),
+                "token_configured": bool(token),
                 "allowlist": sorted(ALLOW),
                 "files_present": files_ok,
                 "findings_open_by_app": findings_open_by_app(),
                 "auth": "Authorization: Bearer <MAC_COLLAB_TOKEN>",
             })
+            body.update(token_auth_meta())
         return self._send(200, body)
 
     def _deny_auth(self):
@@ -786,7 +883,7 @@ class Handler(BaseHTTPRequestHandler):
         if auth_rate_limited(ip):
             return self._send(429, {"error": "too_many_auth_failures"})
         note_auth_fail(ip)
-        return self._send(401, {"error": "unauthorized"})
+        return self._send(401, {"error": "unauthorized", "hint": AUTH_FAIL_HINT})
 
     def _handle_files_list(self):
         if not authorized(self):
@@ -1878,8 +1975,23 @@ def _bind_or_reclaim():
 
 
 def main():
-    if not TOKEN:
+    tokens = load_tokens()
+    token = next((t for t, ident in tokens.items() if ident is None), None)
+    if not token:
         print("mac-collab: MAC_COLLAB_TOKEN missing; /files and /findings will 401", flush=True)
+    meta = token_auth_meta()
+    print(
+        "mac-collab token_source=%s token_count=%s secrets_mtime=%s "
+        "secrets_newer_than_process=%s pid=%s"
+        % (
+            meta["token_source"],
+            meta["token_count"],
+            meta["secrets_mtime"],
+            meta["secrets_newer_than_process"],
+            meta["pid"],
+        ),
+        flush=True,
+    )
     init_db()
     httpd = _bind_or_reclaim()
     print("mac-collab listening on %s:%s" % BIND, flush=True)
