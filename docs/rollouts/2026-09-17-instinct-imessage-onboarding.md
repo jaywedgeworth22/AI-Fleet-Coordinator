@@ -1,6 +1,6 @@
 # 2026-09-17 — Onboarding prompt for INSTINCT, the iMessage interface seat
 
-Branch `claude/instinct-imessage-onboarding-n6u9oh` (Claude Code cloud, seat CLAUDE).
+PR #251.  Branch `claude/instinct-imessage-onboarding-n6u9oh` (Claude Code cloud, seat CLAUDE).
 
 ## Context
 
