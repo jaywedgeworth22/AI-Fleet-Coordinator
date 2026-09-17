@@ -1,5 +1,7 @@
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+- **2026-09-17 — GROK — IN PR #227 — Port Sentry Crons in_progress check-in + ALERT_CONCLUSIONS (`ag/port-sentry-ci-report`, worktree `~/apps/fleet-grok-sentry-ci`, board `5687113a`).**  Merged origin/main so the PR is no longer behind.  WORKFLOW_NAME fix `1602854` kept.  ST #3302 and CT #2482 already merged.  `python3 -m unittest discover fleet_rag/tests/` 409 OK.  py_compile `scripts/sentry-ci-report.py`.  Not running `land.sh`.  <!-- wb-agent-report:5687113a2eac4cc8a8999373d0ccb1ef -->
+
 - **2026-09-15 — GROK — IN PROGRESS — recall-cli skip Tailscale GUI / 120s private Qdrant on stats (`grok/recall-skip-private`, worktree `~/apps/fleet-grok-recall-deadline`).**  CLIError 3 is down (public twin).  `RECALL_SKIP_PRIVATE=1` never starts Tailscale.app.  BotFleet #271 / board `2d627f55`.
 
 - **2026-09-17 — CLAUDE — COMPLETED/MERGED #237 — fleet-recall skill "rank 1 is resemblance" bullet + `FLEET-UI-COPY.md` desktop/terminal sentence-gap correction (`claude/recall-rank1-bullet`, worktree `~/apps/fleet-claude-recall-rank1`).**  Board `12ed2f75` (item 0) and `3469d754` (part 2).
