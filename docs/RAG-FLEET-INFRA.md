@@ -547,11 +547,17 @@ Consequences:
   disables it) so a long-running caller -- the nightly ingest routine runs `recall-tunnel up`
   then `eval "$(recall-tunnel env)"` then `recall ingest --all --prune` without changing that
   prompt -- keeps a live tunnel across the whole run instead of needing to be babysat by hand.
-  It polls `master_alive` every 10s and reruns the same retried SSH open (`open_tunnel`) the
-  moment the master dies; its pid lives in `<socket>.supervisor.pid`, its stop signal in
-  `<socket>.supervisor.stop`, and its log in `<socket>.supervisor.log`.  `recall-tunnel down`
-  stops the supervisor first (SIGTERM, then SIGKILL after a bounded ~2s grace period) before
-  closing the master, and `recall-tunnel status` reports whether the supervisor is running.
+  It polls `master_alive` every `RECALL_TUNNEL_SUPERVISE_INTERVAL` seconds (default 10) and
+  reruns the same retried SSH open (`open_tunnel`) the moment the master dies; its pid lives in
+  `<socket>.supervisor.pid`, its stop signal in `<socket>.supervisor.stop`, and its log in
+  `<socket>.supervisor.log`.  `recall-tunnel down` stops the supervisor first (SIGTERM, then
+  SIGKILL after a bounded ~2s grace period) before closing the master, and `recall-tunnel
+  status` reports whether the supervisor is running.  `start_supervisor()` is serialized by a
+  portable `mkdir`-based lock (macOS has no `flock` binary) with stale-lock cleanup, so two
+  overlapping `up` calls (the nightly routine racing a manual one) never start two supervisors
+  for the same pid file; as a second, independent layer, the supervisor loop itself exits
+  within one poll interval if the pid file ever stops naming its own pid, so an orphan from any
+  other path can never poll forever.  Tests: `fleet_rag/tests/test_recall_tunnel.sh`.
 - **The HTTP layer retries a stall through the tunnel, not just the SSH connect.**  A 408
   (Request Timeout) from Qdrant is now retried exactly like 429/5xx in
   `fleet_rag/core.http_json` -- Qdrant's upsert-by-id and delete-by-id are idempotent, so
@@ -566,10 +572,15 @@ Consequences:
   (default 10s, same as `core.BACKOFF_MAX`); `recall-tunnel env` exports `RECALL_HTTP_RETRIES=8`
   and `RECALL_HTTP_BACKOFF_MAX=60`, which widens one request's worst case from about 15s to
   about 4-5 minutes -- long enough for the supervisor to notice the dead master and reopen the
-  tunnel mid-retry.  Tests: `fleet_rag/tests/test_core_http.py` (408 retried, env overrides
-  read at call time, explicit `retries=` still wins over the env var, malformed env value falls
-  back to the default -- `urllib.request.urlopen` and `time.sleep` both mocked, no network, no
-  real waiting).
+  tunnel mid-retry.  Both env vars are bounds-checked by `core._env_int()`: a negative value
+  (which used to make `RECALL_HTTP_RETRIES` skip the request entirely via `range(0)`, or reach
+  a raw `time.sleep(negative)` `ValueError` for `RECALL_HTTP_BACKOFF_MAX`) falls back to the
+  default just like a non-numeric value, and an unreasonably large one is clamped to
+  `core.MAX_RETRIES` / `core.MAX_BACKOFF_MAX` instead of being honored outright; zero remains a
+  valid `RECALL_HTTP_BACKOFF_MAX`.  Tests: `fleet_rag/tests/test_core_http.py` (408 retried, env
+  overrides read at call time, explicit `retries=` still wins over the env var, malformed/
+  negative/huge env values, zero backoff -- `urllib.request.urlopen` and `time.sleep` both
+  mocked, no network, no real waiting).
 
 ## Files
 

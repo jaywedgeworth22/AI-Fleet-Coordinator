@@ -202,5 +202,122 @@ class RetryEnvOverrideTests(unittest.TestCase):
         self.assertEqual(calls["n"], core.RETRIES + 1)
 
 
+class EnvIntBoundsTests(unittest.TestCase):
+    """Direct tests of _env_int's bounds handling -- no HTTP involved."""
+
+    NAME = "FLEET_RAG_TEST_ENV_INT"
+
+    def setUp(self) -> None:
+        self.env = mock.patch.dict(os.environ, {}, clear=False)
+        self.env.start()
+        os.environ.pop(self.NAME, None)
+
+    def tearDown(self) -> None:
+        self.env.stop()
+
+    def test_negative_value_falls_back_to_default(self) -> None:
+        os.environ[self.NAME] = "-1"
+        self.assertEqual(core._env_int(self.NAME, 4, min_value=0, max_value=20), 4)
+
+    def test_huge_value_is_clamped_to_max(self) -> None:
+        os.environ[self.NAME] = "999999"
+        self.assertEqual(core._env_int(self.NAME, 4, min_value=0, max_value=20), 20)
+
+    def test_zero_is_allowed_when_min_value_is_zero(self) -> None:
+        os.environ[self.NAME] = "0"
+        self.assertEqual(core._env_int(self.NAME, 10, min_value=0, max_value=300), 0)
+
+    def test_value_within_bounds_is_used_unchanged(self) -> None:
+        os.environ[self.NAME] = "6"
+        self.assertEqual(core._env_int(self.NAME, 4, min_value=0, max_value=20), 6)
+
+
+class NegativeAndHugeRetriesAndBackoffEnvTests(unittest.TestCase):
+    """Findings: a negative RECALL_HTTP_RETRIES made range(retries + 1) empty, so http_json
+    returned "request failed: NoneType" without ever sending a request; a negative
+    RECALL_HTTP_BACKOFF_MAX reached time.sleep(negative), a raw ValueError that broke the
+    only-FleetRagError contract.  Both env vars now fall back to their default on a negative
+    value and clamp a huge one to MAX_RETRIES / MAX_BACKOFF_MAX."""
+
+    def setUp(self) -> None:
+        self.env = mock.patch.dict(os.environ, {}, clear=False)
+        self.env.start()
+        os.environ.pop(core.RETRIES_ENV, None)
+        os.environ.pop(core.BACKOFF_MAX_ENV, None)
+        self.sleep = mock.patch.object(core.time, "sleep")
+        self.sleep_mock = self.sleep.start()
+
+    def tearDown(self) -> None:
+        self.sleep.stop()
+        self.env.stop()
+
+    def test_negative_retries_falls_back_to_default_and_still_sends_a_request(self) -> None:
+        os.environ[core.RETRIES_ENV] = "-1"
+        calls = {"n": 0}
+
+        def always_503(req, timeout=None):
+            calls["n"] += 1
+            raise http_error(503)
+
+        with mock.patch.object(core.urllib.request, "urlopen", always_503):
+            with self.assertRaises(FleetRagError):
+                core.http_json("https://x.test/path")
+        # Falls back to the default (RETRIES + 1 attempts), not range(0) (0 attempts, never
+        # sent) which is what -1 produced before the fix.
+        self.assertEqual(calls["n"], core.RETRIES + 1)
+
+    def test_huge_retries_is_clamped_to_max_retries(self) -> None:
+        os.environ[core.RETRIES_ENV] = "999999"
+        calls = {"n": 0}
+
+        def always_503(req, timeout=None):
+            calls["n"] += 1
+            raise http_error(503)
+
+        with mock.patch.object(core.urllib.request, "urlopen", always_503):
+            with self.assertRaises(FleetRagError):
+                core.http_json("https://x.test/path")
+        self.assertEqual(calls["n"], core.MAX_RETRIES + 1)
+
+    def test_negative_backoff_max_falls_back_to_default_instead_of_raising_valueerror(self) -> None:
+        os.environ[core.BACKOFF_MAX_ENV] = "-5"
+
+        def always_503(req, timeout=None):
+            raise http_error(503)
+
+        # Before the fix, time.sleep(min(2**attempt, -5)) == time.sleep(-5) raised a raw
+        # ValueError here instead of the only-FleetRagError contract.
+        with mock.patch.object(core.urllib.request, "urlopen", always_503):
+            with self.assertRaises(FleetRagError):
+                core.http_json("https://x.test/path", retries=2)
+        self.sleep_mock.assert_has_calls([mock.call(1), mock.call(2)])
+
+    def test_zero_backoff_max_is_allowed(self) -> None:
+        os.environ[core.BACKOFF_MAX_ENV] = "0"
+
+        def always_503(req, timeout=None):
+            raise http_error(503)
+
+        with mock.patch.object(core.urllib.request, "urlopen", always_503):
+            with self.assertRaises(FleetRagError):
+                core.http_json("https://x.test/path", retries=2)
+        self.sleep_mock.assert_has_calls([mock.call(0), mock.call(0)])
+
+    def test_huge_backoff_max_is_clamped_to_max_backoff_max(self) -> None:
+        os.environ[core.BACKOFF_MAX_ENV] = "999999"
+
+        def always_503(req, timeout=None):
+            raise http_error(503)
+
+        with mock.patch.object(core.urllib.request, "urlopen", always_503):
+            with self.assertRaises(FleetRagError):
+                core.http_json("https://x.test/path", retries=10)
+        # attempt 9 -> 2**9 == 512, which would exceed MAX_BACKOFF_MAX if it were honored
+        # unclamped; every sleep call must be capped at MAX_BACKOFF_MAX.
+        calls = self.sleep_mock.call_args_list
+        self.assertEqual(calls[-1], mock.call(core.MAX_BACKOFF_MAX))
+        self.assertTrue(all(c.args[0] <= core.MAX_BACKOFF_MAX for c in calls))
+
+
 if __name__ == "__main__":
     unittest.main()
