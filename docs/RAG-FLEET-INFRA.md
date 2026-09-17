@@ -347,7 +347,7 @@ and `FLEET_RAG_HANDOFF_FILE` override the defaults this repo ships for its owner
 | Fleet RAG nightly ingest | daily 02:30 local | `recall ingest --all --prune`, reads `~/apps/fleet-rag/state/last-run.json`, retries once, files a P1 on the board on repeated failure |
 | Fleet RAG weekly health + recall eval | Sundays 06:30 local | `recall doctor --platforms --box` / `stats` / `eval` / `digest --days 7`, checks `recall.jays.services/health` and yesterday's snapshot, writes the owner note "[FLEET, Oracle] Weekly recall digest", files a P1 on regressions |
 
-Both routines start with a preflight (added Tue, Sep 8, 2026): `recall doctor --platforms`, and when the `ingest:sentinel` row says the direct path is skipped because Tailscale is logged out, `recall-tunnel up` plus the three tunnel URLs on every recall command, then `recall-tunnel down`.  Without it the nightly failed every night from Sep 3 to Sep 8 while the corpus itself stayed green.
+Both routines start with a preflight (added Tue, Sep 8, 2026): `recall doctor --platforms`, and when the `ingest:sentinel` (or `tei:rerank`) row says the direct path is skipped because Tailscale is logged out, `recall-tunnel up` plus the three tunnel URLs on every recall command, then `recall-tunnel down`.  Without it the nightly failed every night from Sep 3 to Sep 8 while the corpus itself stayed green.
 
 Routines live in `~/.botfleet/routines.json` and are managed through BotFleet's loopback API
 (`POST http://127.0.0.1:8799/api/routines`).  Create payload: `name`, `prompt`, `botId`
@@ -404,7 +404,12 @@ Fixes, both additive and opt-in where a live backend is involved:
   `SENTRY_ENVIRONMENT` overrides the default `production` tag.
 - **`tei:rerank` row in `recall doctor --platforms`** (`doctor.default_rerank_check`): OK when
   `/health` on `TEI_RERANK_URL` answers, FAIL when configured but unreachable, WARN when
-  `TEI_RERANK_URL`/`TEI_RERANK_API_KEY` are unset.
+  `TEI_RERANK_URL`/`TEI_RERANK_API_KEY` are unset.  Like `ingest:sentinel`, when the caller has
+  already established the direct path is blocked (Tailscale believed down, no operator
+  override -- `doctor.platforms_report`'s `direct_path_blocked`), this row is WARN "direct path
+  skipped" instead of probing `TEI_RERANK_URL` directly: that address is Tailscale-mesh-only
+  too, so probing it here would falsely FAIL a reranker that's actually healthy behind
+  `recall.jays.services` (added 2026-09-17).
 - **`rerank_healthy` in `recall stats`** (`core.rerank_healthy`, mirrors `embedder_healthy`):
   `true`/`false` when configured, `null` when not -- so an ad hoc `recall stats` shows reranker
   health the same way it already shows embedder health.

@@ -166,6 +166,35 @@ class PlatformsReportTests(unittest.TestCase):
         self.assertEqual(row["status"], "WARN")
         self.assertEqual(row["detail"], "check unavailable (FleetRagError)")
 
+    def test_rerank_row_warns_instead_of_failing_when_direct_path_blocked(self):
+        # direct_path_blocked=True (set by recall's cmd_doctor when Tailscale is believed down
+        # with no operator override) must skip the TEI rerank probe entirely -- TEI_RERANK_URL
+        # is a Tailscale-mesh address too, so probing it directly would falsely FAIL a healthy
+        # box instead of reporting the known-skipped direct path.
+        home = healthy_home(self.root)
+
+        def boom():
+            raise AssertionError("must not touch TEI rerank when the direct path is blocked")
+
+        rep = doctor.platforms_report(home, http_get=fake_http(), qdrant_factory=lambda: SentinelQdrant(),
+                                      rerank_check=boom, direct_path_blocked=True, now=NOW)
+        row = by_check(rep)["tei:rerank"]
+        self.assertEqual(row["status"], "WARN")
+        self.assertEqual(row["detail"], doctor.RERANK_BLOCKED_DETAIL)
+        self.assertTrue(rep["ok"])                                # a WARN row alone is not a FAIL
+        self.assertEqual(rep["counts"]["FAIL"], 0)
+
+    def test_rerank_row_probes_normally_when_direct_path_not_blocked(self):
+        # direct_path_blocked=False (the default) must still probe and can still FAIL -- a
+        # genuinely unreachable rerank endpoint stays a real FAIL when nothing says the direct
+        # path itself is known-blocked.
+        home = healthy_home(self.root)
+        rep = doctor.platforms_report(home, http_get=fake_http(), qdrant_factory=lambda: SentinelQdrant(),
+                                      rerank_check=lambda: False, direct_path_blocked=False, now=NOW)
+        row = by_check(rep)["tei:rerank"]
+        self.assertEqual(row["status"], "FAIL")
+        self.assertEqual(row["detail"], "unreachable")
+
     def test_default_rerank_check_without_credentials_is_not_configured(self):
         # No env, no handoff file reachable from this test HOME: get_config() raises, which the
         # default check treats the same as "not configured" rather than failing doctor entirely.
