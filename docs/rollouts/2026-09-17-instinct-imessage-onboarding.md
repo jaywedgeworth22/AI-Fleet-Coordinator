@@ -16,6 +16,7 @@ one-off join.
   needs before its first session), the prompt itself, the Agent Seat row text, a "how to tell it
   took" list, and the existing iMessage jobs the prompt builds on.
 - `STATUS.md` and `docs/EFFORT-LOG.md` rows for this unit.
+- Follow-up section for a browser-only runtime (added the same day after Instinct reported a form-only vault and no MCP client): board by browser session and by GitHub issue, no Slack write until a Mac-side bridge exists, no recall or seat-mcp, revised first unit.  Facts checked in `scripts/mac-collab/mac-collab-server.py`, `scripts/mac-collab/sync_board.py`, and `scripts/agent-sync-push/daemon.js`.
 
 ## Decisions
 

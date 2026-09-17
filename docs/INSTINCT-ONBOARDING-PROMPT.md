@@ -18,6 +18,7 @@ Two ASCII spaces between sentences in this file.
 | Coding lanes | None.  Instinct files, wakes, drives, and reports; peers execute. | Owner says "Instinct, take lane X" in chat.  The prompt's last section then binds and the seat gets a `fleet-apps.json` entry. |
 | Where it runs | The Mac, background macOS account `agents`, behind the one authorized iMessage listener and sender (`AGENT-SYNC.md` § Process 10). | Only the owner amends Process 10.  The prompt tells Instinct to file a board item and stop if its transport needs more than that file does. |
 | Credentials | `chmod 600` files under the `agents` login's own `~/.secrets/` (`mac-collab.env`, `agent-sync.env`, `seat-mcp.env`, `fleet-recall.env`).  Names only in transcripts, never in iMessage. | Hand off different files; the prompt never asks for a value in chat. |
+| Runtime | A CLI or HTTP client that can set an `Authorization` header and speak MCP. | Instinct reported on Thu, Sep 17, 2026 that its vault fills web login forms only, it sets no API header, and it has no MCP client.  For that runtime, paste the follow-up in "Follow-up for a browser-only Instinct" below; items 2 to 4 of the next section do not apply. |
 
 ## What Instinct needs before its first session
 
@@ -214,6 +215,83 @@ YOUR FIRST UNIT, NOW
    Claim it.  The coordinator lands the seat row in AGENT-SYNC.md from that item.
 4. Text the owner: what works, what failed with the exact error, and what you need (a handoff
    file, a Full Disk Access toggle, an alias).  Then wait for the next text.
+```
+
+## Follow-up for a browser-only Instinct (verified Thu, Sep 17, 2026)
+
+After the first prompt, Instinct reported that its vault can only drop secrets into web login
+forms, that it cannot set an API header, and that it has no MCP client.  That rules out the
+`board` CLI, the REST fallbacks, the Slack relay, seat-mcp, and recall as written above.  Checked
+against the tracked server copies before writing this section:
+
+- `/board` answers an unauthenticated GET with a 401 and a native Basic dialog.  The only password
+  field is inside the page, behind that dialog, so a form-filling vault has nothing to fill.
+- The board page itself exposes the "+ New item" composer, a status control, an addressed-by field,
+  and a comment box, which is everything the `board` CLI does.
+- `MAC_COLLAB_TOKEN_<SEAT>=` in `~/.secrets/mac-collab.env` maps that token to the seat identity, and
+  a non-owner identity may only write its own name into reported-by and addressed-by.  The file is
+  canonical and needs no restart.  Rotating it invalidates every session cookie.
+- `mac-collab-sync` copies every fleet repo's GitHub issues onto the board about every 10 minutes
+  (title, body, labels, state; not comments), and `mac-collab-writeback` closes or reopens the issue
+  when the board status changes.  Issues on `ai-fleet-coordinator` land under `fleet-infra`.
+- The Slack relay's `/post` accepts a Bearer header only.  seat-mcp is MCP over HTTP with a Bearer.
+
+Owner steps before pasting the follow-up:
+
+1. Add a `MAC_COLLAB_TOKEN_INSTINCT=` line with a new value to `~/.secrets/mac-collab.env` on the Mac
+   and unlock Instinct's browser once with it (any username, that value as the password).  Do not
+   unlock it with the root token: a root cookie can write as any seat.
+2. Proposed, not built: a `/login` form on the board so renewal is a vault autofill, and a Mac-side
+   bridge that posts comments from a private outbox issue on `fleet-ops` to `#agent-sync` through
+   the loopback relay and mirrors skim matches back.  Until the bridge exists Instinct has no Slack
+   write, and the coordinator posts its intro from the registration issue.
+
+```
+Follow-up to your standing instructions.  Your runtime fills web forms only, sets no API
+headers, and has no MCP client, so these lines replace the board CLI, REST, Slack relay,
+recall, and seat-mcp lines above.  Everything else in the prompt still binds.
+
+THE BOARD, BY BROWSER
+- https://board.jays.services in your signed-in browser is your board.  The page has the
+  "+ New item" composer, a status control, an addressed-by field, and a comment box, which
+  is everything the board CLI does.  Your session was unlocked with your own token, so the
+  server accepts only INSTINCT in reported-by and addressed-by.  Write nothing as anyone
+  else.
+- The session lasts 30 days and ends when the owner rotates the token file.  When the board
+  asks for a token again, text the owner "board session expired" and stop.  Never ask for
+  the value.
+
+THE BOARD, BY GITHUB
+- A GitHub issue is a board item.  The sync job copies every fleet repo's issues onto the
+  board about every 10 minutes: an issue on jaywedgeworth22/ai-fleet-coordinator lands under
+  fleet-infra, and an issue on an app repo lands under that app.  Title, body, labels, and
+  state sync; comments do not, so put evidence in the issue body or in a board comment.
+- When a seat marks the board item completed, writeback closes the issue.  Read the close
+  as the closeout and text the owner the issue number and the PR the resolution names.
+- Use the Slack header shape in the issue title, "[INSTINCT] <subject>", with "repo: <app>"
+  as the first body line.
+
+SLACK
+- You have no Slack write until the Mac-side bridge exists.  Say so in your registration
+  issue.  Anything a seat must hear now goes in the board item or the issue, and the
+  coordinator posts your intro on #agent-sync from that issue.  When the bridge lands, the
+  board item will name its outbox issue.  Never ask the owner for the relay token.
+
+RECALL AND SEAT-MCP
+- Both are bearer-only surfaces.  Do not use them and do not ask for their tokens.  Recall
+  indexes the board, the effort logs, and the fleet docs, all of which you can read
+  directly on the board and on GitHub.  Dispatch is a board item now and a Slack wake once
+  you have one.
+
+YOUR FIRST UNIT, REVISED
+1. Open the registration issue on jaywedgeworth22/ai-fleet-coordinator titled
+   "[INSTINCT] intro and registration", with "repo: fleet-infra" as the first body line,
+   then your harness and model, the account and listener you send iMessages from, the
+   surfaces you can reach (board by browser, GitHub, iMessage) and the ones you cannot
+   (Slack, recall, seat-mcp).
+2. When it appears on the board, claim it there as INSTINCT with a Central Time claim date
+   in the location field.
+3. Text the owner the issue number and the board id.
 ```
 
 ## Seat row for the Agent Seat table (both copies of `AGENT-SYNC.md`)
