@@ -585,6 +585,8 @@ Copy detail: `/Users/jay/apps/FLEET-UI-COPY.md`.
 
 iOS agent build loop (owner ruling 2026-08-13): no Xcode MCP narration, `xcodebuild` / `xcrun simctl` via bash are pre-approved, screenshot the simulator before claiming a user-visible change, never hand-edit `.pbxproj` / entitlements / xibs.  **Full text (binding, unchanged):** `docs/protocols/ios-agent-build-loop.md` in ai-fleet-coordinator — or `recall "iOS agent build loop"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
 
+**Cloud agent needs `xcodebuild`, the Simulator, or Apple Notes on the Mac?**  Cloud seats cannot run these directly.  Run `scripts/request-mac-seat.sh --repo <repo> --title "..." --prompt "..." --by <SEAT>` from `ai-fleet-coordinator`; it files a GitHub issue titled `[needs-mac] <title>` labeled **`needs-mac`** and posts to `#agent-sync`.  A Mac seat's `mac-seat-claim.sh` launchd poller (`com.jay.mac-seat-watch`) picks up the issue and does the work locally, and the issue stays open until that Mac seat posts results.
+
 ## Timestamps: Central Time (owner ruling 2026-08-09, broadened 2026-08-11, amended 2026-08-12, strengthened 2026-08-22)
 
 **When you tell the owner a time, say it in Central Time.**  Binding for every agent, every
