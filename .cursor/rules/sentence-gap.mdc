@@ -56,9 +56,19 @@ first run in a new tool, test it and ask the human what they actually see.**
 > If neither shows a gap → say so plainly and ask how they want it handled.
 > Then keep using whichever won, for that surface, for the rest of the session.
 
-### Already tested — do NOT burn time re-trying these
+### History — 2026-08-19/20 findings on Claude Code (terminal + desktop), do NOT re-run these tests
 
-Verified on Claude Code (terminal + desktop), 2026-08-19/20:
+**2026-09-04 update — desktop app superseded.**  The entity finding below for the Claude
+Code desktop app (Code tab) was superseded by an owner-verified ruling on 2026-09-04: use
+**two literal ASCII spaces** there now.  The 2026-08-19 entity advice for that surface is
+withdrawn.  (This does not change the Cursor-chat default above — that is a different
+surface.)
+
+**Claude Code terminal CLI — no newer ruling.**  Last checked 2026-08-19/20; not
+re-verified since.  Default to two literal ASCII spaces there, and confirm with the owner
+before relying on the `&nbsp;` entity on the terminal CLI.
+
+What was found 2026-08-19/20:
 
 - ❌ **Two literal ASCII spaces in chat** — collapsed by the Markdown renderer.  Invisible.
 - ❌ **A raw U+00A0 character typed directly into chat** — normalized away in the
@@ -70,8 +80,9 @@ Verified on Claude Code (terminal + desktop), 2026-08-19/20:
   screen-reader modes only drop borders.
 - ❌ **Patching the client** — compiled and signed; breaks code signing and is wiped by
   auto-update.  Never attempt.
-- ✅ **The literal entity text `&nbsp;` + a space in chat** — renders as a visibly wider
-  gap.  This is the one that worked.
+- The literal entity text `&nbsp;` + a space rendered as a visibly wider gap at the time —
+  now superseded on the Claude Code desktop app (2026-09-04, see above); not re-verified on
+  the Claude Code terminal CLI since, so confirm with the owner before relying on it there.
 - ✅ **Two literal ASCII spaces in files** — correct and simplest; leave file content alone.
 
 ### The transferable lesson
