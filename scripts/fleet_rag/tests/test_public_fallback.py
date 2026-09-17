@@ -654,7 +654,9 @@ class CallWithFallbackTests(unittest.TestCase):
         self.assertIn("CF_ACCESS_CLIENT_SECRET", msg)
         local.assert_not_called()
 
-    def test_extra_local_only_kwargs_are_dropped_on_fallback(self):
+    def test_recall_search_kwargs_pass_through_on_fallback(self):
+        """per_doc / rerank / prefer_lessons now have a public route and must reach it; a
+        None-valued optional (since_days) and any genuinely unknown key are still dropped."""
         local = mock.Mock(side_effect=FleetRagError("ConnectionRefusedError reaching 100.69.77.26:8081"))
         captured = {}
 
@@ -663,10 +665,11 @@ class CallWithFallbackTests(unittest.TestCase):
             return {"hits": [], "mode": "dense"}
 
         kwargs = {"query": "handoff file", "limit": 3, "per_doc": 2, "rerank": False,
-                  "prefer_lessons": True, "since_days": None}
+                  "prefer_lessons": True, "since_days": None, "bogus_local_only": "x"}
         with mock.patch.object(public_fallback, "call_public", fake_call_public):
             public_fallback.call_with_fallback("recall_search", kwargs, local, status_probe=lambda: None)
-        self.assertEqual(captured["kwargs"], {"query": "handoff file", "limit": 3})
+        self.assertEqual(captured["kwargs"], {"query": "handoff file", "limit": 3, "per_doc": 2,
+                                              "rerank": False, "prefer_lessons": True})
 
     def test_local_override_skips_the_tailscale_probe_and_tries_local_first(self):
         os.environ["QDRANT_URL"] = "http://127.0.0.1:16333"

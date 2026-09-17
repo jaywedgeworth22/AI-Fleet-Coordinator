@@ -110,6 +110,44 @@ docs) and `recall eval --k 5 [--compare]` report Recall@1 / Recall@5 / MRR per s
 Measured 2026-09-02 on 36.9k points: fused only 0.71 / 0.84 / 0.77; with lessons + rerank
 **0.76 / 0.92 / 0.83**.
 
+### Chunk-level rerank bake-off (2026-09-17) — no ranking change shipped
+
+Diagnosis of the 5 golden queries every reranker configuration still missed: 4 of them fail
+because the right document ranks well (fused/doc order #1, #1, #4, #7) but `per_doc=1` keeps a
+different, wrong chunk of that document — the chunk is chosen by fused score *before* the
+cross-encoder ever sees it, so the right text never gets a chance to win the rerank.  Measured
+in-process inside the `recall-api` container against the real production Qdrant/TEI backend
+(unmodified `RERANK_TIMEOUT=8s` budget, no fake backend), one variant at a time, golden.jsonl
+(75 rows):
+
+| Variant | R@1 | R@5 | MRR | search p50/p95 | rerank p50/p95 | avg pairs | fallbacks | avg hit chars |
+|---|---|---|---|---|---|---|---|---|
+| **A** — prod (`per_doc=1`) | 0.707 | 0.920 | 0.796 | 1275/1453 ms | 1135/1308 ms | 20.0 | 0 | 4615 |
+| B — `per_doc=2` | 0.693 | 0.933 | 0.782 | 1826/2250 ms | 1700/2094 ms | 30.5 | 0 | 4585 |
+| D1 — chunk-rerank N=20, G=2 | 0.707 | 0.933 | 0.792 | 1836/2197 ms | 1721/2044 ms | 30.5 | 0 | 4615 |
+| D2 — chunk-rerank N=15, G=3 | 0.707 | 0.933 | 0.786 | 1613/2085 ms | 1476/1928 ms | 26.0 | 0 | 4460 |
+| D3 — chunk-rerank N=20, G=3 | 0.707 | 0.933 | 0.791 | 2109/2697 ms | 1958/2534 ms | 35.5 | 0 | 4594 |
+
+D-variants: for each of the top-N fused doc groups, rerank up to G of that doc's already-
+fetched `GROUP_DEPTH` best-fused chunks in one cross-encoder call, score each doc by its best
+reranked chunk, and return the best chunk of the top-`limit` docs by that score.  N=20 is
+production's own `candidate_count(5)`.
+
+**Decision (pre-registered rule, applied as measured):** the best-MRR D variant with 0
+fallbacks and search p95 ≤ 3.0 s is D1 (MRR 0.792) — but that is *below* A's own MRR (0.796)
+and only +0.013 R@5, short of the ≥0.03 bar on either metric, so no D variant ships.  B also
+falls short on R@5 (+0.013 < 0.03).  All three D variants and B recovered exactly **one** of
+the four diagnosed "right doc, wrong chunk" queries (the Coolify-deploy-token one); the other
+three (fleet vector database port, model tier for mechanical edits, Completed vs. Deployed)
+stayed misses in every variant — the correct chunk for those three is not among that
+document's own top-2/top-3 fused-scored chunks even before rerank sees it, so a bigger G would
+be needed, trading more rerank latency (and pairs sent) for an unproven win.  **Net: no
+ranking-pipeline change shipped this round.**  The one change that did ship is that
+`recall.jays.services` (the public fallback / cloud path) now honors `per_doc`, `rerank`, and
+`prefer_lessons` the same as the direct path — those three were previously silently dropped
+whenever a caller fell back to the public route (`scripts/fleet_rag/public_fallback.py`
+`PUBLIC_ALLOWED_ARGS`, `scripts/fleet-recall-service/server.py` `recall_search` tool schema).
+
 ## Using it
 
 **Write path (owner 2026-09-02).**  `recall_contribute` is the highest-yield source — the seat
