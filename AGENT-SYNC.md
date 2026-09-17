@@ -1407,6 +1407,15 @@ Cloudflare 302 to that same `/board` URL (query string preserved).  The page its
 is gated, not just its data.  It has a "+ New item" composer, so the owner can file
 straight into the same queue agents use.
 
+A browser whose password manager cannot fill the native Basic dialog (a browser-only seat
+such as Instinct) signs in at `https://mac.jays.services/login` instead: same token, same
+identity mapping, same 30-day HttpOnly cookie.  Give such a seat its own
+`MAC_COLLAB_TOKEN_<SEAT>=` line in `~/.secrets/mac-collab.env` so the board attributes its
+writes to that seat and refuses any other name in reported-by or addressed-by.  A seat that
+can drive GitHub but cannot set an `Authorization` header reaches `#agent-sync` through
+`com.jay.github-outbox-bridge` (comments on a private outbox issue, posted as that seat;
+skim matches mirrored back): `docs/MAC-LOCAL-PROCESSES.md`.
+
 ### What every seat owes the board
 
 1. **Before starting substantial work:** `board list` the app you're touching.  If the

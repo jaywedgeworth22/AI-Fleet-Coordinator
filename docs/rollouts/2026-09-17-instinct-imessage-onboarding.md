@@ -44,3 +44,66 @@ one-off join.
   returns `invalid_auth`.  A Mac seat files the board item when the owner confirms the tag.
 - Seat row not landed in `AGENT-SYNC.md` (either copy) until the owner confirms the tag; the row
   text is in the doc.
+
+## Board `/login` form and GitHub outbox bridge (same day, owner: "Ok let's do that")
+
+Instinct cannot set an `Authorization` header and has no MCP client, so the board, the Slack relay,
+and seat-mcp were all out of reach.  Instead of making a frontier seat its hands by chat, two
+deterministic pieces:
+
+- `scripts/mac-collab/mac-collab-server.py`: `GET /login` serves an HTML form (username field for
+  password-manager autofill, `token` password field); `POST /login` runs the same `token_matches`
+  check as Basic and Bearer, mints the same 30-day HttpOnly `mac_collab_session` cookie with the same
+  identity mapping (`MAC_COLLAB_TOKEN_<SEAT>=` gives the seat identity), and 303s to `/board`.
+  Failures share the Bearer rate limit (`AUTH_FAIL_MAX` per `AUTH_FAIL_WINDOW_S`, 429 after), are
+  never echoed, and audit as `action=login name= ok=0` with no value.  The `/board` 401 body now
+  links `/login` for a browser that cancels the native dialog, and the in-page token bar mentions it.
+  Basic, Bearer, and the existing cookie path are unchanged.  Tests:
+  `scripts/mac-collab/test_login_form.py` (8).
+- `scripts/github-outbox-bridge.py` + `scripts/launchd/com.jay.github-outbox-bridge.plist`: every
+  120 s, post new comments on a private outbox issue to `#agent-sync` through the loopback relay
+  as `username=<SEAT>` after a header-shape check (rocket = posted; confused + reply = rejected),
+  and mirror skim matches back as `<!-- outbox-bridge:slack -->` comments marked as data.  Tokens
+  from `~/.secrets/agent-sync.env` only.  Relay failures keep the comment queued and note the outage
+  on the issue once after three ticks.  Single-flight `flock`.  Stdlib only; compiles and tests on
+  Python 3.10 (the Mac runs 3.9; no 3.10+ syntax used).  Tests: `scripts/test_github_outbox_bridge.py`
+  (14).
+
+### Install (Mac seat; cloud sessions do not install LaunchAgents)
+
+```bash
+# board: tracked copy -> live copy, then restart
+cp ~/Code/ai-fleet-coordinator/scripts/mac-collab/mac-collab-server.py ~/apps/mac-collab/mac-collab-server.py
+python3 ~/Code/ai-fleet-coordinator/scripts/mac-collab/test_login_form.py
+pm2 restart mac-collab
+curl -sS -o /dev/null -w '%{http_code}\n' https://mac.jays.services/login   # expect 200
+
+# seat token for Instinct (value never printed); file is canonical, no restart
+# append: MAC_COLLAB_TOKEN_INSTINCT="<new value>"   to ~/.secrets/mac-collab.env
+
+# bridge: outbox issue first, then config, dry-run, then the LaunchAgent
+# open jaywedgeworth22/fleet-ops issue "[INSTINCT] Slack outbox"; note its number N
+cp ~/Code/ai-fleet-coordinator/scripts/github-outbox-bridge.py ~/apps/github-outbox-bridge.py
+printf '{"seats":[{"seat":"INSTINCT","repo":"jaywedgeworth22/fleet-ops","issue":N}]}\n' > ~/apps/github-outbox-bridge.json
+python3 ~/apps/github-outbox-bridge.py --once --dry-run
+cp ~/Code/ai-fleet-coordinator/scripts/launchd/com.jay.github-outbox-bridge.plist ~/Library/LaunchAgents/
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.jay.github-outbox-bridge.plist
+launchctl print gui/$(id -u)/com.jay.github-outbox-bridge | head -5
+```
+
+Then, in the same unit: the live `~/apps/MAC-LOCAL-PROCESSES.md` row (flip the tracked row from
+"Not yet installed" to its live status), `~/apps/apple-notes-coding.sh --update "⭐️ Background Jobs
+Master List"`, the live `~/apps/AGENT-SYNC.md` § THE BOARD paragraph, and the outbox issue number
+on Instinct's registration item.  Rotate the outbox issue when it grows long: close it, open a new
+one, update the JSON.
+
+### Verification (this sandbox)
+
+```bash
+python3 scripts/mac-collab/test_login_form.py          # 8 OK
+python3 scripts/mac-collab/test_token_staleness.py      # 10 OK
+python3 scripts/mac-collab/test_bind_reclaim.py         # 11 OK
+python3 scripts/mac-collab/test_write_back.py           # 4 OK
+python3 scripts/test_github_outbox_bridge.py            # 14 OK (also under /usr/bin/python3.10)
+python3 -m py_compile scripts/mac-collab/mac-collab-server.py scripts/github-outbox-bridge.py
+```

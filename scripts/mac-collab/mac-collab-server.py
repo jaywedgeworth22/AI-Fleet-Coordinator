@@ -23,6 +23,7 @@ import collections
 import errno
 import hashlib
 import hmac
+import html
 import json
 import os
 import re
@@ -129,6 +130,7 @@ AUDIT_LOG = Path(__file__).resolve().parent / "audit.log"
 AUTH_FAIL_WINDOW_S = 60.0
 AUTH_FAIL_MAX = 20
 _AUTH_FAILS: dict[str, list[float]] = collections.defaultdict(list)
+LOGIN_MAX_BODY = 16 * 1024
 
 SEVERITIES = ("P0", "P1", "P2", "P3", "P4")
 STATUSES = ("open", "in_progress", "completed", "deployed", "addressed", "wontfix", "duplicate")
@@ -747,9 +749,53 @@ class Handler(BaseHTTPRequestHandler):
     def _require_basic_auth(self):
         return self._send(
             401,
-            "Authorization required.",
-            "text/plain; charset=utf-8",
+            BOARD_401_HTML,
+            "text/html; charset=utf-8",
             extra_headers={"WWW-Authenticate": 'Basic realm="Fleet Findings Board"'},
+        )
+
+    # ---- /login: an HTML form for browsers whose password manager cannot fill
+    # the native Basic dialog (browser-only seats such as Instinct).  Same
+    # tokens, same identity mapping, same 30-day HttpOnly session cookie as the
+    # Basic path.  The submitted value is never echoed, logged, or audited.
+
+    def _handle_login_page(self, status: int = 200, error: str = ""):
+        slot = '<p class="err">%s</p>' % html.escape(error) if error else ""
+        return self._send(status, LOGIN_HTML.replace("__ERROR__", slot), "text/html; charset=utf-8")
+
+    def _handle_login_submit(self):
+        ip = client_ip(self)
+        if auth_rate_limited(ip):
+            return self._handle_login_page(429, "Too many failed attempts.  Try again in a minute.")
+        ctype = (self.headers.get("Content-Type") or "").split(";")[0].strip().lower()
+        if ctype != "application/x-www-form-urlencoded":
+            return self._handle_login_page(415, "Submit the form as application/x-www-form-urlencoded.")
+        try:
+            length = int(self.headers.get("Content-Length", "0"))
+        except ValueError:
+            length = -1
+        if length <= 0 or length > LOGIN_MAX_BODY:
+            return self._handle_login_page(400, "Missing or oversized form body.")
+        raw = self.rfile.read(length).decode("utf-8", "replace")
+        submitted = (parse_qs(raw, keep_blank_values=True).get("token") or [""])[0].strip()
+        ident_hit = None
+        for t, ident in load_tokens().items():
+            if token_matches(submitted, t):
+                ident_hit = ident or "OWNER"
+                break
+        if ident_hit is None:
+            note_auth_fail(ip)
+            audit(self, "login", ok=False)
+            return self._handle_login_page(401, "Token not recognized.")
+        audit(self, "login", name=ident_hit, ok=True)
+        return self._send(
+            303,
+            "",
+            "text/plain; charset=utf-8",
+            extra_headers={
+                "Location": "/board",
+                "Set-Cookie": session_cookie_header(self, ident_hit),
+            },
         )
 
     def _read_json_body(self) -> tuple[dict | None, str | None]:
@@ -805,6 +851,8 @@ class Handler(BaseHTTPRequestHandler):
             return self._handle_health()
         if path == "/files/key-names":
             return self._handle_key_names()
+        if path == "/login":
+            return self._handle_login_page()
         if path == "/board":
             ident = basic_authorized(self) or cookie_authorized(self)
             if not ident:
@@ -837,6 +885,8 @@ class Handler(BaseHTTPRequestHandler):
     def do_POST(self):
         parsed = urlparse(self.path)
         path = unquote(parsed.path).rstrip("/") or "/"
+        if path == "/login":
+            return self._handle_login_submit()
         if path == "/findings":
             return self._handle_finding_create()
         m = re.match(FINDING_COMMENTS_ROUTE, path)
@@ -1259,6 +1309,42 @@ class Handler(BaseHTTPRequestHandler):
         return self._send(201, comment_row_to_dict(row))
 
 
+BOARD_401_HTML = """<!doctype html><html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1"><title>Authorization Required</title></head>
+<body style="font:15px/1.5 -apple-system,BlinkMacSystemFont,sans-serif;color:#0f172a;margin:12vh auto;max-width:420px;padding:0 16px">
+<p>Authorization required.  Use the browser's login dialog, or the form at <a href="/login">/login</a> if your browser or password manager cannot fill the dialog.</p>
+</body></html>
+"""
+
+LOGIN_HTML = """<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sign In</title>
+<style>
+:root{--ink:#0f172a;--ink-3:#64748b;--line:#e2e8f0;--paper:#f8fafc;--card:#fff;--bad:#b91c1c}
+body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+main{max-width:420px;margin:12vh auto;padding:0 16px}
+form{background:var(--card);border:1px solid var(--line);border-radius:9px;padding:18px 20px}
+h1{font-size:18px;margin:0 0 12px;font-weight:640}
+label{display:block;font-size:13px;color:var(--ink-3);margin:10px 0 4px}
+input{width:100%;box-sizing:border-box;font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:7px;background:var(--paper)}
+button{margin-top:14px;font:inherit;padding:8px 14px;border-radius:7px;border:1px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+p{font-size:13px;color:var(--ink-3)}
+.err{color:var(--bad)}
+</style></head>
+<body><main>
+<form method="post" action="/login" autocomplete="on">
+<h1>Fleet Findings Board</h1>
+__ERROR__
+<label for="username">Username</label>
+<input id="username" name="username" type="text" autocomplete="username" value="board">
+<label for="token">Token</label>
+<input id="token" name="token" type="password" autocomplete="current-password" required>
+<button type="submit">Unlock</button>
+<p>Same token as the browser login dialog.  After one unlock this browser stays signed in for 30 days.  Rotating the token file signs every browser out.</p>
+</form>
+</main></body></html>
+"""
+
 BOARD_HTML = """<!doctype html>
 <html><head><meta charset="utf-8">
 <title>Fleet Findings Board</title>
@@ -1411,7 +1497,7 @@ footer{border-top:1px solid var(--line);margin-top:30px;padding-top:16px;color:v
   <span class="lbl">Token</span>
   <input type="password" id="token" placeholder="MAC_COLLAB_TOKEN" style="width:16em">
   <button class="primary" onclick="saveToken()">Unlock</button>
-  <span class="count">Needed only if this browser has no saved board session.  After one unlock it stays signed in on this device for 30 days.</span>
+  <span class="count">Needed only if this browser has no saved board session.  After one unlock it stays signed in on this device for 30 days.  Password managers: <a href="/login">/login</a>.</span>
 </div>
 <div class="filters">
   <span class="lbl">App</span><select id="fApp"><option value="">all</option></select>
