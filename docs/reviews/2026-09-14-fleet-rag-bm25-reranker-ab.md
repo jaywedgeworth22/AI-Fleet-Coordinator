@@ -306,3 +306,56 @@ worked) had to restart from zero in the new instance and hit problem 2 again.
 
 No production change is proposed for either issue — this is an availability record for whoever
 re-runs this measurement, not a retrieval-quality finding.
+
+## Addendum: reranker bake-off, 2026-09-17 (CLAUDE)
+
+**Timestamp:** Thu, Sep 17, 2026 at 10:52 AM CT (measured ~14:26-15:44 UTC on fleet-hetzner-nbg1).
+**Scope:** measurement only, production untouched — every candidate ran as a throwaway
+`rr-<label>` TEI container on `recall-api`'s own docker network (no published ports), reached
+only via `docker exec -e TEI_RERANK_URL=...`; each was stopped and removed before the next
+started.  Full method, raw JSON, and the full wins/losses list are in
+`/private/tmp/claude-501/-Users-jay-Code-ai-fleet-coordinator/782eb1ae-dcc5-4acf-8fe8-425dc6fe8890/scratchpad/rerank/results.md`.
+This directly answers Part B above, which this session's predecessor could not measure (HF CDN
+was unreachable that day).
+
+Eval: the unmodified `fleet_rag.eval` scorer over the full 75-row `golden.jsonl`, 20 candidate
+docs reranked per query (`candidate_count(5)=20`), production's real 8s `RERANK_TIMEOUT` budget,
+auto-rerun at 30s for any candidate that hit a fallback.
+
+| Model | Params | R@1 | R@5 | MRR | rerank p50 | rerank p95 | fallbacks @8s | wins vs ctrl | losses vs ctrl |
+|---|---|---|---|---|---|---|---|---|---|
+| *Fused only (no rerank)* | — | 0.667 | 0.853 | 0.742 | — | — | — | — | — |
+| **ms-marco-MiniLM-L-6-v2 (control, production)** | 22.7M | 0.707 | 0.920 | 0.796 | 718 ms | 901 ms | 0/75 | — | — |
+| ms-marco-MiniLM-L-12-v2 | 33.4M | 0.720 | 0.933 | 0.809 | 1384 ms | 1883 ms | 0/75 | 2 | 1 |
+| gte-reranker-modernbert-base | 149M | 0.760 | 0.933 | 0.836 | 5864 ms | 7573 ms | 3/75 | 5 | 1 |
+| bge-reranker-base | 278M | 0.733 | 0.933 | 0.815 | 3895 ms | 4642 ms | 0/75 | 7 | 5 |
+| bge-reranker-v2-m3 | 568M | 0.667 | 0.853 | 0.744 | — (0 scored) | — (0 scored) | **75/75** | 3 | 6 |
+
+Uncapped reruns (30s budget): modernbert's 3 fallback queries all resolved to the same ranks
+once given time (score unchanged, true rerank latency 5.9s p50 / 7.6s p95 / 7.9s max).
+bge-reranker-v2-m3 still hit **75/75** fallbacks at 30s — every one of 150 `/rerank` calls
+(75 at 8s, 75 at 30s) ended in `TimeoutError reaching rr-bge-v2m3:80`; it never returned a
+single scored response on this box's `--cpus 8` allocation, so its row above is the fused
+baseline by fallback, not a real reranked measurement, and it is disqualified from the latency
+comparison outright.
+
+**Candidate loading:** all five loaded on TEI `cpu-1.8` without incident, nothing skipped
+(`bge-reranker-base` / `bge-reranker-v2-m3` are XLM-RoBERTa, the same family as this box's live
+`bge-m3` embedder; `gte-reranker-modernbert-base` also served correctly on this image version).
+
+**Recommendation:** gte-reranker-modernbert-base is the only candidate that beats the control on
+all three quality metrics with genuine reranking (R@1 0.760, R@5 0.933, MRR 0.836), but its
+7.6s rerank p95 is far past a 3s search budget on this CPU allocation — not viable un-optimized.
+Within an actual 3s p95 search budget, only the control (p95 1.06s) and
+ms-marco-MiniLM-L-12-v2 (p95 2.00s) qualify; L-12 scores marginally higher on every metric for
+roughly double the latency and still clears the budget with margin, making it the one clear,
+measurable upgrade over production within a 3s p95 constraint. bge-reranker-base has the best
+R@1 among candidates that complete (0.733) but its 4.96s search p95 exceeds 3s. bge-reranker-v2-m3
+cannot be recommended on this hardware at any quality level — it needs more CPU, a GPU, or a much
+smaller candidate/batch size before it can even be measured.
+
+**Cleanup:** every `rr-*` container removed before the next candidate started (confirmed none
+remain); `/var/tmp/rr-models` model cache deleted at the end (confirmed gone); no image pulled
+(TEI `cpu-1.8`, 938 MB, was already local).  Disk on `/`: 158G/131G avail before, 162G/126G avail
+after — the ~4GB delta tracks a `docker system df` Build Cache growth (50/7.0GB to 63/9.95GB)
+from other apps deploying on this shared box during the run window, not from this experiment.
