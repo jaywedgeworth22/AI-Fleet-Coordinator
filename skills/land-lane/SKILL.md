@@ -90,7 +90,7 @@ If the box is gating several lanes, post `[<YOUR_TAG>] gating now` with `repo:` 
 
 - Board row: **Completed** means merged to `main`, not "PR opened."
 - **Deployed** only after the app's production target is verified (`deploy-verify`).
-- Merge to `main` auto-deploys ST / CT / UM on Coolify.  Vercel production (Personal-Site / DealDex / BotFleet site / ContactLogo web) deploys only when site files changed, at most once per hour; previews stay skipped.  Do not double-trigger.  Do not mint a second Vercel project for jays.services.
+- Merge to `main` auto-deploys ST / CT / UM on Coolify and DealDex on Vercel.  Do not double-trigger.  Personal-Site live origin is Vercel behind Cloudflare and is **not** "merge = live" — do not mint a second Vercel project.
 - Closeout: `closeout` skill.
 
 ## Do not

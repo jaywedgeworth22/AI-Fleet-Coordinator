@@ -186,25 +186,24 @@ two spaces at the END of a line is a hard line break -- a different thing; this 
 the gap BETWEEN sentences.)
 
 **HOW to emit it so it's actually visible (verified 2026-08-19, Socratic.Trade
-PR #2893):** intent is not enough, the gap has to survive the renderer.  In a
-**chat reply** (Claude Code terminal/desktop transcript, any agent chat UI), type
-the literal HTML entity text `&nbsp;` right after the period, then a normal space
-— `Sentence one.&nbsp; Sentence two.` — the markdown renderer expands the entity
-into a visibly wider gap.  Tested and confirmed NOT to work in chat: two literal
-spaces (collapsed by GitHub-flavored markdown); a raw U+00A0 character typed
-directly (normalized away in the transcript view even though copy-paste out of it
-can look right).  In a **file** (read as source, never through that renderer),
-literal two ASCII spaces stays correct — do not switch file content to NBSP or
-`&nbsp;`.  **Exception: Apple Notes `--html` and any other HTML a renderer
-will show.**  Notes.app is an HTML renderer, so write
+PR #2893; chat-reply guidance corrected 2026-09-04, see "Rendering trap" below):**
+intent is not enough, the gap has to survive the renderer.  In a **chat reply**
+(Claude Code desktop app Code tab, Cloud/BotFleet/OpenMausBot chat, or any
+plain-text chat with no Markdown rendering), type two literal ASCII spaces after
+the period — owner-verified 2026-09-04.  A raw U+00A0 character typed directly is
+still confirmed NOT to work (normalized away in the transcript view even though
+copy-paste out of it can look right).  In a **file** (read as source, never
+through that renderer), literal two ASCII spaces stays correct — do not switch
+file content to NBSP or `&nbsp;`.  **Exception: Apple Notes `--html` and any
+other HTML a renderer will show.**  Notes.app is an HTML renderer, so write
 `Sentence one.&nbsp; Sentence two.`  Two ASCII spaces in a `<p>` collapse.
 
-**Rendering trap -- SOLVED 2026-08-19, owner-verified.  How to actually emit the gap:**
+**Rendering trap — history (2026-08-19 entity advice for chat replies superseded 2026-09-04, owner-verified):**
 
-- **Agent chat replies** (Claude Code terminal / desktop transcript): use the HTML entity
-  `&nbsp;` immediately after the period, then a normal space --
-  `Sentence one.&nbsp; Sentence two.`  The markdown renderer expands the entity, so the double
-  gap is VISIBLE to the owner.
+- **Agent chat replies** (Claude Code desktop app Code tab; Cloud / BotFleet / OpenMausBot
+  chat; any plain-text chat with no Markdown rendering): two literal ASCII spaces —
+  owner-verified 2026-09-04.  Superseded 2026-09-04 (owner-verified): earlier advice from
+  2026-08-19 to use the entity in agent chat replies is withdrawn.
 - **Files** -- repo markdown/text, commit messages, PR titles and bodies, Slack posts,
   effort-board rows, code comments: two LITERAL spaces.  These are read as source; an
   entity would appear as literal text.
@@ -214,13 +213,14 @@ will show.**  Notes.app is an HTML renderer, so write
   doubles after `.`/`!`/`?` into `&nbsp; `.  (Note: native SwiftUI `Text` does not
   decode HTML entities; use two literal spaces or Unicode `\u{00A0}` in Swift strings).
 
-**What does NOT work, all tested in front of the owner:** two literal spaces in chat (GFM
-collapses the run when rendering); a raw U+00A0 character in chat (normalized away in the view,
-even though copy-paste showed two spaces -- do not be fooled by copy-paste); app settings (none
-exist -- `outputStyle` changes tone only, `--output-format` is headless `claude -p` only,
-`axScreenReader` only drops borders); patching the client (the CLI is a ~277MB compiled Mach-O
-binary, the desktop app is a signed native bundle -- patching breaks code signing and is wiped by
-auto-update; do not attempt).
+**What does NOT work, tested in front of the owner:** a raw U+00A0 character in chat
+(normalized away in the view, even though copy-paste showed two spaces -- do not be fooled by
+copy-paste); app settings (none exist -- `outputStyle` changes tone only, `--output-format` is
+headless `claude -p` only, `axScreenReader` only drops borders); patching the client (the CLI is
+a ~277MB compiled Mach-O binary, the desktop app is a signed native bundle -- patching breaks
+code signing and is wiped by auto-update; do not attempt).  (Two literal ASCII spaces in chat
+were logged here as not working on 2026-08-19; that finding is superseded 2026-09-04 — see
+"Agent chat replies" above.)
 
 **Process lesson that cost four rounds of owner correction:** when an instruction appears not to
 take effect, diagnose the RENDERING/transport layer between you and the reader -- and ask what

@@ -33,7 +33,7 @@ If Infisical still has `COOLIFY_API_TOKEN` for metrics, it must equal `COOLIFY_S
 | CT | https://congress.trade | Coolify auto-deploy (`app/**` / `services/**`).  UUID `<CT_COOLIFY_APP_UUID>`.  Worker `ship.sh` / `deploy.yml` is leftover. | `curl -sA 'Mozilla/5.0' https://congress.trade/api/health` (bare curl historically 403) |
 | UM | https://usage.jays.services | Coolify webhook.  UUID `<UM_COOLIFY_APP_UUID>`.  Render and the Oracle auto-deploy timer are retired. | `curl -fsS https://usage.jays.services/api/health` and `curl -fsS 'https://usage.jays.services/api/ready?strict=1'` |
 | DealDex | https://dealdex.net | **Vercel** on merge.  Do not Coolify.  `dealdex.vercel.app` is a different Next.js site. | `curl -sI https://dealdex.net` |
-| Personal-Site | https://jays.services | Vercel behind Cloudflare.  **GitHub merge does not auto-publish live.**  Do not create a second Vercel project. | `curl -sI https://jays.services` |
+| Personal-Site | https://jays.services | Vercel behind Cloudflare.  Production git deploys only when `site/` changed, at most once per hour.  Previews skipped.  Do not create a second Vercel project. | `curl -sI https://jays.services` |
 | CTS | published tag `vX.Y.Z` | Library.  Announce on Slack, then tag.  Consumers pin the tag. | n/a |
 | AFC | GitHub Pages digest | `fleet-activity-site.yml`, not Coolify. | `https://jaywedgeworth22.github.io/ai-fleet-coordinator/` + `curl -s https://mac.jays.services/health` |
 

@@ -2,6 +2,8 @@
 
 - **2026-09-15 — GROK — IN PROGRESS — recall-cli skip Tailscale GUI / 120s private Qdrant on stats (`grok/recall-skip-private`, worktree `~/apps/fleet-grok-recall-deadline`).**  CLIError 3 is down (public twin).  `RECALL_SKIP_PRIVATE=1` never starts Tailscale.app.  BotFleet #271 / board `2d627f55`.
 
+- **2026-09-17 — CLAUDE — IN PROGRESS — fleet-recall skill "rank 1 is resemblance" bullet + `FLEET-UI-COPY.md` desktop/terminal sentence-gap correction (`claude/recall-rank1-bullet`, worktree `~/apps/fleet-claude-recall-rank1`).**  Board `12ed2f75` (item 0) and `3469d754` (part 2).
+
 - **2026-09-16 — CLAUDE — IN PR AFC #230 — `RAG-FLEET-INFRA.md` BotFleet transport section corrected (`claude/rag-doc-botfleet-transport`, worktree `~/apps/fleet-claude-ragdoc`).**  Bots reach recall through BotFleet's own first-party `server/drivers/qdrant-proxy.ts` MCP proxy on the Claude, Codex, and Antigravity drivers plus all nine ACP engines, not by reading the CLIs' global MCP configs.  Claude driver isolated via `--strict-mcp-config`; Codex driver layers `-c mcp_servers.<name>` onto `~/.codex/config.toml` with no `CODEX_HOME` isolation, so it also sees the user's global fleet-recall MCP.  Verified against BotFleet `e8fb9a97`.  Docs only.
 
 - **2026-09-14 — FX — IN PROGRESS — THE BOARD remembers collab token (`fx/board-remember-token`, worktree `~/apps/fleet-fx-board-session`, board `7d3605e2`).**
