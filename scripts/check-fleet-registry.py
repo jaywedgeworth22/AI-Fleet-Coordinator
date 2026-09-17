@@ -9,6 +9,7 @@ DEFAULT_REPOS entry. Run from the ai-fleet-coordinator worktree:
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -78,6 +79,21 @@ def main() -> int:
         if app.get("hasAppIcon") and icon:
             if not (ROOT / icon).is_file() and not (ROOT / "agent-logos" / Path(icon).name).is_file():
                 errors.append(f"missing app icon {icon}")
+
+    for wf_name in ("fleet-activity-site.yml", "agent-calendar.yml"):
+        wf = ROOT / ".github" / "workflows" / wf_name
+        if not wf.is_file():
+            errors.append(f"missing .github/workflows/{wf_name}")
+            continue
+        lists = re.findall(r"FLEET_REPOS:\s*(\S+)", wf.read_text())
+        if not lists:
+            errors.append(f"{wf_name} missing FLEET_REPOS")
+            continue
+        for lst in lists:
+            for app in apps:
+                repo = app["repo"]
+                if repo not in lst.split(","):
+                    errors.append(f"{wf_name} FLEET_REPOS missing {repo}")
 
     backup_py = ROOT / "scripts" / "backup-fleet-to-gdrive.py"
     if backup_py.is_file():
