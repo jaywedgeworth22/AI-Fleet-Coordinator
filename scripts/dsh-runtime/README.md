@@ -2,7 +2,8 @@
 
 Copy into `~/apps/dsh-runtime/` after merge:
 
-- `start-web.sh` — pm2 `dsh-web`, binds `127.0.0.1:3080`
+- `dsh.sh` — execs `node_modules/.bin/dsh` only.  Never npx.  Never exec this file.
+- `start-web.sh` — pm2 `dsh-web`, binds `127.0.0.1:3080`.  Does not kill a healthy listener.
 - `serve-tailscale.sh` — Tailscale Serve HTTPS 3080 → loopback 3080
 - `open-harness.sh` — activate the Dock app
 - `ensure-web.sh` — start pm2 `dsh-web` if :3080 is down
