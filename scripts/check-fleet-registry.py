@@ -49,6 +49,8 @@ def main() -> int:
 
         if f'"{repo}"' not in digest and f"'{repo}'" not in digest:
             errors.append(f"digest DEFAULT_REPOS missing {repo}")
+        if f'"{repo}": (' not in digest:
+            errors.append(f"digest REPO_BADGE missing {repo}")
         if f'"{repo}"' not in calendar and f"'{repo}'" not in calendar:
             errors.append(f"calendar DEFAULT_REPOS missing {repo}")
         if repo not in protocol and board not in protocol:

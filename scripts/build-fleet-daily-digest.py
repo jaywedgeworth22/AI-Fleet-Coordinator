@@ -470,6 +470,7 @@ REPO_BADGE: dict[str, tuple[str, str]] = {
     "ContactLogo": ("CL", "repo-cl"),
     "ai-fleet-coordinator": ("AFC", "repo-fleet"),
     "BotFleet": ("BF", "repo-bf"),
+    "HogHunter": ("HH", "repo-hh"),
     "fleet-ops": ("OPS", "repo-ops"),
 }
 
@@ -1116,6 +1117,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
       --shared: #0d9488;
       --fleet: #475569;
       --bf: #0284c7;
+      --hh: #92400e;
       --ops: #64748b;
     }}
     * {{ box-sizing: border-box; }}
@@ -1191,6 +1193,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
     .repo-shared {{ background: var(--shared); }}
     .repo-fleet {{ background: var(--fleet); }}
     .repo-bf {{ background: var(--bf); }}
+    .repo-hh {{ background: var(--hh); }}
     .repo-ops {{ background: var(--ops); }}
     .repo.repo-with-icon {{
       gap: 0;
@@ -1296,6 +1299,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
         <span class="legend-item"><span class="repo repo-shared">CTS</span><span class="legend-label">congress-trading-shared</span></span>
         <span class="legend-item"><span class="repo repo-fleet">AFC</span><span class="legend-label">AI Fleet Coordinator</span></span>
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-bf" title="BotFleet.app"><img class="repo-app-icon" src="agent-logos/app-bf.png" alt="BotFleet.app" width="14" height="14" /></span><span class="legend-label">BotFleet.app</span></span>
+        <span class="legend-item"><span class="repo repo-hh">HH</span><span class="legend-label">Hog Hunter</span></span>
         <span class="legend-item"><span class="repo repo-ops">OPS</span><span class="legend-label">Fleet Ops</span></span>
       </div>
     </div>
