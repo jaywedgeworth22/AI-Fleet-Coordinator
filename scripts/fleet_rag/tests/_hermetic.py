@@ -1,0 +1,116 @@
+"""Shared hermeticity helper: isolate a test from this machine's real ~/.secrets and Infisical.
+
+fleet_rag.core.HANDOFF (~/.secrets/global-api-keys) and fleet_rag.public_fallback's
+PUBLIC_ENV_FILES / CF_ACCESS_FILE are all resolved from pathlib.Path.home() at IMPORT time (see
+core.py and public_fallback.py), *before* any test's setUp runs.  Patching os.environ["HOME"]
+from inside a test therefore does nothing to them -- the real path was already captured.  On a
+machine that actually has a populated ~/.secrets/global-api-keys (an owner's Mac, unlike a CI
+runner), a test that reaches any of these unpatched attributes will read real credentials and,
+if fleet_rag.core.infisical_login() then succeeds, make a real network call to Infisical -- slow,
+and a genuine credential leak into the test process.
+
+Use HermeticTestCase as a drop-in base (it cooperates with your own setUp via super()), or mix
+HermeticCredentialsMixin into an existing base class and call self.make_hermetic() yourself:
+
+    from fleet_rag.tests._hermetic import HermeticTestCase
+
+    class MyTests(HermeticTestCase):
+        def setUp(self):
+            super().setUp()   # gets you make_hermetic() for free
+            ...
+
+    cd scripts && python3 -m unittest fleet_rag.tests._hermetic -v
+"""
+from __future__ import annotations
+
+import os
+import pathlib
+import tempfile
+import unittest
+from unittest import mock
+
+from fleet_rag import core, public_fallback
+
+
+class HermeticCredentialsMixin:
+    """Adds `make_hermetic()`: point every credential/Infisical seam at a throwaway location.
+
+    Call this from setUp (after super().setUp(), so it composes with a class that already does
+    its own setUp work).  Everything is undone via addCleanup, in reverse order, once the test
+    ends -- including on failure.
+    """
+
+    def make_hermetic(self) -> None:
+        tmp = tempfile.TemporaryDirectory()
+        self.addCleanup(tmp.cleanup)
+        home = pathlib.Path(tmp.name)
+        # Deliberately absent -- these paths are never created under `home`.
+        absent_handoff = home / ".secrets" / "no-such-handoff"
+        absent_cf_access = home / ".secrets" / "no-such-cf-access"
+
+        env_patch = mock.patch.dict(os.environ, {
+            "HOME": str(home),
+            "FLEET_RAG_HANDOFF_FILE": str(absent_handoff),
+        })
+        env_patch.start()
+        self.addCleanup(env_patch.stop)
+
+        # core.HANDOFF and public_fallback's PUBLIC_ENV_FILES / CF_ACCESS_FILE were all computed
+        # from the REAL home directory when their module was first imported -- the HOME patch
+        # above cannot reach them.  FLEET_RAG_HANDOFF_FILE covers core.handoff_file() callers
+        # (core._identity, via infisical_login); these three patches cover direct readers of the
+        # already-captured attributes.
+        for patcher in (
+            mock.patch.object(core, "HANDOFF", absent_handoff),
+            mock.patch.object(public_fallback, "CF_ACCESS_FILE", absent_cf_access),
+            mock.patch.object(public_fallback, "PUBLIC_ENV_FILES", {
+                "RECALL_API_TOKEN": absent_handoff,
+                "CF_ACCESS_CLIENT_ID": absent_cf_access,
+                "CF_ACCESS_CLIENT_SECRET": absent_cf_access,
+            }),
+        ):
+            patcher.start()
+            self.addCleanup(patcher.stop)
+
+        # Belt-and-suspenders per the no-such-handoff paths above: even if some future code path
+        # finds a real identity another way, never let a test reach Infisical over the network.
+        # None is exactly what infisical_login() already returns once no handoff file resolves
+        # to a real one, so this changes no test's expected behavior -- it just makes the "no
+        # network" guarantee unconditional instead of incidental.
+        login_patch = mock.patch.object(core, "infisical_login", lambda: None)
+        login_patch.start()
+        self.addCleanup(login_patch.stop)
+
+
+class HermeticTestCase(HermeticCredentialsMixin, unittest.TestCase):
+    """unittest.TestCase that is hermetic against real credentials from setUp onward."""
+
+    def setUp(self) -> None:
+        super().setUp()
+        self.make_hermetic()
+
+
+class _SelfTest(HermeticTestCase):
+    """Proves the mixin actually redirects every seam away from the real machine."""
+
+    def test_handoff_paths_are_redirected_and_absent(self) -> None:
+        real_home = pathlib.Path(os.path.expanduser("~"))
+        self.assertNotEqual(core.HANDOFF, real_home / ".secrets" / "global-api-keys")
+        self.assertFalse(core.HANDOFF.exists())
+        self.assertFalse(core.handoff_file().exists())
+        self.assertFalse(public_fallback.CF_ACCESS_FILE.exists())
+        for path in public_fallback.PUBLIC_ENV_FILES.values():
+            self.assertFalse(path.exists())
+
+    def test_infisical_login_is_stubbed_out(self) -> None:
+        self.assertIsNone(core.infisical_login())
+
+    def test_identity_and_load_config_see_no_handoff(self) -> None:
+        with mock.patch.dict(os.environ, {}, clear=True):
+            self.assertEqual(core._identity("INFISICAL_SHARED"), (None, None))
+            with self.assertRaises(core.FleetRagError):
+                core.load_config()
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -19,6 +19,7 @@ from unittest import mock
 from fleet_rag import doctor, recall_api
 from fleet_rag.core import FleetRagError, build_point
 from fleet_rag.recall_api import FakeQdrant
+from fleet_rag.tests._hermetic import HermeticCredentialsMixin
 
 CLI = pathlib.Path(__file__).resolve().parents[2] / "recall"
 INSTALLER = pathlib.Path(__file__).resolve().parents[2] / "install-fleet-rag.sh"
@@ -112,8 +113,17 @@ def by_check(rep: dict) -> dict[str, dict]:
     return {r["check"]: r for r in rep["rows"]}
 
 
-class PlatformsReportTests(unittest.TestCase):
+class PlatformsReportTests(HermeticCredentialsMixin, unittest.TestCase):
+    """Most of these call doctor.platforms_report() without a `rerank_check=` override, which
+    falls back to doctor.default_rerank_check() -> recall_api.get_config() -> a REAL Infisical
+    login using whatever this Mac's real ~/.secrets/global-api-keys holds, if it exists.  On a
+    CI runner (no ~/.secrets) that silently no-ops; on an owner's Mac it reads real credentials
+    and can make a real, slow network call.  make_hermetic() (see _hermetic.py) closes that off
+    regardless of what's actually on disk here.
+    """
+
     def setUp(self):
+        self.make_hermetic()
         self.tmp = tempfile.TemporaryDirectory()
         self.root = pathlib.Path(self.tmp.name)
 
