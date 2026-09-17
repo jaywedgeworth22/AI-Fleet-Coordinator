@@ -49,6 +49,17 @@ def main() -> int:
 
         if f'"{repo}"' not in digest and f"'{repo}'" not in digest:
             errors.append(f"digest DEFAULT_REPOS missing {repo}")
+        if f'"{repo}": (' not in digest:
+            errors.append(f"digest REPO_BADGE missing {repo}")
+        color = app.get("digestColor") or ""
+        badge = app.get("badgeClass") or ""
+        if color and badge.startswith("repo-"):
+            css_var = badge[len("repo-"):]
+            needle = f"--{css_var}: {color}"
+            if needle not in digest:
+                errors.append(
+                    f"digest CSS --{css_var} does not match digestColor {color} for {repo}"
+                )
         if f'"{repo}"' not in calendar and f"'{repo}'" not in calendar:
             errors.append(f"calendar DEFAULT_REPOS missing {repo}")
         if repo not in protocol and board not in protocol:
@@ -79,6 +90,18 @@ def main() -> int:
         if app.get("hasAppIcon") and icon:
             if not (ROOT / icon).is_file() and not (ROOT / "agent-logos" / Path(icon).name).is_file():
                 errors.append(f"missing app icon {icon}")
+
+    colors: dict[str, str] = {}
+    for app in apps:
+        color = (app.get("digestColor") or "").lower()
+        repo = app["repo"]
+        if not color:
+            continue
+        prev = colors.get(color)
+        if prev:
+            errors.append(f"digestColor {color} reused by {prev} and {repo}")
+        else:
+            colors[color] = repo
 
     for wf_name in ("fleet-activity-site.yml", "agent-calendar.yml"):
         wf = ROOT / ".github" / "workflows" / wf_name
