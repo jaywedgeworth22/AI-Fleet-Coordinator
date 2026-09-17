@@ -9,7 +9,9 @@ private let harnessURLString =
 
 private func pingHarness() -> Bool {
     guard let url = URL(string: harnessURLString) else { return false }
-    var req = URLRequest(url: url, timeoutInterval: 2)
+    // 8s: a 2s ping under CPU load false-negatives, then ensure-web.sh
+    // pm2-restarts a healthy dsh-web and WebKit reports "Load failed".
+    var req = URLRequest(url: url, timeoutInterval: 8)
     req.httpMethod = "GET"
     let sem = DispatchSemaphore(value: 0)
     var ok = false
@@ -19,7 +21,7 @@ private func pingHarness() -> Bool {
         }
         sem.signal()
     }.resume()
-    _ = sem.wait(timeout: .now() + 2.2)
+    _ = sem.wait(timeout: .now() + 8.5)
     return ok
 }
 
