@@ -78,6 +78,32 @@ class TestTokenStaleness(unittest.TestCase):
         self.assertNotIn("file-token-aaa", server.AUTH_FAIL_HINT)
         self.assertNotIn("env-token", server.AUTH_FAIL_HINT)
 
+    def test_authorized_uses_passed_tokens_snapshot(self):
+        from unittest.mock import MagicMock, patch
+
+        handler = MagicMock()
+        handler.headers = {"Authorization": "Bearer snap-token"}
+        with patch.object(
+            server, "load_tokens", side_effect=AssertionError("should not reload")
+        ):
+            ident = server.authorized(handler, tokens={"snap-token": None})
+        self.assertEqual(ident, "OWNER")
+
+    def test_cookie_does_not_survive_empty_tokens(self):
+        """HMAC key is derived from live tokens.  An unreadable file does not
+        keep old cookies valid; checking the cookie first would still fail.
+        """
+        from http.server import BaseHTTPRequestHandler
+        from unittest.mock import MagicMock
+
+        cookie = server.mint_session_value("OWNER")
+        handler = MagicMock(spec=BaseHTTPRequestHandler)
+        handler.headers = {"Cookie": f"{server.SESSION_COOKIE}={cookie}"}
+        self.assertEqual(server.cookie_authorized(handler), "OWNER")
+        self.secrets.write_text("", encoding="utf-8")
+        self.assertIsNone(server.cookie_authorized(handler))
+        self.assertIsNone(server.authorized(handler))
+
 
 class TestBoardCliToken(unittest.TestCase):
     def setUp(self):

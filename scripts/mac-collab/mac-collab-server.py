@@ -599,9 +599,15 @@ def findings_open_by_app() -> dict:
         conn.close()
 
 
-def authorized(handler: BaseHTTPRequestHandler):
-    '''Returns the identity (str) if authorized, else None.'''
-    tokens = load_tokens()
+def authorized(handler: BaseHTTPRequestHandler, tokens: dict | None = None):
+    '''Returns the identity (str) if authorized, else None.
+
+    Pass a tokens snapshot to keep one request on a single load_tokens()
+    result.  Cookie HMAC still uses live tokens via get_session_key --
+    rotating the file is supposed to invalidate cookies.
+    '''
+    if tokens is None:
+        tokens = load_tokens()
     if not tokens:
         return None
     auth = handler.headers.get("Authorization", "")
@@ -861,7 +867,7 @@ class Handler(BaseHTTPRequestHandler):
         # Anonymous callers (uptime monitors etc.) get bare status only.
         # Filenames and finding counts are reconnaissance — don't hand them
         # out for free.
-        if authorized(self):
+        if authorized(self, tokens=tokens):
             body.update({
                 "token_configured": bool(token),
                 "allowlist": sorted(ALLOW),
