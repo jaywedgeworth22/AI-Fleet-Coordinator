@@ -34,6 +34,8 @@
 #   - shellular process up but relay 1006/handshake-fail -> kill pid (God autorestarts)
 #   - launchd always-on not-loaded -> bootstrap plist (if not disabled)
 #   - launchd always-on loaded, no pid -> kickstart (not -k)
+#   - com.jay.botfleet-server is UP when 127.0.0.1:8799 /health is 200
+#     (BotFleet.app often owns the harness; launchd must not steal the port)
 # Scheduled / on-trigger (must stay loaded, must NOT stay running):
 #   - if not-loaded and not disabled -> bootstrap so the timer can fire
 #   - idle (no pid) is correct -- do not kickstart
@@ -102,6 +104,7 @@ expect_launchd=(
   "com.jay.claude-remote-control com.jay.claude-remote-control.plist"
   "com.jay.slack-agent-inbox com.jay.slack-agent-inbox.plist"
   "homebrew.mxcl.moshi-hook homebrew.mxcl.moshi-hook.plist"
+  "com.jay.botfleet-server com.jay.botfleet-server.plist"
 )
 
 # Timers / calendar / interval jobs.  Must be loaded so they can fire.
@@ -142,6 +145,8 @@ expect_files=(
   "${HOME}/apps/dsh-runtime/serve-tailscale.sh"
   "${HOME}/apps/fleet-gdrive-backup/run.sh"
   "${HOME}/apps/fleet-gdrive-backup/backup-fleet-to-gdrive.py"
+  "${HOME}/apps/fleet-gdrive-backup/sync-fleet-agent-config-to-gdrive.py"
+  "${HOME}/apps/botfleet-server-start.sh"
 )
 
 log() {
@@ -489,6 +494,10 @@ else
   fi
 fi
 
+botfleet_harness_healthy() {
+  /usr/bin/curl -sf -m 2 "http://127.0.0.1:8799/health" >/dev/null 2>&1
+}
+
 # --- launchd always-on ---
 for spec in "${expect_launchd[@]}"; do
   label="${spec%% *}"
@@ -497,6 +506,13 @@ for spec in "${expect_launchd[@]}"; do
 
   if launchd_disabled "$label" "$uid"; then
     log "SKIP  launchd:$label  disabled"
+    continue
+  fi
+
+  # Packaged BotFleet.app often owns :8799.  Do not bootstrap a second
+  # node server on top of a healthy harness.
+  if [ "$label" = "com.jay.botfleet-server" ] && botfleet_harness_healthy; then
+    log "OK    launchd:$label  8799-healthy"
     continue
   fi
 

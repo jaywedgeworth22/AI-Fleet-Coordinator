@@ -25,9 +25,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import errno
+import os
 import shutil
-import subprocess
 import sys
+import time
 from pathlib import Path
 
 GDRIVE_CANDIDATES = [
@@ -87,29 +89,83 @@ def resolve_home_source(rel_paths: list[str]) -> Path | None:
     return None
 
 
-def rsync_mirror(src: Path, dest: Path) -> None:
-    dest.parent.mkdir(parents=True, exist_ok=True)
-    if shutil.which("rsync"):
-        cmd = [
-            "rsync",
-            "-a",
-            "--delete",
-            "--exclude",
-            ".DS_Store",
-            f"{src}/",
-            f"{dest}/",
-        ]
-        subprocess.run(cmd, check=True)
-        return
+def copy_one_file(src: Path, dest: Path, retries: int = 5) -> None:
+    """Write via a sibling temp file, then replace.  Retry File Provider deadlocks."""
+    tmp = dest.with_name(f".{dest.name}.tmp-mirror")
+    last: OSError | None = None
+    for attempt in range(retries):
+        try:
+            shutil.copy2(src, tmp)
+            os.replace(tmp, dest)
+            return
+        except OSError as exc:
+            last = exc
+            try:
+                tmp.unlink()
+            except OSError:
+                pass
+            if exc.errno in (errno.EDEADLK, errno.EAGAIN, errno.EBUSY, errno.EPERM) and attempt < retries - 1:
+                time.sleep(0.25 * (attempt + 1))
+                continue
+            raise
+    if last is not None:
+        raise last
 
-    if dest.exists():
-        shutil.rmtree(dest)
-    shutil.copytree(
-        src,
-        dest,
-        ignore=shutil.ignore_patterns(".DS_Store"),
-        dirs_exist_ok=True,
-    )
+
+def copy_mirror(src: Path, dest: Path) -> None:
+    """Mirror src -> dest without rsync.
+
+    Google Drive for desktop is a File Provider.  `rsync -a --delete` against
+    that mount fails under launchd with `open: Operation not permitted` even
+    though the same job can write zip files into a sibling folder via Python.
+    Copy in-process so the backup job does not inherit rsync's open() mode.
+    """
+    dest.mkdir(parents=True, exist_ok=True)
+    wanted: set[Path] = set()
+    errors: list[str] = []
+
+    for sfile in src.rglob("*"):
+        if not sfile.is_file() or sfile.name == ".DS_Store":
+            continue
+        rel = sfile.relative_to(src)
+        dfile = dest / rel
+        wanted.add(rel)
+        try:
+            dfile.parent.mkdir(parents=True, exist_ok=True)
+            # File Provider mtimes are not trustworthy; size match means
+            # the dest already has this object and an in-place overwrite
+            # can raise EDEADLK while Drive is syncing it.
+            if dfile.is_file() and dfile.stat().st_size == sfile.stat().st_size:
+                continue
+            copy_one_file(sfile, dfile)
+        except OSError as exc:
+            errors.append(f"{sfile} -> {dfile}: {exc}")
+
+    for dfile in dest.rglob("*"):
+        if not dfile.is_file():
+            continue
+        if dfile.name == ".DS_Store" or dfile.name.endswith(".tmp-mirror"):
+            try:
+                dfile.unlink()
+            except OSError:
+                pass
+            continue
+        rel = dfile.relative_to(dest)
+        if rel not in wanted:
+            try:
+                dfile.unlink()
+            except OSError as exc:
+                errors.append(f"unlink {dfile}: {exc}")
+
+    if errors:
+        for line in errors:
+            print(f"mirror error: {line}", file=sys.stderr)
+        raise RuntimeError(f"{len(errors)} file(s) failed to mirror into {dest}")
+
+
+def rsync_mirror(src: Path, dest: Path) -> None:
+    # Kept as the call-site name so older wrappers keep working.
+    copy_mirror(src, dest)
 
 
 def mirror_agent_config(gdrive: Path) -> list[str]:
@@ -117,6 +173,7 @@ def mirror_agent_config(gdrive: Path) -> list[str]:
     root.mkdir(parents=True, exist_ok=True)
     mirrored: list[str] = []
 
+    failures: list[str] = []
     for dest_rel, home_candidates in MIRROR_SPECS:
         src = resolve_home_source(home_candidates)
         if src is None:
@@ -124,35 +181,43 @@ def mirror_agent_config(gdrive: Path) -> list[str]:
             continue
         dest = root / dest_rel
         print(f"mirror {src} -> {dest}")
-        rsync_mirror(src, dest)
-        mirrored.append(dest_rel)
+        try:
+            rsync_mirror(src, dest)
+            mirrored.append(dest_rel)
+        except RuntimeError as exc:
+            print(f"mirror failed {dest_rel}: {exc}", file=sys.stderr)
+            failures.append(dest_rel)
+    if failures:
+        raise RuntimeError("failed subtrees: " + ", ".join(failures))
 
     readme = root / "README.md"
-    readme.write_text(
-        "\n".join(
-            [
-                "# Fleet agent config mirror",
-                "",
-                "Mirrored from Mac home dotfolders by",
-                "`scripts/sync-fleet-agent-config-to-gdrive.py`",
-                "(launchd `com.jay.fleet-gdrive-backup`, daily 06:00).",
-                "",
-                "Google Drive desktop cannot sync ~/.Gemini / ~/.cursor /",
-                "~/.claude / ~/.grok directly.  This folder is the backup copy.",
-                "",
-                "## Seats mirrored",
-                "- `gemini/skills` — Antigravity / Gemini",
-                "- `cursor/skills`, `cursor/skills-cursor`, `cursor/rules` — Cursor",
-                "- `claude/skills` — Claude Code",
-                "- `grok/skills` — Grok",
-                "",
-                "Canonical fleet skill source in git:",
-                "`ai-fleet-coordinator/docs/fleet-skills/`.",
-                "Upload packs for Claude.app also land in sibling `fleet-skills/`.",
-                "",
-            ]
-        )
+    body = "\n".join(
+        [
+            "# Fleet agent config mirror",
+            "",
+            "Mirrored from Mac home dotfolders by",
+            "`scripts/sync-fleet-agent-config-to-gdrive.py`",
+            "(launchd `com.jay.fleet-gdrive-backup`, daily 06:00).",
+            "",
+            "Google Drive desktop cannot sync ~/.Gemini / ~/.cursor /",
+            "~/.claude / ~/.grok directly.  This folder is the backup copy.",
+            "",
+            "## Seats mirrored",
+            "- `gemini/skills` — Antigravity / Gemini",
+            "- `cursor/skills`, `cursor/skills-cursor`, `cursor/rules` — Cursor",
+            "- `claude/skills` — Claude Code",
+            "- `grok/skills` — Grok",
+            "",
+            "Canonical fleet skill source in git:",
+            "`ai-fleet-coordinator/docs/fleet-skills/`.",
+            "Upload packs for Claude.app also land in sibling `fleet-skills/`.",
+            "",
+        ]
     )
+    staging = Path("/tmp/fleet-agent-config-README.md")
+    staging.write_text(body)
+    if not (readme.is_file() and readme.stat().st_size == staging.stat().st_size):
+        copy_one_file(staging, readme)
     return mirrored
 
 

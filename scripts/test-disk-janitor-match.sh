@@ -51,6 +51,12 @@ assert_no "/Users/jay/apps/trading-grok-litestream-cascade" "grok/litestream-cas
 assert_no "/Users/jay/Code/Socratic.Trade" "main"
 assert_no "/Users/jay/apps/trading-claude" "claude/feature"
 
+# KEEP_RE must keep the always-on BotFleet harness checkout (reaping
+# node_modules there crash-loops com.jay.botfleet-server).
+if ! grep -q 'botfleet-server' "$JANITOR"; then
+  fail "disk-janitor KEEP_RE must mention botfleet-server"
+fi
+
 # Retired KIMI seat (unsuffixed and per-lane).
 assert_yes "/Users/jay/apps/trading-kimi" "kimi/leftover"
 assert_yes "/Users/jay/apps/trading-kimi-onboard" "kimi/autorotate-onboard"
