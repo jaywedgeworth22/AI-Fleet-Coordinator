@@ -855,6 +855,21 @@ When a substitute agent picks up another agent's in-flight or handoff work (via 
 - Arm auto-merge (`gh pr merge <n> --squash --auto`) so it lands the instant checks are green + threads resolved.
 - "DONE" / "Completed" on a board means **merged to `main`** — not "PR opened" and not "green but blocked". Don't mark Completed until it's actually on `main`.
 
+### Squash-merge vs abandoned-branch detection (2026-09-17)
+
+All fleet repos squash-merge with `delete_branch_on_merge`.  A correctly landed branch has its commits **absent from `origin/main` history** and no remote branch left behind.  `git merge-base --is-ancestor HEAD origin/main` and "N commits ahead and not on remote" therefore flag every landed lane as abandoned (2026-09-05 false panic; ~110 of 146 worktrees on 2026-09-06).
+
+Correct method:
+
+```bash
+gh pr list --head "$BRANCH" --state all --json number,state,mergedAt,url
+git fetch origin
+git diff origin/main...HEAD    # three-dot: remaining unique work vs merge-base
+# helper: scripts/branch-landed.sh [repo] [branch]
+```
+
+A two-dot `git diff origin/main HEAD` on a stale lane is actively misleading (it mixes later main with the branch).  Ancestry is still the right test for "does live SHA contain this exact commit" (`deploy-verify`).  `scripts/disk-janitor.sh` now treats a MERGED GitHub PR as squash-safe merged.  Board `059f65b3`.
+
 ---
 
 ## Never idle-watch a PR (owner ruling 2026-09-01 — ALL agents, ALL platforms, ALL repos)

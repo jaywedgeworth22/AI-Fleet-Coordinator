@@ -63,4 +63,20 @@ assert_yes "/Users/jay/Code/Socratic.Trade/.grok/worktrees/abc" "grok/foo"
 assert_yes "/private/tmp/scratch-wt" "tmp/foo"
 assert_yes "/tmp/scratch-wt" "tmp/foo"
 
+# janitor_github_repo: squash-safe origin URL parsing (no network).
+origin_repo_tmp=$(mktemp -d)
+trap 'rm -rf "$origin_repo_tmp"' EXIT
+git -C "$origin_repo_tmp" init -q
+assert_origin() {
+  local remote="$1" want="$2"
+  git -C "$origin_repo_tmp" remote remove origin >/dev/null 2>&1 || true
+  git -C "$origin_repo_tmp" remote add origin "$remote"
+  local got
+  got=$(janitor_github_repo "$origin_repo_tmp")
+  [ "$got" = "$want" ] || fail "origin $remote -> '$got' want '$want'"
+}
+assert_origin "git@github.com:jaywedgeworth22/Socratic.Trade.git" "jaywedgeworth22/Socratic.Trade"
+assert_origin "https://github.com/jaywedgeworth22/ai-fleet-coordinator.git" "jaywedgeworth22/ai-fleet-coordinator"
+assert_origin "ssh://git@github.com/jaywedgeworth22/BotFleet.git" "jaywedgeworth22/BotFleet"
+
 echo OK

@@ -1,5 +1,7 @@
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
+- **2026-09-17 — GROK — IN PROGRESS — AG pickup: recall verify, squash-merge detection, mac-collab bind/reclaim tests + token staleness, small worktree prune (`grok/ag-pickup`, worktree `~/apps/fleet-grok-ag-pickup`).**  Boards `dae5d960` `059f65b3` `cd895d6f` `029f6346` `b4ce23f4` `5f2a5277` `aeab69fc`.  Recall doctor via recall-tunnel overall ok (green, ~46k points); Tailscale.app still missing (`da9324b0`).  Helper `scripts/branch-landed.sh`.  MiniMax audit is honest/partial (`docs/reviews/2026-09-17-minimax-seat-quality-audit.md`).
+
 - **2026-09-15 — GROK — IN PROGRESS — recall-cli skip Tailscale GUI / 120s private Qdrant on stats (`grok/recall-skip-private`, worktree `~/apps/fleet-grok-recall-deadline`).**  CLIError 3 is down (public twin).  `RECALL_SKIP_PRIVATE=1` never starts Tailscale.app.  BotFleet #271 / board `2d627f55`.
 
 - **2026-09-17 — CLAUDE — COMPLETED/MERGED #237 — fleet-recall skill "rank 1 is resemblance" bullet + `FLEET-UI-COPY.md` desktop/terminal sentence-gap correction (`claude/recall-rank1-bullet`, worktree `~/apps/fleet-claude-recall-rank1`).**  Board `12ed2f75` (item 0) and `3469d754` (part 2).
