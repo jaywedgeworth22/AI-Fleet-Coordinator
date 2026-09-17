@@ -46,9 +46,10 @@ This module gives those two surfaces a fast, actionable alternative:
      down), produces one plain-English, actionable line -- never a second opaque exception.
 
 Only recall_search / recall_stats / recall_contribute are covered (the shared tool contract).
-The public service's own argument set is a subset of the local one (no `per_doc`, `rerank`,
-`prefer_lessons`, `force`; see `scripts/fleet-recall-service/server.py` TOOLS) -- those knobs
-are silently dropped when a call actually falls back, and the near-duplicate contribute guard
+The public service's recall_search route now accepts every recall_search() keyword, including
+`per_doc`, `rerank`, and `prefer_lessons` (see `scripts/fleet-recall-service/server.py` TOOLS).
+The CLI-only `--force` dedup-guard override has no public twin -- it is silently dropped when a
+call actually falls back, and the near-duplicate contribute guard
 (a local-only nicety, not part of the shared tool contract) is skipped rather than run against
 an unreachable backend.
 
@@ -134,10 +135,13 @@ def _read_named_line(path: pathlib.Path, name: str) -> "str | None":
 REST_PATH = {"recall_search": "/recall/search", "recall_stats": "/recall/stats",
              "recall_contribute": "/recall/contribute"}
 REST_METHOD = {"recall_search": "POST", "recall_stats": "GET", "recall_contribute": "POST"}
-# The public tool contract is a subset of the local one (scripts/fleet-recall-service/server.py
-# TOOLS) -- extra local-only knobs are dropped rather than sent and rejected.
+# The public tool contract mirrors the local one (scripts/fleet-recall-service/server.py TOOLS)
+# for recall_search -- every recall_search() keyword argument has a public route.  recall_
+# contribute stays a deliberate subset: `force` is a local-only dedup-guard nicety (see the
+# module docstring) with no public twin.
 PUBLIC_ALLOWED_ARGS = {
-    "recall_search": {"query", "limit", "category", "app", "source", "seat", "since_days"},
+    "recall_search": {"query", "limit", "category", "app", "source", "seat", "since_days",
+                      "per_doc", "rerank", "prefer_lessons"},
     "recall_stats": set(),
     "recall_contribute": {"text", "category", "app", "seat", "title", "url"},
 }
