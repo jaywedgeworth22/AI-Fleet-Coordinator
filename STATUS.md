@@ -1,5 +1,11 @@
 # Status
 
+Updated: 2026-09-17 (CLAUDE — Instinct iMessage interface seat onboarding prompt)
+
+## 2026-09-17 CLAUDE — Instinct onboarding prompt
+
+`docs/INSTINCT-ONBOARDING-PROMPT.md`: paste-ready standing instructions for INSTINCT, the iMessage interface seat, on the FX prompt pattern.  Process 10 boundary (send only from `agents`, one authorized listener), THE BOARD / Slack relay / fleet recall surfaces, the `owner-relay:` post shape, phone noise discipline, and a first unit.  Seat row text included; `fleet-apps.json` untouched until the seat gets a coding lane.  Branch `claude/instinct-imessage-onboarding-n6u9oh` (Claude Code cloud).  Board and Slack claim pending a Mac seat.
+
 Updated: 2026-09-14 (FX — THE BOARD remembers collab session)
 
 ## 2026-09-14 FX — THE BOARD remembers collab token
