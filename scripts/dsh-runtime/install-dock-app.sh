@@ -82,6 +82,14 @@ cp "${ROOT}/open-harness.sh" "${LIVE}/open-harness.sh"
 cp "$PNG" "${LIVE}/assets/harness-icon-1024.png"
 cp "$ROOT/install-dock-app.sh" "${LIVE}/install-dock-app.sh"
 chmod 755 "${LIVE}/ensure-web.sh" "${LIVE}/open-harness.sh" "${LIVE}/install-dock-app.sh"
+if [[ -f "${ROOT}/dsh.sh" ]]; then
+  cp "${ROOT}/dsh.sh" "${LIVE}/dsh.sh"
+  chmod 755 "${LIVE}/dsh.sh"
+fi
+if [[ -f "${ROOT}/start-web.sh" ]]; then
+  cp "${ROOT}/start-web.sh" "${LIVE}/start-web.sh"
+  chmod 755 "${LIVE}/start-web.sh"
+fi
 
 if command -v dockutil >/dev/null 2>&1; then
   # Legacy pins from the pre-rebrand .app name.  Remove by either label.
