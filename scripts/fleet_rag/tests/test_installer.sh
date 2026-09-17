@@ -419,6 +419,22 @@ assert "alt: mac-collab symlink removed" test ! -L "$ALT_HOME/apps/mac-collab/re
 assert "alt: recall-tunnel PATH symlink removed" test ! -L "$ALT_HOME/.local/bin/recall-tunnel"
 assert "alt: mac-collab recall-tunnel symlink removed" test ! -L "$ALT_HOME/apps/mac-collab/recall-tunnel"
 
+echo "== invalid TOML is reported, never rewritten, and does not abort the run"
+cp "$FAKE_HOME/.codex/config.toml" "$TMP/codex-before-bad.toml"
+cat > "$FAKE_HOME/.codex/config.toml" <<'EOF'
+model = "gpt-5"
+
+[mcp_servers.github]
+command = "/bin/sh"
+args = [ "-c", "npx -y mcp-remote https://api.githubcopilot.com/mcp/ --header \\"Authorization: Bearer $GITHUB_MCP_TOKEN\\"" ]
+EOF
+cp "$FAKE_HOME/.codex/config.toml" "$TMP/codex-bad.toml"
+if run > "$TMP/run-toml.out" 2>&1; then pass "invalid-toml: install exits 0"; else fail "invalid-toml: install exits 0"; fi
+assert "invalid-toml: reported skipped-invalid-toml" grep -q 'config.toml: skipped-invalid-toml' "$TMP/run-toml.out"
+assert "invalid-toml: byte-identical" cmp -s "$FAKE_HOME/.codex/config.toml" "$TMP/codex-bad.toml"
+assert "invalid-toml: cursor still handled" json_has "$FAKE_HOME/.cursor/mcp.json" fleet-recall
+cp "$TMP/codex-before-bad.toml" "$FAKE_HOME/.codex/config.toml"
+
 echo "== refuses to clobber a real file at the symlink path"
 rm -rf "$FAKE_HOME/apps/mac-collab/recall"; printf 'real\n' > "$FAKE_HOME/apps/mac-collab/recall"
 if run > "$TMP/run4.out" 2>&1; then fail "real file at symlink path refused"; else pass "real file at symlink path refused"; fi
