@@ -56,6 +56,15 @@ BACKOFF_MAX = 10         # seconds, the exponential-backoff cap between retries
 RETRIES_ENV = "RECALL_HTTP_RETRIES"
 BACKOFF_MAX_ENV = "RECALL_HTTP_BACKOFF_MAX"
 
+# Sane caps for the two env overrides above, enforced by _env_int().  A negative
+# RECALL_HTTP_RETRIES made `range(retries + 1)` empty, so http_json returned "request failed:
+# NoneType" without ever sending a request; a negative RECALL_HTTP_BACKOFF_MAX reached
+# `time.sleep(negative)`, a raw ValueError that broke the only-FleetRagError contract.  Both
+# are now floored at 0 (falling back to the default, same as a non-numeric value) and an
+# unreasonably large value is clamped rather than honored outright.
+MAX_RETRIES = 20
+MAX_BACKOFF_MAX = 300     # seconds
+
 # Cross-encoder rerank (TEI /rerank, BAAI/bge-reranker-v2-m3).  Optional: only used when both
 # TEI_RERANK_URL and TEI_RERANK_API_KEY are configured, and every failure falls back silently.
 RERANK_BATCH = 32
@@ -78,17 +87,28 @@ class FleetRagError(RuntimeError):
 
 # --------------------------------------------------------------------------- HTTP
 
-def _env_int(name: str, default: int) -> int:
-    """int(os.environ[name]) when set and parseable, else `default`.  Read fresh on every call
-    (never cached at import time) so a test's os.environ patch, or an `eval "$(recall-tunnel
-    env)"` in a long-lived shell, takes effect immediately."""
+def _env_int(name: str, default: int, *, min_value: int = 0, max_value: int | None = None) -> int:
+    """int(os.environ[name]) when set, parseable, and >= min_value, else `default`; a value
+    above max_value (when given) is clamped to max_value rather than rejected.  Read fresh on
+    every call (never cached at import time) so a test's os.environ patch, or an `eval
+    "$(recall-tunnel env)"` in a long-lived shell, takes effect immediately.
+
+    A value below min_value -- e.g. a negative RECALL_HTTP_RETRIES, which would make
+    range(retries + 1) empty and silently skip every request -- is treated the same as a
+    non-numeric value: fall back to `default`.
+    """
     v = (os.environ.get(name) or "").strip()
     if not v:
         return default
     try:
-        return int(v)
+        n = int(v)
     except ValueError:
         return default
+    if n < min_value:
+        return default
+    if max_value is not None and n > max_value:
+        return max_value
+    return n
 
 
 def http_json(url: str, body: Any = None, headers: dict | None = None, method: str | None = None,
@@ -109,8 +129,8 @@ def http_json(url: str, body: Any = None, headers: dict | None = None, method: s
     behind the SSH tunnel ride out a reconnect instead of failing the whole ingest run.
     """
     if retries is None:
-        retries = _env_int(RETRIES_ENV, RETRIES)
-    backoff_max = _env_int(BACKOFF_MAX_ENV, BACKOFF_MAX)
+        retries = _env_int(RETRIES_ENV, RETRIES, min_value=0, max_value=MAX_RETRIES)
+    backoff_max = _env_int(BACKOFF_MAX_ENV, BACKOFF_MAX, min_value=0, max_value=MAX_BACKOFF_MAX)
     data = json.dumps(body).encode() if body is not None else None
     method = method or ("POST" if body is not None else "GET")
     last: Exception | None = None

@@ -33,11 +33,18 @@
 # WAS established (the same proxy can stall an established session, not just new connects).
 #
 # `up` also starts a small background supervisor (RECALL_TUNNEL_SUPERVISE=0 disables it): it
-# polls master_alive every 10s and reruns the same retried SSH open if the master has died, so
-# a long-running caller (the nightly ingest routine) keeps a live tunnel without babysitting it
-# by hand.  `down` stops the supervisor before closing the master; `status` reports whether the
-# supervisor is running.  Its pid lives in "$SOCK.supervisor.pid", its stop signal in
-# "$SOCK.supervisor.stop", and its log in "$SOCK.supervisor.log".
+# polls master_alive every RECALL_TUNNEL_SUPERVISE_INTERVAL seconds (default 10) and reruns the
+# same retried SSH open if the master has died, so a long-running caller (the nightly ingest
+# routine) keeps a live tunnel without babysitting it by hand.  `down` stops the supervisor
+# before closing the master; `status` reports whether the supervisor is running.  Its pid lives
+# in "$SOCK.supervisor.pid", its stop signal in "$SOCK.supervisor.stop", and its log in
+# "$SOCK.supervisor.log".
+#
+# start_supervisor() serializes concurrent callers (e.g. the nightly routine's `up` overlapping
+# a manual one) with a portable mkdir-based lock ("$SOCK.supervisor.pid.lock" -- macOS has no
+# `flock` binary), so only one supervisor is ever started for a given pid file.  As a second,
+# independent layer, the supervisor loop itself exits within one poll interval if the pid file
+# ever stops naming its own pid -- an orphan left by any other path never polls forever.
 #
 # No secrets here: SSH auth is the box's own key-based access (the "coolify" ~/.ssh/config
 # alias), and QDRANT_URL / TEI_URL carry no credential -- Qdrant/TEI auth, if any, still comes
@@ -49,6 +56,7 @@ SOCK="${FLEET_RAG_HOME:-$HOME/apps/fleet-rag}/state/tunnel.sock"
 SUP_PID_FILE="${SOCK}.supervisor.pid"
 SUP_STOP_FILE="${SOCK}.supervisor.stop"
 SUP_LOG="${SOCK}.supervisor.log"
+SUP_LOCK_DIR="${SUP_PID_FILE}.lock"   # mkdir-based lock serializing start_supervisor()
 
 usage() {
   sed -n '2,38p' "$0"
@@ -105,14 +113,58 @@ supervisor_running() {
   [[ -n "$pid" ]] && kill -0 "$pid" 2>/dev/null
 }
 
+# mkdir is atomic on every POSIX filesystem, so it doubles as a lock: the first caller to
+# succeed holds it, everyone else spins.  A lock directory left behind by a start_supervisor
+# that crashed before releasing it (or was killed mid-critical-section) is cleaned up once it
+# looks stale -- its recorded pid is dead, or it is simply older than 60s -- so a wedged lock
+# can never block `up` forever.
+acquire_supervisor_lock() {
+  local waited=0
+  while ! mkdir "$SUP_LOCK_DIR" 2>/dev/null; do
+    local lock_pid=""
+    [[ -f "$SUP_LOCK_DIR/pid" ]] && lock_pid="$(cat "$SUP_LOCK_DIR/pid" 2>/dev/null)"
+    if [[ -z "$lock_pid" ]] || ! kill -0 "$lock_pid" 2>/dev/null; then
+      rm -rf "$SUP_LOCK_DIR"   # holder is dead (or never finished writing its pid): stale
+      continue
+    fi
+    local mtime now
+    mtime="$(stat -f %m "$SUP_LOCK_DIR" 2>/dev/null || stat -c %Y "$SUP_LOCK_DIR" 2>/dev/null || echo 0)"
+    now="$(date +%s)"
+    if (( now - mtime > 60 )); then
+      rm -rf "$SUP_LOCK_DIR"   # holder alive but wedged well past a sane critical-section time
+      continue
+    fi
+    sleep 0.2
+    waited=$((waited + 1))
+    if (( waited > 300 )); then   # ~60s hard cap: never block start_supervisor forever
+      rm -rf "$SUP_LOCK_DIR"
+    fi
+  done
+  echo "$$" > "$SUP_LOCK_DIR/pid"
+}
+
+release_supervisor_lock() {
+  rm -rf "$SUP_LOCK_DIR"
+}
+
+# Serialized by acquire/release_supervisor_lock: without the lock, two concurrent `recall-tunnel
+# up` calls (e.g. the nightly routine overlapping a manual `up`) could both see
+# supervisor_running() == false, both background a supervisor below, and the second write to
+# SUP_PID_FILE clobbers the first -- orphaning it (stop_supervisor only ever looks at the
+# current pid file, so it never gets told to stop).  With the lock, the second caller blocks
+# until the first has written the pid file and released, then supervisor_running() correctly
+# reports "already running" and it returns without starting a second one.
 start_supervisor() {
+  acquire_supervisor_lock
   if supervisor_running; then
+    release_supervisor_lock
     return 0
   fi
   rm -f "$SUP_STOP_FILE"
   nohup bash "$0" __supervise__ >>"$SUP_LOG" 2>&1 &
   disown
   echo "$!" > "$SUP_PID_FILE"
+  release_supervisor_lock
 }
 
 stop_supervisor() {
@@ -136,17 +188,52 @@ stop_supervisor() {
 # Internal subcommand (`recall-tunnel __supervise__`), started by start_supervisor via `nohup
 # bash "$0" __supervise__ &` -- never invoked directly.
 cmd_supervise_loop() {
-  trap 'rm -f "$SUP_PID_FILE"; exit 0' TERM INT
+  # $$ (not a $(...) command substitution, which would itself fork a transient subshell and
+  # make BASHPID report *that* subshell's pid instead) is this process's own OS pid.
+  # cmd_supervise_loop always runs as a freshly exec'd `bash "$0" __supervise__` process (see
+  # start_supervisor below), never a `(...)` subshell of its caller, so plain $$ is exact here
+  # even on macOS's bash 3.2, which has no BASHPID at all.
+  local self="$$"
+  local interval="${RECALL_TUNNEL_SUPERVISE_INTERVAL:-10}"
+  # Belt-and-suspenders against the pid-file race the lock in start_supervisor already closes:
+  # only touch SUP_PID_FILE/SUP_STOP_FILE when the file still names this process.  If some
+  # other path (a future bug, manual surgery, ...) ever lets two supervisors start for the same
+  # pid file, the loser here recognizes it does not own the file and exits instead of deleting
+  # state that belongs to the survivor.
+  owns_pid_file() {
+    [[ "$(cat "$SUP_PID_FILE" 2>/dev/null)" == "$self" ]]
+  }
+  trap 'owns_pid_file && rm -f "$SUP_PID_FILE"; exit 0' TERM INT
+
+  # start_supervisor() writes $! (this process's own pid -- nohup execs rather than forks, so
+  # it is the same pid as $self above) to SUP_PID_FILE right after backgrounding us, but
+  # backgrounding gives no ordering guarantee that the write lands before we are scheduled.
+  # Wait briefly for it to appear rather than treating a not-yet-written file as "orphaned".
+  local waited=0
+  while [[ ! -s "$SUP_PID_FILE" ]] && (( waited < 50 )); do
+    sleep 0.1
+    waited=$((waited + 1))
+  done
+
   while true; do
     if [[ -f "$SUP_STOP_FILE" ]]; then
-      rm -f "$SUP_STOP_FILE" "$SUP_PID_FILE"
+      owns_pid_file && rm -f "$SUP_PID_FILE"
+      rm -f "$SUP_STOP_FILE"
+      exit 0
+    fi
+    if ! owns_pid_file; then
+      # A concurrent start_supervisor overwrote the pid file with a newer supervisor's pid
+      # (should not happen past the lock in start_supervisor, but this is the second,
+      # independent layer): this process is an orphan.  Exit within one poll interval instead
+      # of polling forever, and do not touch the file -- it belongs to the survivor.
+      echo "recall-tunnel: supervisor: pid file no longer names this process ($self), exiting" >&2
       exit 0
     fi
     if ! master_alive; then
       echo "recall-tunnel: supervisor: tunnel is down, reopening" >&2
-      open_tunnel || echo "recall-tunnel: supervisor: reopen failed, will retry in 10s" >&2
+      open_tunnel || echo "recall-tunnel: supervisor: reopen failed, will retry in ${interval}s" >&2
     fi
-    sleep 10
+    sleep "$interval"
   done
 }
 
