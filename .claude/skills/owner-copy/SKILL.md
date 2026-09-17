@@ -23,7 +23,7 @@ Binding for every paragraph a human reads — in-app UI, ASC description / promo
 
 - **Files** (repo docs, commit/PR/Slack/Notes source): two literal ASCII spaces after `.` / `!` / `?` before the next sentence.  Do not write `&nbsp;` into files.
 - **BotFleet / OpenMausBot / cloud chat:** two ASCII spaces.  Never display the six characters `&nbsp;` (owner 2026-09-03).  Backend inserts a real U+00A0 if the renderer would collapse the gap.
-- **Claude Code chat** (entity expands, owner never sees the six characters): type `&nbsp;` plus a space after the period.  Verified ST PR #2893.
+- **Claude Code desktop app (Code tab):** two literal ASCII spaces (owner-verified 2026-09-04; the 2026-08-19 entity advice is withdrawn).
 
 Headings / titles / buttons: **Title Case**.  Body: sentence case.  Values that are not a full sentence: lowercase or sentence case.
 
