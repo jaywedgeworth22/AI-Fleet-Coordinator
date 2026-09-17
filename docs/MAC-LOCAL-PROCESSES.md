@@ -217,7 +217,7 @@ listed — those die with the branch.
 | `~/apps/fleet-mode` | On-demand.  Prints the portable Fleet mode briefing for pasting at any platform's agent. |
 | `~/Code/Usage-Monitor/scripts/namecheap.py` | Namecheap XML API CLI for querying balances, listing active domains, checking domain availability, and inspecting DNS records. |
 | `~/apps/hetzner-watcher/check-hetzner-availability.py` | On-demand & scheduled. Checks Hetzner Cloud API in Nuremberg (`nbg1`) for scarce server models (`cx53`, `cx43`, `ccx53`, `ccx63`) and sends immediate SMS alerts via `send-sms`. |
-| `~/apps/apple-notes-coding.sh` | Create/update/pin Coding notes. |
+| `~/apps/apple-notes-coding.sh` | Create/update/pin Coding notes.  Fixed Thu, Sep 17, 2026: non-ASCII titles no longer duplicate on --update. |
 | `~/Code/ai-fleet-coordinator/scripts/safari-start/install.sh` (run from the owned `~/apps/fleet-*-*` lane) | On-demand.  Copies the Safari start page to `~/Sites/safari-start/index.html` and sets homepage / new tab / new window in both the global Safari domain and the sandboxed container plist.  Quits Safari so the keys stick.  `--revert` restores Apple's Start Page.  Phone copy: `https://jays.services/start/`.  Added 2026-09-14 (FX). |
 | `~/apps/icloud-mail.py` / `~/apps/icloud-mail.sh` | On-demand. Fleet-wide iCloud Mail CLI & library for IMAP/SMTP message listing, search, reading, triage, and sending. MCP launcher: `~/apps/mcp-servers/icloud-mail-launch.sh`. Doc: `~/apps/ICLOUD-MAIL.md`. |
 | `~/apps/agent-sync-poll.py` | One-pass #agent-sync read (session start). |
