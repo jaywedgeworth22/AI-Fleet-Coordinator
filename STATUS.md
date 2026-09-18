@@ -1,5 +1,16 @@
 # Status
 
+Updated: 2026-09-18 (GROK — mac-collab-litestream inventory)
+
+## 2026-09-18 GROK — mac-collab-litestream on the master list
+
+Board `adc3f0d3`.  Branch `grok/litestream-inventory`.  Worktree
+`~/apps/fleet-grok-litestream-inv`.  pm2 job was already online (B2 replica of
+THE BOARD `findings.db`); the owner-facing table skipped it.  Tracked ecosystem
+on main still listed retired scout/senate jobs and omitted live `seat-mcp` +
+`mac-collab-litestream`.  Docs + ecosystem sync only.  No process restart.
+Rollout: `docs/rollouts/2026-09-18-mac-collab-litestream-inventory.md`.
+
 Updated: 2026-09-18 (CURSOR — Backup repos Sentry cron margin)
 
 ## 2026-09-18 CURSOR — Backup repos Sentry cron margin
