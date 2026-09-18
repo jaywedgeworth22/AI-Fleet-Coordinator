@@ -15,12 +15,21 @@
  * SUBREQUEST BUDGET.  A Worker invocation on the free plan may make 50
  * subrequests.  Probing everything in one invocation blew through that, so the
  * page asks for one section per request and each section states its own
- * worst case below.  `/api/status` still answers, but it runs the sections in
- * order against a 45-subrequest budget and defers whatever does not fit to the
- * next call, by which time the earlier sections are cached and cost nothing.
+ * worst case below.  `/api/status` still answers: it picks the sections that
+ * fit a 45-subrequest budget, oldest-checked first, and defers the rest to the
+ * next call, by which time the sections ahead of them are cached and free.
+ * Only a section that will really fetch is charged — an unconfigured one costs
+ * nothing, so it can never crowd out a check that would have done work.
+ *
+ * DEADLINES.  The budget bounds how many calls we make, not how long they
+ * take, and Cloudflare cuts a request off near 100 s.  So every section is
+ * raced against SECTION_DEADLINE_MS and the whole document against
+ * STATUS_DEADLINE_MS; a section that loses its race reports warn and says it
+ * timed out.  The selected sections run concurrently, so /api/status answers
+ * in about one section's deadline rather than the sum of all of them.
  *
  * Routes:
- *   GET /api/status              every section, sequenced under the budget
+ *   GET /api/status              every section that fits, run concurrently
  *   GET /api/status?section=…    one section, its own 30 s cache
  *   GET /api/recall/search?q=    proxy for the fleet RAG search
  *   *                            static assets from ./public
@@ -39,6 +48,14 @@ const RECALL_SEARCH_LIMIT = 8;
 // How many subrequests one invocation of /api/status may spend.  Below the
 // platform's 50 so the response itself and any retry still have room.
 const STATUS_BUDGET = 45;
+
+// How long one section may take before the page gives up on it, and how long
+// the whole /api/status document may take.  Both sit well under Cloudflare's
+// edge limit, and the second is the first plus enough room to assemble the
+// JSON.  The page polls every 60 s and disables its refresh button while a
+// request is in flight, so a section that hangs must not outlast the poll.
+const SECTION_DEADLINE_MS = 25_000;
+const STATUS_DEADLINE_MS = 28_000;
 
 // Public surfaces to probe.  Anything behind Cloudflare Access answers with a
 // redirect to cloudflareaccess.com or with 401/403, both of which mean the
@@ -118,13 +135,39 @@ function bodySnippet(text) {
   return ` — ${flat.length > 140 ? `${flat.slice(0, 140)}…` : flat}`;
 }
 
+// Hostname of a Location header, resolved against the request URL, with the
+// path and query thrown away.  An Access redirect carries the original URL in
+// its query string, so printing the whole thing would put our own request —
+// tokens in query parameters included — on the status page.
+function locationHost(location, requestUrl) {
+  if (!location) return 'an unnamed location';
+  try {
+    return new URL(location, requestUrl).host;
+  } catch {
+    return 'an unparseable location';
+  }
+}
+
 async function apiJson(url, { headers = {}, method = 'GET', body, timeoutMs = API_TIMEOUT_MS } = {}) {
   const res = await fetch(url, {
     method,
     body,
     headers: { 'User-Agent': UA, Accept: 'application/json', ...headers },
+    // Never follow.  fetch() strips Authorization across origins but keeps
+    // custom headers, so a followed hop would hand CF-Access-Client-Id and
+    // CF-Access-Client-Secret to whoever the redirect names — and an expired
+    // service token redirects every Access-fronted host to cloudflareaccess.com.
+    // Each hop is also an uncounted subrequest against the platform's 50.
+    redirect: 'manual',
     signal: AbortSignal.timeout(timeoutMs),
   });
+  if (res.status >= 300 && res.status < 400) {
+    const where = locationHost(res.headers.get('location'), url);
+    throw new Error(
+      `HTTP ${res.status} redirect to ${where}, not followed`
+      + (where.endsWith('cloudflareaccess.com') ? ' — the Access service token looks expired' : ''),
+    );
+  }
   const text = await res.text();
   if (!res.ok) throw new Error(`HTTP ${res.status}${bodySnippet(text)}`);
   try {
@@ -248,7 +291,8 @@ async function checkEndpoints() {
 }
 
 /* ------------------------------------------------------------ fleet recall */
-/* Subrequests: health + stats + canary search.  Worst case 3.               */
+/* Subrequests: health + stats + canary search.  Worst case 3, or 1 when the */
+/* search secrets are unset and only the public health probe runs.           */
 
 // Contract lives in scripts/fleet-recall-service/server.py and
 // scripts/fleet_rag/recall_api.py:
@@ -278,7 +322,11 @@ function recallPublicHeaders(env) {
 
 // POST, JSON body, and the field really is called `query` — recall_api.py
 // reads body["query"], not "q" and not "text".
-export async function recallSearch(env, query, limit = RECALL_SEARCH_LIMIT) {
+//
+// Deliberately not exported.  A named export on the Worker module is callable
+// over RPC by anything given a service binding to us, which would reach the
+// corpus without passing the route's configuration check.  Nothing imports it.
+async function recallSearch(env, query, limit = RECALL_SEARCH_LIMIT) {
   const data = await apiJson(`${recallBase(env)}/recall/search`, {
     method: 'POST',
     headers: recallHeaders(env),
@@ -308,7 +356,7 @@ function normaliseHit(h) {
 }
 
 async function checkRecall(env) {
-  const health = await section(async () => {
+  const checkHealth = () => section(async () => {
     const data = await apiJson(`${recallBase(env)}/health`, {
       headers: recallPublicHeaders(env),
       timeoutMs: PROBE_TIMEOUT_MS,
@@ -327,6 +375,7 @@ async function checkRecall(env) {
 
   const gaps = missing(env, 'RECALL_API_TOKEN', 'CF_ACCESS_CLIENT_ID', 'CF_ACCESS_CLIENT_SECRET');
   if (gaps.length) {
+    const health = await checkHealth();
     return {
       ...notConfigured(...gaps),
       health,
@@ -337,7 +386,11 @@ async function checkRecall(env) {
     };
   }
 
-  const [stats, canary] = await Promise.all([
+  // All three at once.  Awaiting health first and only then starting the
+  // 25 s canary made this section cost health + canary end to end, which is
+  // what pushed a cold /api/status past Cloudflare's edge limit.
+  const [health, stats, canary] = await Promise.all([
+    checkHealth(),
     section(async () => {
       const data = await apiJson(`${recallBase(env)}/recall/stats`, { headers: recallHeaders(env) });
       return {
@@ -593,14 +646,28 @@ async function checkGitHub(env) {
 
   const failing = items.filter((i) => i.state === 'down');
   const runErrors = items.filter((i) => i.runError).length;
+  const noRun = items.filter((i) => !i.run && !i.runError).length;
   const total = openPrs === null
     ? 'PR count failed'
     : `${openPrs} open PR${openPrs === 1 ? '' : 's'}${prTruncated ? ' (per-repo split capped at 100)' : ''}`;
 
+  // "No repo is failing" is only green when we actually heard back about every
+  // repo.  If all thirteen actions/runs calls fail, failing.length is 0 and the
+  // old code called that up — the panel reporting main green everywhere on the
+  // strength of having learned nothing.
+  const parts = [total];
+  if (failing.length) {
+    parts.push(`${failing.length} repo${failing.length === 1 ? '' : 's'} failing on main`);
+  } else if (!runErrors && !noRun) {
+    parts.push('main green everywhere');
+  }
+  if (runErrors) parts.push(`${runErrors} run check${runErrors === 1 ? '' : 's'} failed`);
+  if (noRun) parts.push(`${noRun} with no run on main`);
+
   return {
     ok: !prError && runErrors === 0,
-    state: failing.length === 0 ? 'up' : 'down',
-    summary: `${total}, ${failing.length === 0 ? 'main green everywhere' : `${failing.length} repo${failing.length === 1 ? '' : 's'} failing on main`}`,
+    state: failing.length ? 'down' : ((runErrors || noRun) ? 'warn' : 'up'),
+    summary: parts.join(', '),
     items,
     error: prError ? `PR search: ${prError}` : undefined,
   };
@@ -624,12 +691,27 @@ async function checkVercel(env) {
 
   let projects = await fetchVercelProjects(headers, '');
   const scopes = [];
+  const scopeErrors = [];
   if (!projects.length) {
     const teams = await apiJson('https://api.vercel.com/v2/teams', { headers }).catch(() => ({ teams: [] }));
-    for (const team of (teams.teams || []).slice(0, VERCEL_MAX_TEAMS)) {
-      const scoped = await fetchVercelProjects(headers, `&teamId=${encodeURIComponent(team.id)}`);
-      if (scoped.length) scopes.push(team.slug || team.name || team.id);
-      projects = projects.concat(scoped);
+    // All the teams at once.  Awaiting them one by one made this section cost
+    // up to four API timeouts back to back on top of the first two calls, and
+    // it is the same number of subrequests either way.  A team that fails is
+    // named rather than thrown, so one bad scope cannot blank the card.
+    const scoped = await Promise.all(
+      (teams.teams || []).slice(0, VERCEL_MAX_TEAMS).map(async (team) => {
+        const label = team.slug || team.name || team.id;
+        try {
+          return { label, list: await fetchVercelProjects(headers, `&teamId=${encodeURIComponent(team.id)}`) };
+        } catch (err) {
+          return { label, list: [], error: errText(err) };
+        }
+      }),
+    );
+    for (const { label, list, error } of scoped) {
+      if (error) scopeErrors.push(`${label}: ${error}`);
+      else if (list.length) scopes.push(label);
+      projects = projects.concat(list);
     }
   }
 
@@ -647,12 +729,13 @@ async function checkVercel(env) {
 
   const bad = items.filter((i) => i.state === 'down').length;
   return {
-    ok: true,
-    state: bad > 0 ? 'down' : 'up',
+    ok: scopeErrors.length === 0,
+    state: bad > 0 ? 'down' : (scopeErrors.length ? 'warn' : 'up'),
     summary: items.length
       ? `${items.length} projects, ${bad === 0 ? 'no failed deployments' : `${bad} failed`}${scopes.length ? ` (teams: ${scopes.join(', ')})` : ''}`
       : 'No projects visible to this token',
     items,
+    error: scopeErrors.length ? `Teams: ${scopeErrors.join(' · ')}` : undefined,
   };
 }
 
@@ -792,18 +875,32 @@ async function checkDatadog(env) {
 
 /* ------------------------------------------------------------ orchestration */
 
-// Worst-case subrequests per section.  These are the numbers the comment above
-// each check states; keep them together or the budget stops meaning anything.
+// Worst-case subrequests per section, as a function of env.  These are the
+// numbers the comment above each check states; keep them together or the
+// budget stops meaning anything.
+//
+// cost() must return 0 for exactly the cases where run() returns notConfigured
+// without fetching.  Charging a check that never calls out was letting an
+// unset GITHUB_TOKEN and VERCEL_TOKEN spend 21 of the 45 on nothing, which
+// deferred the sections at the end of the list and overstated `subrequests`.
 const CHECKS = {
-  endpoints: { cost: ENDPOINTS.length, run: () => checkEndpoints() },
-  recall: { cost: 3, run: (env) => checkRecall(env) },
-  board: { cost: 2, run: (env) => checkBoard(env) },
-  coolify: { cost: 2, run: (env) => checkCoolify(env) },
-  github: { cost: 1 + APPS.length, run: (env) => checkGitHub(env) },
-  vercel: { cost: 2 + VERCEL_MAX_TEAMS, run: (env) => checkVercel(env) },
-  sentry: { cost: 1, run: (env) => checkSentry(env) },
-  pagerduty: { cost: 1, run: (env) => checkPagerDuty(env) },
-  datadog: { cost: 1, run: (env) => checkDatadog(env) },
+  endpoints: { cost: () => ENDPOINTS.length, run: () => checkEndpoints() },
+  // The health probe runs even when search is unconfigured, so recall is never
+  // free — it is 1 without the secrets and 3 with them.
+  recall: {
+    cost: (env) => (missing(env, 'RECALL_API_TOKEN', 'CF_ACCESS_CLIENT_ID', 'CF_ACCESS_CLIENT_SECRET').length ? 1 : 3),
+    run: (env) => checkRecall(env),
+  },
+  board: { cost: (env) => (env.MAC_COLLAB_TOKEN ? 2 : 0), run: (env) => checkBoard(env) },
+  coolify: { cost: (env) => (env.COOLIFY_TOKEN ? 2 : 0), run: (env) => checkCoolify(env) },
+  github: { cost: (env) => (env.GITHUB_TOKEN ? 1 + APPS.length : 0), run: (env) => checkGitHub(env) },
+  vercel: { cost: (env) => (env.VERCEL_TOKEN ? 2 + VERCEL_MAX_TEAMS : 0), run: (env) => checkVercel(env) },
+  sentry: { cost: (env) => (env.SENTRY_AUTH_TOKEN ? 1 : 0), run: (env) => checkSentry(env) },
+  pagerduty: { cost: (env) => (env.PAGERDUTY_API_KEY ? 1 : 0), run: (env) => checkPagerDuty(env) },
+  datadog: {
+    cost: (env) => (missing(env, 'DD_API_KEY', 'DD_APP_KEY').length ? 0 : 1),
+    run: (env) => checkDatadog(env),
+  },
 };
 
 const SECTION_NAMES = Object.keys(CHECKS);
@@ -818,30 +915,78 @@ function cached(name) {
   return { ...hit, fresh: Date.now() - hit.at < CACHE_TTL_MS };
 }
 
+function deadlineResult(what, ms) {
+  // The document-wide deadline hands out whatever is left of its window, which
+  // can be under a second, and "timed out after 0 s" reads like a bug.
+  const took = ms >= 1000 ? `${Math.round(ms / 1000)} s` : `${ms} ms`;
+  return {
+    ok: false,
+    state: 'warn',
+    summary: `Timed out after ${took}`,
+    error: `${what} did not answer within the ${took} deadline, so the page stopped waiting on it.`,
+    items: [],
+    timedOut: true,
+  };
+}
+
+// Promise.race against a wall clock.  The loser is not cancelled — every fetch
+// underneath carries its own AbortSignal — but the response stops waiting on
+// it, and a section that finishes late still populates the cache for the next
+// call.  Without this the budget bounded how many calls we made and nothing
+// bounded how long they took, so a cold fan-out could run past Cloudflare's
+// edge limit and the page's refresh button stayed disabled through it.
+function withDeadline(promise, ms, what) {
+  let timer;
+  const alarm = new Promise((resolve) => {
+    timer = setTimeout(() => resolve(deadlineResult(what, ms)), ms);
+  });
+  return Promise.race([promise, alarm]).finally(() => clearTimeout(timer));
+}
+
 async function runSection(name, env) {
   const hit = cached(name);
   if (hit && hit.fresh) return { ...hit.data, cached: true, checkedAt: hit.checkedAt };
-  const data = await section(() => CHECKS[name].run(env));
-  const checkedAt = new Date().toISOString();
-  sectionCache.set(name, { at: Date.now(), data, checkedAt });
-  return { ...data, cached: false, checkedAt };
+
+  const run = section(() => CHECKS[name].run(env)).then((data) => {
+    const checkedAt = new Date().toISOString();
+    sectionCache.set(name, { at: Date.now(), data, checkedAt });
+    return { ...data, cached: false, checkedAt };
+  });
+
+  const out = await withDeadline(run, SECTION_DEADLINE_MS, `The ${name} check`);
+  return out.timedOut ? { ...out, cached: false, checkedAt: new Date().toISOString() } : out;
 }
 
-// Sequenced, not parallel, and stops spending once the budget is gone.  A
-// section that does not fit is served stale if we have it and marked pending
-// if we do not; either way the next call picks it up, because by then the
-// expensive sections ahead of it are cached and cost nothing.
+// Oldest first, never-checked ahead of everything.  SECTION_NAMES is a fixed
+// order and `spent` resets every invocation, so running it in declaration
+// order meant a 60 s poller re-ran the same first sections and deferred the
+// same last ones forever — pagerduty and datadog never got checked at all.
+// Sorting by when each section last ran makes whatever was deferred lead the
+// next call.  Array.prototype.sort is stable, so ties keep declaration order.
+function staleFirst() {
+  return [...SECTION_NAMES].sort((a, b) => {
+    const at = (n) => (sectionCache.get(n) || { at: 0 }).at;
+    return at(a) - at(b);
+  });
+}
+
+// Picks what fits the budget, then runs those concurrently rather than in
+// order: the sections do not contend for anything, and sequencing them made
+// the document cost the sum of every section's worst case.  A section that
+// does not fit is served stale if we have it and marked pending if we do not;
+// either way the next call leads with it.
 async function buildStatus(env) {
   const sections = {};
+  const pending = [];
   let spent = 0;
 
-  for (const name of SECTION_NAMES) {
+  for (const name of staleFirst()) {
     const hit = cached(name);
     if (hit && hit.fresh) {
       sections[name] = { ...hit.data, cached: true, checkedAt: hit.checkedAt };
       continue;
     }
-    const cost = CHECKS[name].cost;
+    const cost = CHECKS[name].cost(env);
     if (spent + cost > STATUS_BUDGET) {
       sections[name] = hit
         ? { ...hit.data, cached: true, stale: true, checkedAt: hit.checkedAt }
@@ -854,16 +999,33 @@ async function buildStatus(env) {
       continue;
     }
     spent += cost;
-    // eslint-disable-next-line no-await-in-loop -- sequencing is the point
-    sections[name] = await runSection(name, env);
+    pending.push(name);
   }
 
+  // One deadline over the whole fan-out as well as one per section, so a
+  // section that hangs just short of its own deadline cannot push the document
+  // past the edge limit.  Anything still running when this fires is reported
+  // the way a deferred section is, and its result lands in the cache for the
+  // next call.
+  const started = Date.now();
+  await Promise.all(pending.map(async (name) => {
+    const left = Math.max(0, STATUS_DEADLINE_MS - (Date.now() - started));
+    sections[name] = await withDeadline(runSection(name, env), left, `The ${name} check`);
+  }));
+
+  // Assembled in declaration order, not completion order, so the document
+  // reads the same way every time however the concurrency lands.
+  const ordered = {};
+  for (const name of SECTION_NAMES) ordered[name] = sections[name];
+
+  // A section we ran but did not wait for spent its subrequests all the same,
+  // so `spent` stays honest about what this invocation charged.
   const states = Object.values(sections)
     .map((s) => s.state)
     .filter((s) => s !== 'off' && s !== 'pending');
   const overall = states.includes('down') ? 'down' : (states.includes('warn') ? 'warn' : 'up');
 
-  return { checkedAt: new Date().toISOString(), overall, subrequests: spent, sections };
+  return { checkedAt: new Date().toISOString(), overall, subrequests: spent, sections: ordered };
 }
 
 function jsonResponse(payload, status = 200) {

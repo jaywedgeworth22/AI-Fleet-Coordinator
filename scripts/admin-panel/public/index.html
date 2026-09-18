@@ -300,10 +300,14 @@
 
   /* ------------------------------------------------------------ renderers */
 
+  // Only http(s) becomes a link.  Coolify hands us each application's fqdn,
+  // which is operator-editable text, and hitList below has always guarded the
+  // same case — a row whose url is anything else renders as a plain div.
   function rowNode(opts) {
-    var node = opts.url ? el('a', 'row') : el('div', 'row');
-    if (opts.url) {
-      node.href = opts.url;
+    var href = opts.url && /^https?:\/\//.test(opts.url) ? opts.url : '';
+    var node = href ? el('a', 'row') : el('div', 'row');
+    if (href) {
+      node.href = href;
       node.target = '_blank';
       node.rel = 'noopener noreferrer';
     }
