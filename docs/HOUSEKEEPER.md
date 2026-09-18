@@ -21,10 +21,13 @@ Safe under disk pressure (scripts already encode cooldowns):
 
 1. `python3 /Users/jay/apps/mac-resource-watch.py --once --no-webhook`
 2. `bash /Users/jay/apps/mac-auto-cleanup.sh --pressure`
-3. `bash /Users/jay/.claude-disk-janitor/janitor.sh`
+3. `bash /Users/jay/.claude-disk-janitor/janitor.sh` (preferred worktree path — follows janitor defaults)
 4. `cleanmymac clean --force` when CLI present — never `cleanmymac optimize ram`
-5. Stale caches, brew/npm caches, stale git worktrees age ≥3d (not live mains)
-6. Existing Coolify keep-two / B2 keep-two paths when those routines fire (Coolify may still be GB-owned until BF cutover)
+5. Stale caches, brew/npm caches
+6. Stale git worktrees only when **all** of: age ≥7d (janitor default, not 3d), branch merged (or equivalent), and no `.janitor-keep` — never live mains / dirty / in-session trees
+7. Existing Coolify keep-two / B2 keep-two paths when those routines fire (Coolify may still be GB-owned until BF cutover)
+
+Do **not** authorize deleting worktrees solely for age ≥3d.  Sentry HIGH: match janitor’s 7-day default + merged + `.janitor-keep` checks.
 
 Datadog Alert 22024796 is a 3-day forecast ≥99%, not live >90%.  Data disk3s5 ~84% improved — still reclaim regenerable waste under pressure.
 
@@ -38,8 +41,9 @@ Act on regenerable waste without asking:
 2. bash /Users/jay/apps/mac-auto-cleanup.sh --pressure
 3. bash /Users/jay/.claude-disk-janitor/janitor.sh
 4. cleanmymac clean --force (when the CLI exists).  Never `cleanmymac optimize ram`.
-5. Stale caches, brew/npm caches, and stale git worktrees age≥3d that are not live mains.
-6. On Hetzner hosts you can reach, run the existing Coolify keep-two / maintenance path only when that routine owns it.  Do not persist TCPMSS.  Do not change sysctl or network settings.  Do not install Tailscale.
+5. Stale caches and brew/npm caches.
+6. Stale git worktrees only when age≥7d AND merged (or equivalent) AND no .janitor-keep — never age≥3d alone, never live mains, never dirty/in-session trees.  Prefer janitor.sh for worktree retirement.
+7. On Hetzner hosts you can reach, run the existing Coolify keep-two / maintenance path only when that routine owns it.  Do not persist TCPMSS.  Do not change sysctl or network settings.  Do not install Tailscale.
 
 Ask-first reclaim (explicit Jay OK required before any delete/clear):
 - Monet / Parall Claude VM / claudevm.bundle (~10 GiB)
@@ -57,6 +61,6 @@ Live Mac jobs:
 
 - `com.jay.mac-resource-watch` — every 5 min; samples disk/RAM/CPU; runs safe cleanup on a disk hit (own cooldown, `--force` is the only bypass); POSTs BotFleet Housekeeper webhook and, if configured, Grok Bot Housekeeper (45 min webhook cooldown)
 - `com.jay.mac-cleanup` — every 4 h (`mac-auto-cleanup.sh`)
-- `com.jay.disk-janitor` — every 30 min; cache + idle worktree retirement (warn at 80G free, pressure at 65G)
+- `com.jay.disk-janitor` — every 30 min; cache + idle worktree retirement (warn at 80G free, pressure at 65G; worktrees age≥7d + merged + no `.janitor-keep`)
 
 Webhook secrets (chmod 600, never print): `~/.secrets/botfleet-housekeeper-webhook.env` (required) and optional `~/.secrets/grok-bot-housekeeper-webhook.env`.
