@@ -196,7 +196,8 @@ def inline(s: str) -> str:
     s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", s)
     # Underscore italics only at word edges.  Identifiers like
     # merge_commit_sha / prompt_too_large must not become mashed words.
-    s = re.sub(r"(?<![A-Za-z0-9])_([^_]+)_(?![A-Za-z0-9])", r"<i>\1</i>", s)
+    # Do not match the inner pair of __bold__ (would render _<i>bold</i>_).
+    s = re.sub(r"(?<![A-Za-z0-9_])_([^_]+)_(?![A-Za-z0-9_])", r"<i>\1</i>", s)
     return s
 
 text = sys.stdin.read()
@@ -288,6 +289,9 @@ while i < len(lines):
         item = m.group(1).strip()
         if not item:
             i += 1
+            nxt = peek_stripped(i)
+            if in_ul and nxt and re.match(r"^[-*+]\s+", nxt):
+                add_spacer()
             continue
         if in_ol:
             out.append("</ol>")
