@@ -259,6 +259,79 @@ class RuleCTests(unittest.TestCase):
         self.assertIsNone(sg.check_command("pgrep -c -f mac-collab"))
 
 
+class InvokeSpellingTests(unittest.TestCase):
+    """#261 matched bare `od`/`cat`/`ps` only.  Path and command/exec spellings leaked."""
+
+    def test_usr_bin_od_here_string(self):
+        reason = sg.check_command('/usr/bin/od -c <<< "$SILICONFLOW_API_KEY"')
+        self.assertIsNotNone(reason)
+        self.assertIn("SILICONFLOW_API_KEY", reason)
+
+    def test_bin_od_here_string(self):
+        self.assertIsNotNone(sg.check_command('/bin/od -c <<< "$GITHUB_TOKEN"'))
+
+    def test_command_od(self):
+        self.assertIsNotNone(
+            sg.check_command('command od -c <<< "$SILICONFLOW_API_KEY"')
+        )
+
+    def test_command_p_od(self):
+        self.assertIsNotNone(
+            sg.check_command('command -p od -c <<< "$SILICONFLOW_API_KEY"')
+        )
+
+    def test_exec_xxd(self):
+        self.assertIsNotNone(sg.check_command('exec xxd <<< "$AWS_SECRET_ACCESS_KEY"'))
+
+    def test_backslash_od(self):
+        self.assertIsNotNone(sg.check_command(r'\od -c <<< "$SILICONFLOW_API_KEY"'))
+
+    def test_usr_bin_printf_last(self):
+        self.assertIsNotNone(sg.check_command('/usr/bin/printf %s "$DB_PASSWORD"'))
+
+    def test_usr_bin_cut_c(self):
+        self.assertIsNotNone(
+            sg.check_command('/usr/bin/cut -c1-4 <<< "$GITHUB_TOKEN"')
+        )
+
+    def test_bin_cat_handoff(self):
+        reason = sg.check_command("/bin/cat ~/.secrets/global-api-keys")
+        self.assertIsNotNone(reason)
+        self.assertIn(".secrets/", reason)
+
+    def test_usr_bin_xxd_handoff(self):
+        self.assertIsNotNone(sg.check_command("/usr/bin/xxd ~/.secrets/global-api-keys"))
+
+    def test_command_p_cat_handoff(self):
+        self.assertIsNotNone(
+            sg.check_command("command -p cat ~/.secrets/global-api-keys")
+        )
+
+    def test_bin_ps(self):
+        self.assertIsNotNone(sg.check_command("/bin/ps aux"))
+
+    def test_usr_bin_ps(self):
+        self.assertIsNotNone(sg.check_command("/usr/bin/ps auxww"))
+
+    def test_exec_ps(self):
+        self.assertIsNotNone(sg.check_command("exec ps -ef"))
+
+    def test_usr_bin_pgrep_list(self):
+        self.assertIsNotNone(sg.check_command("/usr/bin/pgrep -fl node"))
+
+    def test_command_pgrep_list(self):
+        self.assertIsNotNone(sg.check_command("command pgrep -l ssh"))
+
+    def test_path_od_of_ordinary_file_allowed(self):
+        self.assertIsNone(sg.check_command("/usr/bin/od -c /tmp/readme.txt"))
+
+    def test_mention_of_usr_bin_od_allowed(self):
+        self.assertIsNone(sg.check_command("echo /usr/bin/od is a tool"))
+
+    def test_path_pgrep_f_still_allowed(self):
+        self.assertIsNone(sg.check_command("/usr/bin/pgrep -f mac-collab"))
+
+
 class RuleBAndDTests(unittest.TestCase):
     def test_bearer_without_redaction_denied(self):
         self.assertIsNotNone(

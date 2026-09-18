@@ -80,25 +80,33 @@ SECRET_FILE_PATTERNS = [
 # all of those -- `$(ps -o comm= -p $p)` did not match, which is exactly how live Stripe /
 # GitHub / UptimeRobot keys reached transcripts on 2026-09-01 despite this guard.
 _CMD_START = r"(?:^|[;&|(\n`]|\$\()\s*"
+# Same tool via /usr/bin/od, ./xxd, command -p cat, exec ps, \od (skip-alias).
+# Bare-name-only matching let `/usr/bin/od -c <<< "$KEY"` and `/bin/cat ~/.secrets/`
+# through after #261, which is the 2026-09-17 leak with a path prefix.
+_INVOKE = (
+    r"(?:(?:command|builtin|exec)\s+(?:--\s+|-[pv]+\s+)*)?"
+    r"(?:/{0,1}(?:[\w.+-]+/)*)?"
+    r"\\?"
+)
 
 # Byte-dump tools belong here too: `xxd ~/.secrets/global-api-keys` is cat for this purpose.
-DUMP_COMMANDS = _CMD_START + r"(cat|head|tail|less|more|bat|od|xxd|hexdump|hd|strings|base64)\s"
+DUMP_COMMANDS = _CMD_START + _INVOKE + r"(cat|head|tail|less|more|bat|od|xxd|hexdump|hd|strings|base64)\s"
 
-PS_PATTERN = _CMD_START + r"ps\s"
+PS_PATTERN = _CMD_START + _INVOKE + r"ps\s"
 
 # `pgrep -l` / `-fl` / `-lf` print the full command line just like ps, so "don't run bare
 # ps" was never sufficient.  pids-only forms (`pgrep -f PATTERN`, `pgrep -x`, `pgrep -c`)
 # stay allowed -- only the listing flags are caught.
-PGREP_LIST_PATTERN = _CMD_START + r"pgrep\s+(?:-[a-zA-Z]*l[a-zA-Z]*)(?:\s|$)"
+PGREP_LIST_PATTERN = _CMD_START + _INVOKE + r"pgrep\s+(?:-[a-zA-Z]*l[a-zA-Z]*)(?:\s|$)"
 
 BYTE_DUMP_TOOLS = re.compile(
-    _CMD_START + r"(?:od|xxd|hexdump|hd|strings|base64)\b"
+    _CMD_START + _INVOKE + r"(?:od|xxd|hexdump|hd|strings|base64)\b"
 )
 CUT_CHARS = re.compile(
-    _CMD_START + r"cut\s+(?:-[^\s]*c[^\s]*|--characters(?:=|\s))"
+    _CMD_START + _INVOKE + r"cut\s+(?:-[^\s]*c[^\s]*|--characters(?:=|\s))"
 )
 PRINTF_FORMAT = re.compile(
-    r"(?:^|[;&|(\n`]|\$\()\s*printf\s+(?:--\s+)?"
+    _CMD_START + _INVOKE + r"printf\s+(?:--\s+)?"
     r"(?:(['\"]).*?%[-+#0-9.]*[sqb].*?\1|%[-+#0-9.]*[sqb])"
 )
 # $NAME or ${NAME...} but not ${#NAME} (length, safe).
