@@ -232,6 +232,41 @@ if you "just wanted to see which keys exist."  Incident: a Grok session used
 `grep '^[A-Z0-9_]+='` on the handoff file and dumped the whole store into the
 chat.  The rule exists so the next seat does not repeat it.
 
+### Loaded-key byte dumps (2026-09-17 — binding for every agent)
+
+A variable that already holds a key is still a secret.  `od` / `xxd` /
+`hexdump` / `hd` / `strings` / `base64` print every byte.  `cut -c` prints a
+prefix.  A last-command `printf %s` / `%q` / `%b` of that variable makes the
+tool result the live value.  Same class as `cat` of the handoff file.
+
+Incident: a Claude subagent loaded `SILICONFLOW_API_KEY` correctly (never
+echoed), then ran `od -c` on the variable to look for stray quotes.  The full
+key landed in the transcript.  The secret-guard hook now denies this structure.
+
+**Forbidden** (NAME matches KEY / TOKEN / SECRET / PASSWORD / PASSWD / DSN):
+
+```bash
+od -c <<< "$SILICONFLOW_API_KEY"
+printf '%s' "$TOKEN" | xxd
+echo "$API_KEY" | hexdump -C
+cut -c1-4 <<< "$API_KEY"
+printf '%q' "$SECRET"
+xxd ~/.secrets/global-api-keys          # byte-dump of the file is cat
+```
+
+**Allowed** (shape / length only, or printf consumed by something else):
+
+```bash
+[ -n "$TOKEN" ]
+echo ${#TOKEN}
+[[ $TOKEN == *'"'* ]] && echo quoted || echo clean
+printf '%s' "$TOKEN" | wc -c
+```
+
+Hook (Claude Code Bash PreToolUse): `~/.claude/hooks/secret-guard-pretooluse.py`
+(tracked `scripts/hooks/secret-guard-pretooluse.py` in ai-fleet-coordinator).
+Seats without that hook still follow this rule in skills and global config.
+
 ---
 
 ## Prior messages stay in scope (owner preference — ALL agents, ALL platforms)
@@ -758,7 +793,9 @@ MONET (Opus), GROK (Mac), GROK-BUILD (Grok Build TUI), MM (MiniMax Code / Mavis 
 
 ## CI Runner Infrastructure Policy (STRICT - ALL REPOS)
 - **Dedicated Coolify Runners ONLY**: All CI workflows across all repos (`<YOUR_OTHER_PROJECT_NAME>`, `<YOUR_PROJECT_NAME>`, `Usage-Monitor`, `congress-trading-shared`) MUST run on dedicated Coolify self-hosted runners (`coolify-hetzner-congress` / `congress-ci` on Coolify, `socratic-ci`).
-- **Local Mac Runner PERMANENTLY BANNED**: NEVER start, spawn, re-enable, or configure local Mac self-hosted runners (`trading-live-mac-ci`, `trading-live-mac`, `actions-runner`). Local Mac runners are strictly prohibited and permanently banned from running on any machine.
+- **Local Mac Runner PERMANENTLY BANNED**: NEVER start, spawn, re-enable, or configure local Mac self-hosted runners (`trading-live-mac-ci`, `trading-live-mac`, `actions-runner`). Local Mac runners are strictly prohibited and permanently banned from running on any machine. The reason is security, not preference: PR-triggered runner code would execute on the same machine that holds `~/.secrets/global-api-keys` and the board's `findings.db` — never grant that surface to untrusted PR-triggered code.
+- **iOS build/ship is the one CI job class that needs macOS.** It runs on **GitHub-hosted `macos-latest`**, never a local Mac runner — see `docs/MAC-LOCAL-PROCESSES.md` "Omitted" note (`ios-ship` is not installed to any seat; Compiler / `GB-COMPILER` owns iOS ship on hosted `macos-latest` only; do not teach a local Mac runner or `xcodebuild` on this Mac as a substitute).
+- **Reconciled 2026-09-16 (Claude, board item 7fa3b630):** a prior audit found this ban contradicted by three always-on `actions.runner…mac-xcode26-{congress,socratic,usage}` LaunchAgents the watchdog itself kept bootstrapping, plus Congress.Trade's `ios-build.yml` / `ios-ship.yml` running on a `[self-hosted, macOS, ARM64]` label. Both are now fixed: the three `mac-xcode26` runners were retired 2026-08-24 (LaunchAgent uninstalled, plists removed, de-registered from GitHub — see `docs/MAC-LOCAL-PROCESSES.md`), and `ios-build.yml` / `ios-ship.yml` were verified (2026-09-16) to run on `macos-latest`. If a `docs/MAC-LOCAL-PROCESSES.md` row for a `mac-xcode*` / `actions.runner*` process ever shows live again (`Up` / `Always-on`), that is this policy being violated — retire it or escalate, do not leave it running. Sanity-check with `python3 scripts/check-ci-runner-policy.py`.
 
 
 _Format: `AGENT — <down|degraded> reason, since <date>, expected back <absolute time or "unknown">`._
@@ -1872,6 +1909,7 @@ enabled for BotFleet only** (`autofixAutomationTuning=always`).  Hold
 Autofix on every other project.  Slack `3930668` notifies `#agent-sync`
 on `rca_completed` / `pr_ready_for_review`.  Do not mint extra Seer
 *user* seats for bot GitHub accounts.
+**Do not dismiss Sentry Seer findings on their literal claim.** Even if the exact symptom or literal claim Seer makes seems inaccurate, investigate the surrounding code and context. Seer often flags real underlying structural issues or hazards.
 
 ### Datadog vs Sentry (do not double-pay)
 

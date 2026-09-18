@@ -1,0 +1,8 @@
+{
+  // start.jays.services: the Safari start page served as a public static asset.
+  // Deploy from this directory with `wrangler deploy` (account Usage.Jays.Services, zone jays.services).
+  "name": "start-jays-services",
+  "compatibility_date": "2026-09-01",
+  "assets": { "directory": "./public" },
+  "routes": [{ "pattern": "start.jays.services", "custom_domain": true }]
+}

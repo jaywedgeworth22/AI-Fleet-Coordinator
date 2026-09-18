@@ -47,7 +47,7 @@ if [[ "${1:-}" == "--revert" ]]; then
 fi
 
 mkdir -p "$DEST"
-cp "$HERE/index.html" "$DEST/index.html"
+cp "$HERE/public/index.html" "$DEST/index.html"
 URL="file://$DEST/index.html"
 quit_safari
 write_safari HomePage -string "$URL"
