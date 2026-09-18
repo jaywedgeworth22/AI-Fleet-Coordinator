@@ -1,5 +1,17 @@
 # Status
 
+Updated: 2026-09-18 (GROK — secret-guard Rule E, od/hexdump/xxd of loaded keys)
+
+## 2026-09-18 GROK — secret-guard blocks od/hexdump/xxd of a loaded key
+
+Board `1e4a9d2f`.  Branch `grok/secret-guard-od`.  Worktree
+`~/apps/fleet-grok-secret-guard-od`.  Hook is now tracked
+(`scripts/hooks/secret-guard-pretooluse.py`) and denies byte-dump / `cut -c` /
+last-command `printf %s` of `$NAME` when NAME looks like KEY/TOKEN/SECRET.
+Incident command `od -c <<< "$SILICONFLOW_API_KEY"` is denied.  53 unit tests.
+Canon: AGENT-SYNC § Loaded-key byte dumps.  Rollout:
+`docs/rollouts/2026-09-18-secret-guard-od.md`.
+
 Updated: 2026-09-17 (CLAUDE — Instinct iMessage interface seat onboarding prompt)
 
 ## 2026-09-17 CLAUDE — Instinct onboarding prompt
