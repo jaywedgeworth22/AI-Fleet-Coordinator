@@ -1,3 +1,4 @@
+- **2026-09-18 — GROK — IN PR — Apple Notes MD converter: do not italicize identifiers with underscores (merge_commit_sha), skip empty bullets (board leftover AG pickup).**
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
 - **2026-09-18 — GROK — IN PROGRESS — Install UM subscription quota LaunchAgent (`grok/quota-launchagent-docs`, worktree `~/apps/fleet-grok-quota-launchagent`, UM board `3482c85e`).**  Label `com.jays.subscription-quota-collector` every 15 min.  Watch expect_scheduled + expect_files.  Live `MAC-LOCAL-PROCESSES.md` + Apple Note refreshed.  UM #1493 is the Grok nested-auth collector fix.
