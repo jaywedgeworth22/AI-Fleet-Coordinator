@@ -142,4 +142,4 @@ Do not treat Coolify API status as disk truth — `df` the host.
 
 ## Never leak argv
 
-Never run bare `ps`, or `pgrep -l` / `-fl` / `-lf` — all of them print full command lines, and on this host ~50 processes carry live API keys in argv.  Use `pgrep -f <pattern>` for PIDs or `pgrep -c -f <pattern>` to count.  `~/.claude/hooks/secret-guard-pretooluse.py` blocks these, including inside `$( )` and backticks.
+Never run bare `ps`, or `pgrep -l` / `-fl` / `-lf` — all of them print full command lines, and on this host ~50 processes carry live API keys in argv.  Use `pgrep -f <pattern>` for PIDs or `pgrep -c -f <pattern>` to count.  `~/.claude/hooks/secret-guard-pretooluse.py` blocks these, including inside `$( )` and backticks.  The same hook denies `od` / `xxd` / `hexdump` / `cut -c` / last-command `printf %s` of `$NAME` when NAME looks like KEY / TOKEN / SECRET / PASSWORD / DSN.

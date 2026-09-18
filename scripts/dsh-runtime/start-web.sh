@@ -17,6 +17,10 @@ reclaim_dsh_port() {
   cmd="$(ps -o command= -p "$holder" 2>/dev/null || true)"
   case "$cmd" in
     *dsh*|*dsh-runtime*)
+      if curl -sf -o /dev/null --max-time 8 "http://${HOST}:${PORT}/"; then
+        echo "dsh-web: :$PORT already healthy (pid $holder), skip reclaim" >&2
+        exit 0
+      fi
       echo "dsh-web: reclaiming pid $holder on :$PORT" >&2
       kill -TERM "$holder" 2>/dev/null || true
       for _ in 1 2 3 4 5 6 7 8; do

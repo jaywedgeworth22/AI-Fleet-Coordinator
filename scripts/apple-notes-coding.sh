@@ -194,7 +194,10 @@ def inline(s: str) -> str:
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", s)
     s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", s)
-    s = re.sub(r"(?<!_)_([^_]+)_(?!_)", r"<i>\1</i>", s)
+    # Underscore italics only at word edges.  Identifiers like
+    # merge_commit_sha / prompt_too_large must not become mashed words.
+    # Do not match the inner pair of __bold__ (would render _<i>bold</i>_).
+    s = re.sub(r"(?<![A-Za-z0-9_])_([^_]+)_(?![A-Za-z0-9_])", r"<i>\1</i>", s)
     return s
 
 text = sys.stdin.read()
@@ -283,6 +286,13 @@ while i < len(lines):
     # unordered list
     m = re.match(r"^[-*+]\s+(.*)$", stripped)
     if m:
+        item = m.group(1).strip()
+        if not item:
+            i += 1
+            nxt = peek_stripped(i)
+            if in_ul and nxt and re.match(r"^[-*+]\s+", nxt):
+                add_spacer()
+            continue
         if in_ol:
             out.append("</ol>")
             in_ol = False
@@ -290,7 +300,7 @@ while i < len(lines):
         if not in_ul:
             out.append("<ul>")
             in_ul = True
-        out.append(f"<li>{inline(m.group(1))}</li>")
+        out.append(f"<li>{inline(item)}</li>")
         i += 1
         nxt = peek_stripped(i)
         if nxt and re.match(r"^[-*+]\s+", nxt):
@@ -362,7 +372,9 @@ elif [[ -n "${1:-}" ]]; then
   BODY_TEXT="$1"
   BODY_HTML=$(printf '%s' "$BODY_TEXT" | _md_to_html)
 elif [[ ! -t 0 ]]; then
-  BODY_TEXT=$(cat)
+  # Wait up to 0.5s for data to avoid hanging forever if called in an environment
+  # with an open pipe but no data (e.g. task runners, cron).
+  BODY_TEXT=$(/usr/bin/python3 -c 'import sys, select; r, _, _ = select.select([sys.stdin], [], [], 0.5); sys.stdout.write(sys.stdin.read()) if r else None' 2>/dev/null)
   BODY_HTML=$(printf '%s' "$BODY_TEXT" | _md_to_html)
 else
   BODY_HTML="<div></div>"
@@ -488,11 +500,20 @@ print("<h1>" + html.escape(title) + "</h1>" + body)
 
 TMP=$(mktemp /tmp/apple-note.XXXXXX)
 printf '%s' "$FULL_HTML" >"$TMP"
-trap 'rm -f "$TMP"' EXIT
+# AppleScript's `system attribute` decodes environment variables as MacRoman, not
+# UTF-8 (owner 2026-09-17: a title like "⭐️ Background Jobs Master List" came back
+# as "‚≠êÔ∏è Background Jobs Master List", so `note noteTitle of codingFolder` never
+# matched the existing note and --update silently created a new one every run — 96
+# duplicates piled up this way). Route the title through a UTF-8 temp file and
+# `read ... as «class utf8»`, same pattern already used for the HTML body below.
+TITLE_FILE=$(mktemp /tmp/apple-note-title.XXXXXX)
+printf '%s' "$TITLE" >"$TITLE_FILE"
+trap 'rm -f "$TMP" "$TITLE_FILE"' EXIT
 
 if [[ "$MODE" == "update" ]]; then
-  NOTE_ID=$(TITLE="$TITLE" TMP="$TMP" WANT_ACTIVATE="$WANT_ACTIVATE" osascript <<'EOF'
-set noteTitle to system attribute "TITLE"
+  NOTE_ID=$(TITLE_FILE="$TITLE_FILE" TMP="$TMP" WANT_ACTIVATE="$WANT_ACTIVATE" osascript <<'EOF'
+set titlePath to POSIX file (system attribute "TITLE_FILE")
+set noteTitle to read titlePath as «class utf8»
 set htmlPath to POSIX file (system attribute "TMP")
 set htmlBody to read htmlPath as «class utf8»
 tell application "Notes"

@@ -490,6 +490,11 @@ literal two ASCII spaces stays correct — do not switch file content to NBSP or
 - **Handoff-file grep trap (2026-08-14):** `grep '^[A-Z0-9_]+=' ~/.secrets/global-api-keys`
   (or `rg KEY file` without `-o`) prints **values** into the transcript.  Names only:
   `grep -oE '^[A-Z][A-Z0-9_]*' ~/.secrets/global-api-keys`.  Never `cat` / Read that file.
+- **Loaded-key byte dumps (2026-09-17):** never `od` / `xxd` / `hexdump` / `hd` /
+  `strings` / `base64` / `cut -c` / last-command `printf %s` of `$NAME` when NAME
+  looks like KEY / TOKEN / SECRET / PASSWORD / DSN.  That prints the live value.
+  Safe: `[ -n "$VAR" ]`, `${#VAR}`, `[[ $VAR == *'"'* ]]`.  Hook:
+  `~/.claude/hooks/secret-guard-pretooluse.py`.
 
 Canonical: `~/apps/AGENT-SYNC.md` § Secret handoff / Infisical / Coolify tokens.
 

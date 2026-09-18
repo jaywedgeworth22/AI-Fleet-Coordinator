@@ -98,6 +98,13 @@ TOOLS: list[JsonDict] = [
                 "seat": {"type": "string", "description": "Uppercase seat tag, e.g. CLAUDE, GROK."},
                 "since_days": {"type": "integer", "minimum": 1,
                                "description": "Only content created in the last N days."},
+                "per_doc": {"type": "integer", "minimum": 1, "maximum": recall_api.PER_DOC_MAX,
+                            "default": 1, "description": "Chunks to keep per matching document."},
+                "rerank": {"type": "boolean", "default": True,
+                           "description": "Cross-encoder rerank of the fused candidates."},
+                "prefer_lessons": {"type": "boolean", "default": True,
+                                   "description": "Boost a matching agent-contribution lesson into "
+                                                  "the fused results."},
             },
             "required": ["query"],
         },
@@ -150,6 +157,17 @@ def _int(args: JsonDict, key: str) -> None:
         raise FleetRagError(f"{key} must be an integer") from None
 
 
+def _bool(args: JsonDict, key: str) -> None:
+    """In place: drop an absent/None/"" value; otherwise require an actual JSON boolean -- a
+    JSON API should never guess whether the string "false" means false."""
+    val = args.get(key)
+    if key not in args or val is None or val == "":
+        args.pop(key, None)
+        return
+    if not isinstance(val, bool):
+        raise FleetRagError(f"{key} must be a boolean")
+
+
 def call_tool(name: str, args: JsonDict) -> JsonDict:
     """Validate the argument set and dispatch to recall_api.  KeyError for an unknown tool."""
     if name not in _ALLOWED_ARGS:
@@ -166,6 +184,9 @@ def call_tool(name: str, args: JsonDict) -> JsonDict:
     if name == "recall_search":
         _int(args, "limit")
         _int(args, "since_days")
+        _int(args, "per_doc")
+        _bool(args, "rerank")
+        _bool(args, "prefer_lessons")
         return recall_api.recall_search(**args)
     if name == "recall_stats":
         return recall_api.recall_stats()

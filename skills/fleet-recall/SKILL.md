@@ -67,10 +67,7 @@ Qdrant/TEI path -- there is no public route for ingest and the public twin drops
 rerank/per_doc knobs eval needs.  Those three fail fast with one actionable line instead of a
 multi-minute retry storm.  Fix it with `tailscale login`, or run `recall-tunnel up` then
 `eval "$(recall-tunnel env)"` to forward Qdrant/TEI over SSH to the box and try the direct path
-first regardless of Tailscale's status.  macOS `CLIError 3` (GUI failed to start from a
-LaunchAgent / no-Aqua session) is treated as down, not as unknown, so stats does not wait 120s
-on private Qdrant.  `RECALL_SKIP_PRIVATE=1` skips Tailscale.app entirely and skips the private
-path; BotFleet sets it on `recall stats --json`.
+first regardless of Tailscale's status.
 
 **Claude Code hooks.**  `bash scripts/install-fleet-rag.sh --hooks` copies two hooks into
 `~/.claude/hooks/` and appends one entry each to `hooks.SessionStart` and `hooks.Stop` in
@@ -91,6 +88,7 @@ corpus; both services bind to the Tailscale mesh only.
 
 - **Search first, then act.**  A hit with a board id or a note title is a lead, not a verdict:
   open the source (board show, the note, the doc) before relying on it.
+- **Rank 1 is resemblance, not correctness.**  For a ruling, preference, or infra-fact question, read the top 5 and never act on rank 1 alone.  Open the source for its date — a hit's `created_at` is the file's, not the section's.  Found a hit that supersedes another?  Contribute the correction with `force: true` (CLI `--force`); a one-detail fix often reads as a near-duplicate and is refused otherwise.
 - **Contribute lessons, not logs.**  40 to 4,000 characters, one idea, with `category` one of
   `lesson | preference | infrastructure | decision | runbook` and the app slug.  Do not paste
   transcripts, secrets, or anything a scrub would have to redact.  Contributions are scrubbed

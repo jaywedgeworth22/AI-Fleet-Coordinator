@@ -19,6 +19,7 @@ from unittest import mock
 from fleet_rag import doctor, recall_api
 from fleet_rag.core import FleetRagError, build_point
 from fleet_rag.recall_api import FakeQdrant
+from fleet_rag.tests._hermetic import HermeticCredentialsMixin
 
 CLI = pathlib.Path(__file__).resolve().parents[2] / "recall"
 INSTALLER = pathlib.Path(__file__).resolve().parents[2] / "install-fleet-rag.sh"
@@ -112,8 +113,17 @@ def by_check(rep: dict) -> dict[str, dict]:
     return {r["check"]: r for r in rep["rows"]}
 
 
-class PlatformsReportTests(unittest.TestCase):
+class PlatformsReportTests(HermeticCredentialsMixin, unittest.TestCase):
+    """Most of these call doctor.platforms_report() without a `rerank_check=` override, which
+    falls back to doctor.default_rerank_check() -> recall_api.get_config() -> a REAL Infisical
+    login using whatever this Mac's real ~/.secrets/global-api-keys holds, if it exists.  On a
+    CI runner (no ~/.secrets) that silently no-ops; on an owner's Mac it reads real credentials
+    and can make a real, slow network call.  make_hermetic() (see _hermetic.py) closes that off
+    regardless of what's actually on disk here.
+    """
+
     def setUp(self):
+        self.make_hermetic()
         self.tmp = tempfile.TemporaryDirectory()
         self.root = pathlib.Path(self.tmp.name)
 
@@ -165,6 +175,35 @@ class PlatformsReportTests(unittest.TestCase):
         row = by_check(rep)["tei:rerank"]
         self.assertEqual(row["status"], "WARN")
         self.assertEqual(row["detail"], "check unavailable (FleetRagError)")
+
+    def test_rerank_row_warns_instead_of_failing_when_direct_path_blocked(self):
+        # direct_path_blocked=True (set by recall's cmd_doctor when Tailscale is believed down
+        # with no operator override) must skip the TEI rerank probe entirely -- TEI_RERANK_URL
+        # is a Tailscale-mesh address too, so probing it directly would falsely FAIL a healthy
+        # box instead of reporting the known-skipped direct path.
+        home = healthy_home(self.root)
+
+        def boom():
+            raise AssertionError("must not touch TEI rerank when the direct path is blocked")
+
+        rep = doctor.platforms_report(home, http_get=fake_http(), qdrant_factory=lambda: SentinelQdrant(),
+                                      rerank_check=boom, direct_path_blocked=True, now=NOW)
+        row = by_check(rep)["tei:rerank"]
+        self.assertEqual(row["status"], "WARN")
+        self.assertEqual(row["detail"], doctor.RERANK_BLOCKED_DETAIL)
+        self.assertTrue(rep["ok"])                                # a WARN row alone is not a FAIL
+        self.assertEqual(rep["counts"]["FAIL"], 0)
+
+    def test_rerank_row_probes_normally_when_direct_path_not_blocked(self):
+        # direct_path_blocked=False (the default) must still probe and can still FAIL -- a
+        # genuinely unreachable rerank endpoint stays a real FAIL when nothing says the direct
+        # path itself is known-blocked.
+        home = healthy_home(self.root)
+        rep = doctor.platforms_report(home, http_get=fake_http(), qdrant_factory=lambda: SentinelQdrant(),
+                                      rerank_check=lambda: False, direct_path_blocked=False, now=NOW)
+        row = by_check(rep)["tei:rerank"]
+        self.assertEqual(row["status"], "FAIL")
+        self.assertEqual(row["detail"], "unreachable")
 
     def test_default_rerank_check_without_credentials_is_not_configured(self):
         # No env, no handoff file reachable from this test HOME: get_config() raises, which the

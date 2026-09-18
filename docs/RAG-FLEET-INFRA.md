@@ -110,6 +110,44 @@ docs) and `recall eval --k 5 [--compare]` report Recall@1 / Recall@5 / MRR per s
 Measured 2026-09-02 on 36.9k points: fused only 0.71 / 0.84 / 0.77; with lessons + rerank
 **0.76 / 0.92 / 0.83**.
 
+### Chunk-level rerank bake-off (2026-09-17) — no ranking change shipped
+
+Diagnosis of the 5 golden queries every reranker configuration still missed: 4 of them fail
+because the right document ranks well (fused/doc order #1, #1, #4, #7) but `per_doc=1` keeps a
+different, wrong chunk of that document — the chunk is chosen by fused score *before* the
+cross-encoder ever sees it, so the right text never gets a chance to win the rerank.  Measured
+in-process inside the `recall-api` container against the real production Qdrant/TEI backend
+(unmodified `RERANK_TIMEOUT=8s` budget, no fake backend), one variant at a time, golden.jsonl
+(75 rows):
+
+| Variant | R@1 | R@5 | MRR | search p50/p95 | rerank p50/p95 | avg pairs | fallbacks | avg hit chars |
+|---|---|---|---|---|---|---|---|---|
+| **A** — prod (`per_doc=1`) | 0.707 | 0.920 | 0.796 | 1275/1453 ms | 1135/1308 ms | 20.0 | 0 | 4615 |
+| B — `per_doc=2` | 0.693 | 0.933 | 0.782 | 1826/2250 ms | 1700/2094 ms | 30.5 | 0 | 4585 |
+| D1 — chunk-rerank N=20, G=2 | 0.707 | 0.933 | 0.792 | 1836/2197 ms | 1721/2044 ms | 30.5 | 0 | 4615 |
+| D2 — chunk-rerank N=15, G=3 | 0.707 | 0.933 | 0.786 | 1613/2085 ms | 1476/1928 ms | 26.0 | 0 | 4460 |
+| D3 — chunk-rerank N=20, G=3 | 0.707 | 0.933 | 0.791 | 2109/2697 ms | 1958/2534 ms | 35.5 | 0 | 4594 |
+
+D-variants: for each of the top-N fused doc groups, rerank up to G of that doc's already-
+fetched `GROUP_DEPTH` best-fused chunks in one cross-encoder call, score each doc by its best
+reranked chunk, and return the best chunk of the top-`limit` docs by that score.  N=20 is
+production's own `candidate_count(5)`.
+
+**Decision (pre-registered rule, applied as measured):** the best-MRR D variant with 0
+fallbacks and search p95 ≤ 3.0 s is D1 (MRR 0.792) — but that is *below* A's own MRR (0.796)
+and only +0.013 R@5, short of the ≥0.03 bar on either metric, so no D variant ships.  B also
+falls short on R@5 (+0.013 < 0.03).  All three D variants and B recovered exactly **one** of
+the four diagnosed "right doc, wrong chunk" queries (the Coolify-deploy-token one); the other
+three (fleet vector database port, model tier for mechanical edits, Completed vs. Deployed)
+stayed misses in every variant — the correct chunk for those three is not among that
+document's own top-2/top-3 fused-scored chunks even before rerank sees it, so a bigger G would
+be needed, trading more rerank latency (and pairs sent) for an unproven win.  **Net: no
+ranking-pipeline change shipped this round.**  The one change that did ship is that
+`recall.jays.services` (the public fallback / cloud path) now honors `per_doc`, `rerank`, and
+`prefer_lessons` the same as the direct path — those three were previously silently dropped
+whenever a caller fell back to the public route (`scripts/fleet_rag/public_fallback.py`
+`PUBLIC_ALLOWED_ARGS`, `scripts/fleet-recall-service/server.py` `recall_search` tool schema).
+
 ## Using it
 
 **Write path (owner 2026-09-02).**  `recall_contribute` is the highest-yield source — the seat
@@ -165,7 +203,19 @@ surfaces now route every call through `public_fallback.call_with_fallback`, whic
 1. Checks `tailscale status` up front (~0.1-3s); a positive "Tailscale is stopped." or "Logged
    out" skips the slow local retry storm entirely and goes straight to the public path.  A
    machine with no `Tailscale.app` (or any other inconclusive result) is treated as "assume
-   up", never as "down".
+   up", never as "down" -- **except** on macOS, where that "unknown" result gets one more,
+   independent check: `private_route_bypasses_tailscale()` asks the OS routing table
+   (`/sbin/route -n get <qdrant-host>`, ~2s timeout) whether the configured `QDRANT_URL` host
+   (or the documented default, `100.69.77.26`) is even reachable through a Tailscale (`utun`)
+   interface.  It only ever adds a "blocked" verdict on top of "assume up" -- a route failure,
+   a non-CGNAT host (an operator's `Run your own` deployment), or a non-Darwin platform all
+   still fall through to "assume up" unchanged.  `direct_path_blocked(status_text)` is the one
+   function both `call_with_fallback` and `recall doctor --platforms`'s `blocked` computation
+   call, so the two can never drift apart on what "blocked" means.  This exists because Tailscale.app
+   can be missing entirely (removed, or a relocated binary) while this Mac's network runs a
+   transparent TCP proxy: a direct connect to a dead 100.64.0.0/10 address "succeeds" in
+   ~0.2s and then hangs on the read until `core.DEFAULT_TIMEOUT` (120s) -- see
+   *Troubleshooting* below.
 2. Otherwise still tries the local path first (Tailscale can flap), catches a
    connection-level failure specifically (never an HTTP 4xx/5xx, which is a real answer), and
    retries once against `https://recall.jays.services`'s REST twin (`GET /recall/stats`,
@@ -195,17 +245,44 @@ reports `UNREACHABLE` / `ERROR` / `FAIL` truthfully; a diagnostic tool should ne
 what it is diagnosing.  The Hetzner-side `fleet-recall-service` imports `recall_api` directly
 and never goes through this module: it already sits next to Qdrant/TEI with no Tailscale hop
 to lose.
-Tests: `fleet_rag/tests/test_public_fallback.py` (the fallback decision, with the local
-connection error, the Tailscale-down check, and the public call all mocked -- no network).
+Tests: `fleet_rag/tests/test_public_fallback.py` (the fallback decision, the routing-table
+check with an injected `run` -- utun / en0 / route-failure / non-Darwin / non-CGNAT-host, all
+with the local connection error, the Tailscale-down check, and the public call mocked -- no
+network, no real subprocess).
+
+**Troubleshooting: the transparent proxy makes SSH/direct-connect failures look like
+successes.**  `nc -z -G 6 -w 6 167.233.254.55 47123` (a closed port on the Hetzner box)
+"succeeding" in well under a second -- instead of refusing the connection or timing out --
+means this network's client-side transparent TCP proxy is intercepting the connect, not that
+the port is actually open.  Seeing that: stop retrying SSH by hand (it will keep "connecting"
+and then hang or drop during the protocol handshake) and use the public path
+(`recall.jays.services`) or `recall-tunnel up`'s own bounded retry loop instead of a manual
+loop -- see *Operational notes* below for its retry settings.
 
 `scripts/fleet-rag.py` remains as the thin compatibility CLI (`stats` / `search` / `ingest`)
 and does not go through the fallback.
 
 ### From BotFleet bots
 
-BotFleet's Claude driver imports `~/.claude.json` `mcpServers`, and the Codex and Grok drivers
-read their CLIs' global configs, so Mac-side bots get the three tools once the installer has
-run.  Oracle owns the ongoing work (see *Routines*).
+BotFleet mounts its own first-party recall MCP proxy (`server/drivers/qdrant-proxy.ts`, over
+`server/recall-transport.ts`), exposing `recall_search`, `recall_contribute`, and `recall_stats`
+on the Claude, Codex, and Antigravity drivers, and on all nine ACP engines (Grok ACP, Cursor,
+DeepSeek Harness, DeepSeek, Kimi, Qwen, Droid, Hermes, OpenCode).  The Claude driver runs with
+`--strict-mcp-config`, so a bot never sees the user's global MCP servers.  The Codex driver
+layers `-c mcp_servers.<name>` overrides onto `~/.codex/config.toml` with no `CODEX_HOME`
+isolation, so a Codex bot sees both the user's global fleet-recall MCP and BotFleet's proxy.
+`mcp_servers.github` / `mcp_servers.render` in that file must call `~/apps/mcp-servers/github-mcp-launch.sh`
+and `render-mcp-launch.sh` (no inline `mcp-remote --header`; JSON-style `\\"` is a TOML parse
+error and Codex refuses the whole file).
+There is no Grok driver that reads a global MCP config -- `server/drivers/grok.ts` is the xAI
+HTTP driver with no MCP client; `server/drivers/acp/grok.ts` is the one BotFleet mounts.  The
+HTTP engines (MiniMax, OpenAI-compatible, Grok HTTP), the pi engine (until BotFleet PR
+`claude/rag-basics` lands), and the Computer engine cannot reach the corpus.  The transport is
+chosen by `qdrant.url`: set, a bot uses the cloud service at `https://recall.jays.services` with
+a Cloudflare Access service token pair; empty, it uses the local `recall` CLI on the Mac.
+Oracle owns the ongoing work (see *Routines*).
+
+Verified Wed, Sep 16, 2026 against BotFleet e8fb9a97.
 
 iOS / a phone / a bot that is not on this Mac should use the public hop below, not stdio
 Python.  Do not paste Infisical keys into a BotFleet room.
@@ -311,7 +388,7 @@ and `FLEET_RAG_HANDOFF_FILE` override the defaults this repo ships for its owner
 | Fleet RAG nightly ingest | daily 02:30 local | `recall ingest --all --prune`, reads `~/apps/fleet-rag/state/last-run.json`, retries once, files a P1 on the board on repeated failure |
 | Fleet RAG weekly health + recall eval | Sundays 06:30 local | `recall doctor --platforms --box` / `stats` / `eval` / `digest --days 7`, checks `recall.jays.services/health` and yesterday's snapshot, writes the owner note "[FLEET, Oracle] Weekly recall digest", files a P1 on regressions |
 
-Both routines start with a preflight (added Tue, Sep 8, 2026): `recall doctor --platforms`, and when the `ingest:sentinel` row says the direct path is skipped because Tailscale is logged out, `recall-tunnel up` plus the three tunnel URLs on every recall command, then `recall-tunnel down`.  Without it the nightly failed every night from Sep 3 to Sep 8 while the corpus itself stayed green.
+Both routines start with a preflight (added Tue, Sep 8, 2026): `recall doctor --platforms`, and when the `ingest:sentinel` (or `tei:rerank`) row says the direct path is skipped because Tailscale is logged out, `recall-tunnel up` plus the three tunnel URLs on every recall command, then `recall-tunnel down`.  Without it the nightly failed every night from Sep 3 to Sep 8 while the corpus itself stayed green.
 
 Routines live in `~/.botfleet/routines.json` and are managed through BotFleet's loopback API
 (`POST http://127.0.0.1:8799/api/routines`).  Create payload: `name`, `prompt`, `botId`
@@ -368,7 +445,12 @@ Fixes, both additive and opt-in where a live backend is involved:
   `SENTRY_ENVIRONMENT` overrides the default `production` tag.
 - **`tei:rerank` row in `recall doctor --platforms`** (`doctor.default_rerank_check`): OK when
   `/health` on `TEI_RERANK_URL` answers, FAIL when configured but unreachable, WARN when
-  `TEI_RERANK_URL`/`TEI_RERANK_API_KEY` are unset.
+  `TEI_RERANK_URL`/`TEI_RERANK_API_KEY` are unset.  Like `ingest:sentinel`, when the caller has
+  already established the direct path is blocked (Tailscale believed down, no operator
+  override -- `doctor.platforms_report`'s `direct_path_blocked`), this row is WARN "direct path
+  skipped" instead of probing `TEI_RERANK_URL` directly: that address is Tailscale-mesh-only
+  too, so probing it here would falsely FAIL a reranker that's actually healthy behind
+  `recall.jays.services` (added 2026-09-17).
 - **`rerank_healthy` in `recall stats`** (`core.rerank_healthy`, mirrors `embedder_healthy`):
   `true`/`false` when configured, `null` when not -- so an ad hoc `recall stats` shows reranker
   health the same way it already shows embedder health.
@@ -434,6 +516,71 @@ Consequences:
   `eval "$(recall-tunnel env)"` forwards Qdrant 6333, TEI embed 8081, and TEI rerank 8082 over
   SSH to the box; an explicit `QDRANT_URL` + `TEI_URL` override (the tunnel or any other direct
   deployment) always tries the direct path first, regardless of what `tailscale status` says.
+- **On macOS, an "unknown" Tailscale status is corroborated against the routing table, not
+  just assumed up.**  If `Tailscale.app` is missing entirely (moved, removed, or a relocated
+  binary), `tailscale_status_text()` returns None, which used to be read as "assume up" and
+  send `recall doctor --platforms` (and any direct-path call) straight at the private Qdrant
+  address -- on a network with a transparent TCP proxy, the connect "succeeds" in ~0.2s and
+  then hangs on the read for `core.DEFAULT_TIMEOUT` (120s), which is exactly what stalled the
+  nightly ingest routine's `recall doctor --platforms` preflight past 120s on 2026-09-17
+  (board `ce7ecd46`).  `private_route_bypasses_tailscale()` (`scripts/fleet_rag/
+  public_fallback.py`) now runs `/sbin/route -n get <qdrant-host>` (~2s timeout) in that one
+  case; a resolved interface that is not a Tailscale `utun` device is positive evidence the
+  private hop is gone, so `direct_path_blocked()` reports blocked in seconds instead of
+  hanging.  A prior fix on board `da9324b0` that string-matched `tailscale status` output was
+  withdrawn because "unknown = assume up" is intentional there; this is a different, narrower
+  signal -- positive evidence from the OS routing table, macOS-only, and only consulted when
+  the status probe itself came back unknown.
+- **`recall-tunnel up` retries the SSH connect.**  On this network, about half of fresh SSH
+  attempts to the box fail with "Connection timed out during banner exchange" or "Connection
+  closed by 167.233.254.55 port 22" even though ping RTT is a steady 330-680ms (the transparent
+  proxy again: the sshd journal on the box shows those attempts never arrive, so retrying is
+  not a fail2ban / PerSourcePenalties risk).  `up` now passes `-o ConnectTimeout=60 -o
+  ServerAliveInterval=15 -o ServerAliveCountMax=8` (the CountMax tolerates about 2 minutes of a
+  stalled *established* link, since the same proxy can stall a session mid-flight, not just a
+  fresh connect) and retries up to `RECALL_TUNNEL_ATTEMPTS` times (default 5) with a
+  `RECALL_TUNNEL_RETRY_SLEEP`-second gap (default 60s) between attempts, logging every failed
+  attempt to stderr and staying idempotent throughout via `master_alive()`; it exits non-zero
+  only after the last attempt fails.  See `fleet_rag/tests/test_recall_tunnel.sh` for the
+  retry/give-up/idempotency coverage (a fake `ssh` on `PATH`, no real network).
+- **`recall-tunnel up` also starts a background supervisor** (`RECALL_TUNNEL_SUPERVISE=0`
+  disables it) so a long-running caller -- the nightly ingest routine runs `recall-tunnel up`
+  then `eval "$(recall-tunnel env)"` then `recall ingest --all --prune` without changing that
+  prompt -- keeps a live tunnel across the whole run instead of needing to be babysat by hand.
+  It polls `master_alive` every `RECALL_TUNNEL_SUPERVISE_INTERVAL` seconds (default 10) and
+  reruns the same retried SSH open (`open_tunnel`) the moment the master dies; its pid lives in
+  `<socket>.supervisor.pid`, its stop signal in `<socket>.supervisor.stop`, and its log in
+  `<socket>.supervisor.log`.  `recall-tunnel down` stops the supervisor first (SIGTERM, then
+  SIGKILL after a bounded ~2s grace period) before closing the master, and `recall-tunnel
+  status` reports whether the supervisor is running.  `start_supervisor()` is serialized by a
+  portable `mkdir`-based lock (macOS has no `flock` binary) with stale-lock cleanup, so two
+  overlapping `up` calls (the nightly routine racing a manual one) never start two supervisors
+  for the same pid file; as a second, independent layer, the supervisor loop itself exits
+  within one poll interval if the pid file ever stops naming its own pid, so an orphan from any
+  other path can never poll forever.  Tests: `fleet_rag/tests/test_recall_tunnel.sh`.
+- **The HTTP layer retries a stall through the tunnel, not just the SSH connect.**  A 408
+  (Request Timeout) from Qdrant is now retried exactly like 429/5xx in
+  `fleet_rag/core.http_json` -- Qdrant's upsert-by-id and delete-by-id are idempotent, so
+  retrying one after the tunnel reconnects is safe, and it is what lets an in-flight `recall
+  ingest` call ride out a tunnel stall instead of failing the whole run (root-caused
+  2026-09-17: catch-up ingest pass 1 hit `HTTP 408 from 127.0.0.1:16333/collections/fleet-
+  agents/points/delete` and a similar 408 on the upsert path, then the tunnel master itself
+  died and every subsequent call hit `URLError reaching 127.0.0.1:...`; running the same golden
+  eval directly on the box had zero 408s, so the box was fine and the problem was the tunnel
+  path).  The retry budget and backoff cap are overridable at call time via
+  `RECALL_HTTP_RETRIES` (default 4, same as `core.RETRIES`) and `RECALL_HTTP_BACKOFF_MAX`
+  (default 10s, same as `core.BACKOFF_MAX`); `recall-tunnel env` exports `RECALL_HTTP_RETRIES=8`
+  and `RECALL_HTTP_BACKOFF_MAX=60`, which widens one request's worst case from about 15s to
+  about 4-5 minutes -- long enough for the supervisor to notice the dead master and reopen the
+  tunnel mid-retry.  Both env vars are bounds-checked by `core._env_int()`: a negative value
+  (which used to make `RECALL_HTTP_RETRIES` skip the request entirely via `range(0)`, or reach
+  a raw `time.sleep(negative)` `ValueError` for `RECALL_HTTP_BACKOFF_MAX`) falls back to the
+  default just like a non-numeric value, and an unreasonably large one is clamped to
+  `core.MAX_RETRIES` / `core.MAX_BACKOFF_MAX` instead of being honored outright; zero remains a
+  valid `RECALL_HTTP_BACKOFF_MAX`.  Tests: `fleet_rag/tests/test_core_http.py` (408 retried, env
+  overrides read at call time, explicit `retries=` still wins over the env var, malformed/
+  negative/huge env values, zero backoff -- `urllib.request.urlopen` and `time.sleep` both
+  mocked, no network, no real waiting).
 
 ## Files
 

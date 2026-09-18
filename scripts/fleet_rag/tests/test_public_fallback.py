@@ -114,6 +114,103 @@ class TailscaleBelievedDownTests(unittest.TestCase):
         self.assertTrue(public_fallback.tailscale_believed_down(None))
 
 
+# --------------------------------------------------------------------------- routing-table check
+
+class PrivateRouteBypassesTailscaleTests(unittest.TestCase):
+    """private_route_bypasses_tailscale(): the macOS-only corroborating signal used when
+    tailscale_status_text() itself returns None.  Every test injects `run` (or patches
+    sys.platform) so no real subprocess is ever spawned."""
+
+    def setUp(self):
+        self.env = mock.patch.dict(os.environ, {}, clear=False)
+        self.env.start()
+        os.environ.pop("QDRANT_URL", None)
+        self.darwin = mock.patch.object(public_fallback.sys, "platform", "darwin")
+        self.darwin.start()
+
+    def tearDown(self):
+        self.darwin.stop()
+        self.env.stop()
+
+    @staticmethod
+    def _route_run(interface: str):
+        def run(cmd, capture_output, text, timeout):
+            assert cmd[0] == public_fallback.ROUTE_BIN
+            return SimpleNamespace(stdout=f"   route to: {cmd[-1]}\ndestination: default\n"
+                                          f"       interface: {interface}\n", stderr="")
+        return run
+
+    def test_utun_interface_is_not_a_bypass(self):
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://100.69.77.26:6333", run=self._route_run("utun4")))
+
+    def test_en0_interface_is_a_bypass(self):
+        self.assertTrue(public_fallback.private_route_bypasses_tailscale(
+            "http://100.69.77.26:6333", run=self._route_run("en0")))
+
+    def test_route_command_failure_is_not_a_bypass(self):
+        def boom(cmd, capture_output, text, timeout):
+            raise OSError("no such file")
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://100.69.77.26:6333", run=boom))
+
+    def test_route_timeout_is_not_a_bypass(self):
+        def boom(cmd, capture_output, text, timeout):
+            raise subprocess.TimeoutExpired(cmd="route", timeout=timeout)
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://100.69.77.26:6333", run=boom))
+
+    def test_unparseable_output_is_not_a_bypass(self):
+        run = lambda cmd, capture_output, text, timeout: SimpleNamespace(stdout="garbage\n", stderr="")
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://100.69.77.26:6333", run=run))
+
+    def test_non_darwin_is_never_a_bypass_even_with_en0(self):
+        self.darwin.stop()
+        with mock.patch.object(public_fallback.sys, "platform", "linux"):
+            self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+                "http://100.69.77.26:6333", run=self._route_run("en0")))
+        self.darwin.start()   # tearDown() stops it again
+
+    def test_non_cgnat_host_is_never_a_bypass(self):
+        run = mock.Mock(side_effect=AssertionError("must not shell out for a non-CGNAT host"))
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://qdrant.example.com:6333", run=run))
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://8.8.8.8:6333", run=run))
+
+    def test_defaults_to_qdrant_url_env_then_documented_default(self):
+        os.environ["QDRANT_URL"] = "http://100.69.77.26:6333"
+        self.assertTrue(public_fallback.private_route_bypasses_tailscale(run=self._route_run("en0")))
+        os.environ.pop("QDRANT_URL")
+        self.assertTrue(public_fallback.private_route_bypasses_tailscale(run=self._route_run("en0")))
+
+    def test_unresolvable_host_is_never_a_bypass(self):
+        run = mock.Mock(side_effect=AssertionError("must not shell out for a hostname"))
+        self.assertFalse(public_fallback.private_route_bypasses_tailscale(
+            "http://recall.jays.services", run=run))
+
+
+# --------------------------------------------------------------------------- combined verdict
+
+class DirectPathBlockedTests(unittest.TestCase):
+    def test_tailscale_evidence_blocks_without_consulting_the_route(self):
+        with mock.patch.object(public_fallback, "private_route_bypasses_tailscale",
+                               side_effect=AssertionError("must not need route evidence")):
+            self.assertTrue(public_fallback.direct_path_blocked("Tailscale is stopped.\n"))
+
+    def test_known_up_status_is_never_blocked(self):
+        with mock.patch.object(public_fallback, "private_route_bypasses_tailscale",
+                               side_effect=AssertionError("must not need route evidence")):
+            self.assertFalse(public_fallback.direct_path_blocked("100.1.2.3  mac  online\n"))
+
+    def test_unknown_status_defers_to_the_route_check(self):
+        with mock.patch.object(public_fallback, "private_route_bypasses_tailscale", return_value=True):
+            self.assertTrue(public_fallback.direct_path_blocked(None))
+        with mock.patch.object(public_fallback, "private_route_bypasses_tailscale", return_value=False):
+            self.assertFalse(public_fallback.direct_path_blocked(None))
+
+
 # --------------------------------------------------------------------------- connection errors
 
 class IsConnectionErrorTests(unittest.TestCase):
@@ -446,10 +543,18 @@ class CallWithFallbackTests(unittest.TestCase):
         # suite -- these tests control credentials via os.environ only.
         self.no_files = mock.patch.object(public_fallback, "_read_named_line", return_value=None)
         self.no_files.start()
+        # Deterministic regardless of the platform/network this suite happens to run on (this
+        # Mac's own route to the documented default Qdrant host is a real bypass signal per
+        # PrivateRouteBypassesTailscaleTests) -- tests that care about the route-check branch
+        # override this explicitly.
+        self.no_route_bypass = mock.patch.object(public_fallback, "private_route_bypasses_tailscale",
+                                                  return_value=False)
+        self.no_route_bypass.start()
         self._saved_qdrant = recall_api.Qdrant
         recall_api.Qdrant = core.Qdrant   # ensure using_fake_backend() is False in this class
 
     def tearDown(self):
+        self.no_route_bypass.stop()
         self.no_files.stop()
         self.env.stop()
         recall_api.Qdrant = self._saved_qdrant
@@ -495,6 +600,20 @@ class CallWithFallbackTests(unittest.TestCase):
         pub.assert_called_once_with("recall_stats", {})
         self.assertEqual(res, {"points": 7})
 
+    def test_route_table_bypass_falls_back_when_tailscale_status_is_unknown(self):
+        # status_probe -> None (no Tailscale.app to ask) but the macOS routing table shows the
+        # private Qdrant host resolves through en0, not a utun interface -- positive evidence
+        # the direct path would just hang until core.DEFAULT_TIMEOUT, so this goes straight to
+        # the public twin instead of trying the 120s local path first.
+        local = mock.Mock(side_effect=AssertionError("must not run the 120s private path"))
+        with mock.patch.object(public_fallback, "private_route_bypasses_tailscale", return_value=True):
+            with mock.patch.object(public_fallback, "call_public", return_value={"points": 11}) as pub:
+                res = public_fallback.call_with_fallback(
+                    "recall_stats", {}, local, status_probe=lambda: None)
+        local.assert_not_called()
+        pub.assert_called_once_with("recall_stats", {})
+        self.assertEqual(res, {"points": 11})
+
     def test_connection_error_falls_back(self):
         local = mock.Mock(side_effect=FleetRagError("RemoteDisconnected reaching 100.69.77.26:8081"))
         with mock.patch.object(public_fallback, "call_public", return_value={"points": 9}) as pub:
@@ -535,7 +654,9 @@ class CallWithFallbackTests(unittest.TestCase):
         self.assertIn("CF_ACCESS_CLIENT_SECRET", msg)
         local.assert_not_called()
 
-    def test_extra_local_only_kwargs_are_dropped_on_fallback(self):
+    def test_recall_search_kwargs_pass_through_on_fallback(self):
+        """per_doc / rerank / prefer_lessons now have a public route and must reach it; a
+        None-valued optional (since_days) and any genuinely unknown key are still dropped."""
         local = mock.Mock(side_effect=FleetRagError("ConnectionRefusedError reaching 100.69.77.26:8081"))
         captured = {}
 
@@ -544,10 +665,11 @@ class CallWithFallbackTests(unittest.TestCase):
             return {"hits": [], "mode": "dense"}
 
         kwargs = {"query": "handoff file", "limit": 3, "per_doc": 2, "rerank": False,
-                  "prefer_lessons": True, "since_days": None}
+                  "prefer_lessons": True, "since_days": None, "bogus_local_only": "x"}
         with mock.patch.object(public_fallback, "call_public", fake_call_public):
             public_fallback.call_with_fallback("recall_search", kwargs, local, status_probe=lambda: None)
-        self.assertEqual(captured["kwargs"], {"query": "handoff file", "limit": 3})
+        self.assertEqual(captured["kwargs"], {"query": "handoff file", "limit": 3, "per_doc": 2,
+                                              "rerank": False, "prefer_lessons": True})
 
     def test_local_override_skips_the_tailscale_probe_and_tries_local_first(self):
         os.environ["QDRANT_URL"] = "http://127.0.0.1:16333"

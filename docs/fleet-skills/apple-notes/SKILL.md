@@ -77,6 +77,8 @@ Prefer `--html` for anything longer than a few lines.  In that HTML:
 
 Do not pass a packed markdown blob.  If you use the plain-body MD path, put a blank line between every section and every bullet — the helper turns those blanks (and consecutive list items) into spacers.  `--html` with explicit spacers is still the owner-readable path.
 
+Never pass empty `- ` bullets (they render as blank dots).  Put identifiers with underscores in backticks (`merge_commit_sha`) so Markdown italic does not eat the underscores and mash the word (`mergecommitsha`).
+
 ## When
 
 Do Notes: plans, design docs, reviews, handoffs, rollouts, **Completion / work-complete** for anything the owner might ask about.

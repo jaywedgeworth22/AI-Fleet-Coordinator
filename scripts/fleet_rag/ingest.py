@@ -654,7 +654,8 @@ def ingest_rows(rows: list[dict], defaults: dict, dry_run: bool = False, cfg: di
 
 def fix_seeds(dry_run: bool = False, cfg: dict | None = None, qd: Qdrant | None = None, log=eprint) -> int:
     """Stamp the hand-seeded points (doc_id seed/fleet-standards) with the real seed time."""
-    cfg = cfg or load_config(need_write=not dry_run)
+    if cfg is None:
+        cfg = load_config(need_write=not dry_run)
     qd = qd or QdrantClient(cfg)
     ids = [str(p["id"]) for p in qd.scroll(match_filter(doc_id=SEED_DOC_ID), with_payload=False)]
     if not ids:

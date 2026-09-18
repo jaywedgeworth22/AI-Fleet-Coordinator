@@ -232,6 +232,41 @@ if you "just wanted to see which keys exist."  Incident: a Grok session used
 `grep '^[A-Z0-9_]+='` on the handoff file and dumped the whole store into the
 chat.  The rule exists so the next seat does not repeat it.
 
+### Loaded-key byte dumps (2026-09-17 — binding for every agent)
+
+A variable that already holds a key is still a secret.  `od` / `xxd` /
+`hexdump` / `hd` / `strings` / `base64` print every byte.  `cut -c` prints a
+prefix.  A last-command `printf %s` / `%q` / `%b` of that variable makes the
+tool result the live value.  Same class as `cat` of the handoff file.
+
+Incident: a Claude subagent loaded `SILICONFLOW_API_KEY` correctly (never
+echoed), then ran `od -c` on the variable to look for stray quotes.  The full
+key landed in the transcript.  The secret-guard hook now denies this structure.
+
+**Forbidden** (NAME matches KEY / TOKEN / SECRET / PASSWORD / PASSWD / DSN):
+
+```bash
+od -c <<< "$SILICONFLOW_API_KEY"
+printf '%s' "$TOKEN" | xxd
+echo "$API_KEY" | hexdump -C
+cut -c1-4 <<< "$API_KEY"
+printf '%q' "$SECRET"
+xxd ~/.secrets/global-api-keys          # byte-dump of the file is cat
+```
+
+**Allowed** (shape / length only, or printf consumed by something else):
+
+```bash
+[ -n "$TOKEN" ]
+echo ${#TOKEN}
+[[ $TOKEN == *'"'* ]] && echo quoted || echo clean
+printf '%s' "$TOKEN" | wc -c
+```
+
+Hook (Claude Code Bash PreToolUse): `~/.claude/hooks/secret-guard-pretooluse.py`
+(tracked `scripts/hooks/secret-guard-pretooluse.py` in ai-fleet-coordinator).
+Seats without that hook still follow this rule in skills and global config.
+
 ---
 
 ## Prior messages stay in scope (owner preference — ALL agents, ALL platforms)
@@ -585,6 +620,12 @@ Copy detail: `/Users/jay/apps/FLEET-UI-COPY.md`.
 
 iOS agent build loop (owner ruling 2026-08-13): no Xcode MCP narration, `xcodebuild` / `xcrun simctl` via bash are pre-approved, screenshot the simulator before claiming a user-visible change, never hand-edit `.pbxproj` / entitlements / xibs.  **Full text (binding, unchanged):** `docs/protocols/ios-agent-build-loop.md` in ai-fleet-coordinator — or `recall "iOS agent build loop"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
 
+**Cloud agent needs `xcodebuild`, the Simulator, or Apple Notes on the Mac?**  Cloud seats cannot run these directly.  Run `scripts/request-mac-seat.sh --repo <repo> --title "..." --prompt "..." --by <SEAT>` from `ai-fleet-coordinator`; it files a GitHub issue titled `[needs-mac] <title>` labeled **`needs-mac`** and posts to `#agent-sync`.  A Mac seat's `mac-seat-claim.sh` launchd poller (`com.jay.mac-seat-watch`) picks up the issue and does the work locally, and the issue stays open until that Mac seat posts results.
+
+## Mac app builds: exactly one installed copy (owner ruling 2026-09-17 — ALL seats)
+
+The owner is tired of finding two to five copies of a Mac app and not knowing which one is live.  For every Mac app the fleet builds (AgentBar, the Usage Monitor menu app, and any future one): the only installed copy lives at `~/Applications/<App>.app`; `dist/` in a checkout is a staging area that the install step deletes after copying; development builds that must run beside the installed copy use a distinct bundle identifier (AgentBar: `AGENTBAR_BUNDLE_ID=com.jays.agent-bar.mac.dev`) and are killed and deleted when the task ends; the install step prunes every other bundle with the app's bundle identifier under `/Applications`, `~/Applications`, `~/Desktop`, `~/Downloads` and the checkout's `dist/` (moving them to the Trash and printing each path), never touching other checkouts' lanes.  Automation must never quit, kill or activate the owner's installed copy except inside the install step, and must target its own dev process by unix id, never by app name.  A build that leaves a second copy behind is unfinished work.
+
 ## Timestamps: Central Time (owner ruling 2026-08-09, broadened 2026-08-11, amended 2026-08-12, strengthened 2026-08-22)
 
 **When you tell the owner a time, say it in Central Time.**  Binding for every agent, every
@@ -857,6 +898,21 @@ When a substitute agent picks up another agent's in-flight or handoff work (via 
 - Arm auto-merge (`gh pr merge <n> --squash --auto`) so it lands the instant checks are green + threads resolved.
 - "DONE" / "Completed" on a board means **merged to `main`** — not "PR opened" and not "green but blocked". Don't mark Completed until it's actually on `main`.
 
+### Squash-merge vs abandoned-branch detection (2026-09-17)
+
+All fleet repos squash-merge with `delete_branch_on_merge`.  A correctly landed branch has its commits **absent from `origin/main` history** and no remote branch left behind.  `git merge-base --is-ancestor HEAD origin/main` and "N commits ahead and not on remote" therefore flag every landed lane as abandoned (2026-09-05 false panic; ~110 of 146 worktrees on 2026-09-06).
+
+Correct method:
+
+```bash
+gh pr list --head "$BRANCH" --state all --json number,state,mergedAt,url
+git fetch origin
+git diff origin/main...HEAD    # three-dot: remaining unique work vs merge-base
+# helper: scripts/branch-landed.sh [repo] [branch]
+```
+
+A two-dot `git diff origin/main HEAD` on a stale lane is actively misleading (it mixes later main with the branch).  Ancestry is still the right test for "does live SHA contain this exact commit" (`deploy-verify`).  `scripts/disk-janitor.sh` now treats a MERGED GitHub PR as squash-safe merged.  Board `059f65b3`.
+
 ---
 
 ## Never idle-watch a PR (owner ruling 2026-09-01 — ALL agents, ALL platforms, ALL repos)
@@ -915,6 +971,41 @@ The owner appointed **CLAUDE as the cross-platform fleet coordinator/manager**, 
 
 ## Delegation & model economics (STANDARD FOR ALL AGENTS — read this)
 
+**Fleet mode** — the fleet's standing working style for every agent on every platform (Claude Code, Cursor, Grok, Codex, Antigravity/Gemini, DeepSeek Harness, MiniMax, and any added later).  It is the default, not an opt-in.  Trigger phrases (all equivalent): `fleet mode` · `/fleet-mode` · `delegate hard` · `work like Jay` · `spawn and stay free`.  This is fleet-wide policy; the policy itself lives in `/Users/jay/apps/AGENT-SYNC.md` § Delegation & model economics (this section).  For a portable, pasteable briefing block and platform-specific skill: `/Users/jay/apps/FLEET-MODE.md`, `~/apps/fleet-mode` (on-demand printer), or `~/.claude/skills/fleet-mode/SKILL.md` (Claude Code skill).
+
+**This section serves TWO goals, and they carry equal weight** (owner, 2026-09-04):
+
+1. **Spend less** — tokens, money, quota.
+2. **Fit how the owner actually works** — they chat with a managing agent about many things while
+   workers run, and they interrupt mid-flow constantly.  That is not a quirk to tolerate; it is
+   the working style this fleet is built around, and being unavailable or easily derailed is a
+   real cost even when it saves nothing.
+
+Most rules below serve both.  Where they pull apart, say so rather than silently optimising for
+tokens — an agent that is cheap but unreachable has failed half its job.
+
+**What goal 2 requires in practice: keep your turns SHORT.**  A manager grinding through twenty
+tool calls inline is unreachable for the whole grind — the owner's next message either waits or
+lands in the middle and derails it.  A manager that spawns workers and returns is answerable
+immediately, and the owner can redirect, add context, or change their mind at no cost to anyone.
+So prefer spawning and returning over doing it yourself, END TURNS OFTEN rather than batching
+everything into one long one, and never take a long inline run when a worker could take it
+instead.  When the owner does interrupt mid-turn, address what they said and carry on — their
+earlier asks stay in scope, and an interruption is normal input, not a disruption to complain
+about or a reason to drop the thread.
+
+**Delegation also PROTECTS work from interruption, which is a saving in itself** (owner,
+2026-09-04).  Interrupting a manager mid-grind is not free: whatever it had in flight may be
+abandoned half-done, context-switched away from and forgotten, or started over later — and
+abandoned or repeated work is wasted tokens on top of lost time.  Work that is out with
+sub-agents does not have that problem.  The owner's message reaches the manager; the workers
+never notice and keep going.  Nothing is stopped, nothing is dropped, nothing gets redone.
+
+So the more freely the owner interrupts, the MORE delegation pays — the same habit that makes an
+inline grind expensive makes a delegated one cost nothing extra.  Treat that as a reason to
+delegate more, not as a reason to ask the owner to interrupt less.  Their working style is a
+given; your job is to arrange the work so it survives contact with it.
+
 Two standing owner directives that apply to every agent, every platform, every task:
 
 1. **Use sub-agents whenever they help.** Teams are the default for substantial work,
@@ -951,17 +1042,109 @@ Two standing owner directives that apply to every agent, every platform, every t
    could perform the task very effectively, hand it to a sub-agent — even when the task is
    small, and even when you could obviously do it yourself.
 
+   **The decision rule** (owner, 2026-09-04).  Pick the **most affordable sufficiently competent**
+   model — where *sufficiently competent* means you judge at least a **90% chance it completes
+   the task for less than, or at most equal to, the total tokens** a pricier model would have
+   needed.  Below that confidence, go up a tier.
+
+   Note what is being compared: **total tokens for the finished task, not price per token.**  A
+   cheap model that needs three attempts, or that produces work someone must redo, has already
+   cost more than one competent attempt — and it also cost the owner's time waiting for an answer
+   that was not coming.  Cheapness that fails is the most expensive option on the menu.  So judge
+   competence first and price second, in that order, and treat the 90% as a real threshold rather
+   than a formality: if you would not bet on it, you do not have it.
+
+   **This is an expected-value rule, not a guarantee** (owner, 2026-09-04).  Individual
+   delegations WILL sometimes cost more than doing the work yourself would have.  That is
+   priced in.  The rule is judged on the average across many decisions, where it should save
+   and at worst break even — not on any single case.  So do not treat one overrun as evidence
+   the policy is wrong, and do not respond to a bad outcome by quietly doing everything inline
+   afterwards.  That reflex is the actual failure mode this section exists to prevent: an agent
+   that delegates only when certain will delegate almost never, and certainty is not available.
+   Take the bet at 90%, expect to lose some, and keep taking it.
+
+   **And there is a benefit that is not measured in tokens at all.**  Work that is out with
+   sub-agents is work the owner can ask about, redirect, or ignore without interrupting anyone
+   — including without interrupting a worker mid-task to get the manager's attention.  A
+   manager that keeps everything inline is a manager who is always busy, and the owner has to
+   wait for it or break its flow to ask a question.  Keeping yourself free is part of the job,
+   not a side effect of it.
+
+   **Escalating upward is equally expected.**  Handing work to a HIGHER tier than yourself is
+   just as correct as handing it down, when the task calls for it.  A mid-tier session facing a
+   money-path kernel, an ambiguous design decision, or a security-subtle diff should spawn a
+   frontier child for that kernel and keep everything around it cheap.  Right-sizing is
+   bidirectional; only the direction of the mistake differs.
+
+   **If you expect to struggle, hand it up before you burn turns — not after** (owner,
+   2026-09-04).  When the owner asks you for something you can tell you are likely to be bad
+   at — an unfamiliar domain, subtle concurrency, a security boundary, a design call with no
+   obvious right answer — spawn a higher-tier child for it rather than grinding.  Five failed
+   attempts on a cheap model cost far more than one competent attempt on an expensive one, and
+   they cost the owner's time and trust on top of the tokens.  This does NOT contradict "do not
+   escalate preemptively": that rule forbids reaching for frontier out of habit or because the
+   parent session happens to be frontier.  This one fires on a specific, nameable reason to
+   predict failure.  If you cannot name the reason, you do not have one — stay at your tier.
+
    **The 30% rule — this is fleet-wide, not Claude-only** (owner, 2026-09-04).  It binds every
    agent on every platform that has a sister model at least **30% cheaper than itself**.  If
-   such a sibling exists on your platform and it could perform the task very effectively, the
+   such a sibling exists on your platform and it would perform the task very competently, the
    default is to hand the task to it rather than do it yourself.  This is not about Claude's
-   tiers specifically — it is about the ratio.  Work out your own platform's siblings and
-   their relative cost before your first spawn, and delegate on that basis:
-   Claude Code (Opus → Sonnet → Haiku) · Codex/GPT (reasoning → mini) ·
-   Antigravity/Gemini (Pro → Flash) · Grok (heavy → fast) · DeepSeek (reasoner → chat) ·
-   Kimi, MiniMax, Cursor (whatever their own cheap sibling is).
-   An agent with NO sibling 30% cheaper is exempt from this rule and only from this rule —
-   everything else in this section still applies.
+   tiers specifically — it is about the ratio.
+
+   **Work out your own ladder — you know your platform's models better than this document
+   does.**  Before your first spawn, establish which siblings you can actually select and how
+   they rank by cost, and route on that.  Do not wait for a table here to be updated; model
+   lineups change faster than fleet docs do, and a stale ladder routes work to a model that
+   cannot do it competently, which is the expensive failure this rule exists to prevent.  If
+   your lineup is unclear or you cannot confirm the cost ratio, **use your judgement** — that
+   is explicitly delegated to you (owner, 2026-09-04).  State which model you picked and why,
+   so the choice is reviewable.
+
+   **The ladder runs both ways.**  Down it for anything a cheaper sibling would do very
+   competently; UP it for a task you have a nameable reason to expect you will struggle with.
+   Neither direction is the exception.
+
+   Known ladders at the time of writing, costly → cheap, as a starting point and not an
+   authority: Claude Code (Opus → Sonnet → Haiku) · Codex/GPT (`gpt-5.6-sol` / `gpt-5.6-terra`
+   / `gpt-5.5` → `gpt-5.6-luna`) · Antigravity/Gemini (Pro → Flash) · DeepSeek (V4 Pro → V4
+   Flash) · Kimi (K3 Swarm → K3 → K2.6) · Cursor (its selected frontier model → Composer 2.5) ·
+   MiniMax (determine your own).
+
+   **Grok is the one exemption** (owner, 2026-09-04): its cheaper Grok-build model is API-only
+   and cannot be selected as a sub-agent tier from the CLI, so there is no sibling to route to.
+   The exemption is narrow and covers THIS RULE ONLY — everything else in this section binds
+   Grok in full, including escalating upward.  Any other agent with no sibling at least 30%
+   cheaper is likewise exempt from this rule alone.
+
+   **Same-tier delegation still pays, and this is why the exemption is narrow** (owner,
+   2026-09-04).  An agent with no cheaper sibling should still delegate, because the model price
+   was never the only saving.  A sub-agent starts with an EMPTY context and gets only what you
+   hand it, so it carries a fraction of the manager's accumulated conversation on every turn.
+   Its tool output lands in ITS context, not yours — so it never inflates every one of your
+   later turns the way reading those files inline would.  And with a restricted toolset it pays
+   for fewer schemas on each of its turns.  A worker at the SAME tier, given a tight brief and
+   few tools, is routinely cheaper than the manager doing the same work inline, on top of being
+   parallel and leaving the manager free.
+
+   **The sharp test: is the material already in your context?** (owner, 2026-09-04).  This is
+   what decides same-tier delegation, and it is easy to check.
+   - Material you have NOT read yet → **delegate**.  Reading it inline costs you twice: once to
+     read it, and then again on every later turn, because it is now part of the prefix you
+     re-send for the rest of the session.  A worker reads it into ITS context, returns a
+     summary, and the bulk evaporates.  The saving multiplies by how many turns you have left.
+   - Material ALREADY in your context → **stay inline**.  A worker would have to re-read what
+     you are already carrying, so you pay for it twice instead of once.
+   This is why a long multi-turn task over a lot of uncached material is the strongest case for
+   spawning a worker even at your own tier: the cost you avoid is not one read, it is that read
+   repeated across every remaining turn.  And it is why a two-call follow-up about something you
+   just read is the weakest case.
+   Grok in particular has a large context window, which makes it well placed to do this well:
+   brief precisely, hand over only what is needed, restrict the tools, and the saving is real
+   even with no cheaper model in the picture.  It is a smaller and less certain win than routing
+   to a genuinely cheaper sibling — so an exempt agent should expect thinner margins here and
+   judge accordingly — but it is a win, and "no cheaper model" is not a reason to stop
+   delegating.
 
    The only exception is when you judge delegation would genuinely cost MORE, and that
    exception is real: writing a
@@ -972,6 +1155,32 @@ Two standing owner directives that apply to every agent, every platform, every t
    you read inline stays in your expensive context and is re-sent on every later turn, while
    a sub-agent's output never touches it.
 
+   **Brief thoroughly — that is what makes delegation cheap.**  A sub-agent starts with none of
+   your context, so every fact you withhold it must rediscover with its own tool calls, at its
+   own cost, more slowly and less reliably than you simply stating it.  Hand over exact file
+   paths and line numbers, what you already verified and how you verified it, what you ruled
+   out, the constraint that makes the obvious approach wrong, and the exact commands to run.
+   Mark established facts as established so the worker does not re-derive them.  A precise
+   briefing is what makes a sub-agent cheaper than doing the work yourself; a vague one is
+   exactly what makes it more expensive, because the worker burns turns rediscovering what you
+   already knew.
+
+   **Give it only the tools it needs.**  Every tool schema is re-sent on every turn that agent
+   takes, so a worker carrying hundreds of MCP schemas pays for all of them continuously, for
+   the whole job.  A search-and-report worker wants read tools, not Write, not Edit, not a
+   browser.  Fewer tools is cheaper on every turn AND keeps the worker from wandering off-task.
+
+   **Assume it is possible before assuming it is not** (owner, 2026-09-04).  Do not conclude
+   your platform cannot restrict a worker's toolset just because it does not advertise the
+   feature.  Grok is the proof: Grok Bot's agent-start path launches agents inside Grok — which
+   is NOT how Grok is natively designed — and it lets a spawned agent run with a reduced toolset
+   relative to Grok's own configuration.  That path was built, not shipped.  Claude Code's
+   equivalent is a definition in `~/.claude/agents/<name>.md` with a `tools:` allowlist in its
+   frontmatter, selected via `subagent_type` (caveat found 2026-09-04: the agent registry
+   resolves at session start, so a newly written definition is available from the NEXT session,
+   not the current one).  If your platform's mechanism is not obvious, look for one, and if you
+   find or build one, add it here so the next agent does not have to rediscover it.
+
    **Then stay available.**  Spawn in the background and go do other useful work, or simply
    end your turn and wait.  An idle session costs nothing — tokens flow only when a turn
    runs — so a manager sitting idle while workers grind is free, and it is what keeps the
@@ -980,16 +1189,43 @@ Two standing owner directives that apply to every agent, every platform, every t
    (One caveat, minor: prompt-cache entries expire after about an hour, so a very long idle
    makes the next turn re-read context at full price.  Under an hour this does not apply.)
 
-4. **Minimise worktrees** (owner, 2026-09-04).  A git worktree exists to stop parallel agents
-   writing the same checkout.  That is the whole reason.  Do not create one when agents work
-   in DIFFERENT repos, when the agent only reads, or when there is a single agent with nothing
-   to conflict with.  Never stack two: a harness `isolation: "worktree"` alongside a prompt
+4. **Supervise on evidence, and take over when a worker is thrashing** (owner, 2026-09-04).
+   Delegating is not abandoning.  If a sub-agent repeats the same failing step **three or more
+   times**, or runs **more than twice as long as you predicted** — and the cause is not server
+   congestion or a genuinely slow external job — step in.  Either take the task back yourself,
+   or send the worker the specific thing it is missing (the file path it keeps failing to find,
+   the constraint it keeps violating, the command that actually works).  A cheap model looping
+   is the single most expensive failure mode available: it burns tokens without converging, and
+   it burns the owner's time waiting for an answer that is not coming.  Escalating it to a
+   higher tier at that point is correct, not an admission of a bad initial call.
+
+   **Supervise on evidence, never by polling — the idle stays free.**  This does not license
+   watching a worker.  Never spend a turn whose only purpose is checking whether one finished:
+   that spends the manager's tokens continuously and destroys both things delegation bought —
+   the free idle, and the owner's ability to use you for something else meanwhile.
+
+   Supervision is free because it piggybacks on turns that were already happening.  Completion
+   notifications arrive on their own.  Reports show thrash when you read them.  And when the
+   owner asks you about some unrelated side issue while workers run, you are already awake for
+   that turn — glancing at worker state there costs nothing extra, so that is where a check
+   belongs.  Take a single bounded look only when you have a specific reason to suspect
+   trouble.  Otherwise: end the turn, stay available, and let the evidence come to you.
+
+5. **Worktrees when they are needed, not by reflex** (owner, 2026-09-04).  Use a worktree
+   whenever the sub-tasks you are assigning actually require one — that is the point of them,
+   and a missing worktree where parallel agents write the same checkout is a far worse failure
+   than a spare one.  Create one when two or more agents will write to the same repo at once,
+   when an agent needs an isolated branch to build and test on, or when a lane must survive
+   independently of whatever else is in flight.
+   What to avoid is the reflex: a worktree for agents working in DIFFERENT repos, for an agent
+   that only reads, or for a single agent with nothing to conflict with, buys nothing and costs
+   setup time, disk, and a dependency install per lane.  Never stack two: a harness `isolation: "worktree"` alongside a prompt
    that also runs `git worktree add` gives one agent two worktrees, and the harness one is
    then pure setup cost and disk.  Pick exactly one.  Worktrees cost setup time, disk, and a
    `pnpm install` per lane, so an unnecessary one is slower AND more expensive — the opposite
    of why we delegate.
 
-5. **This is hook-enforced, not remembered** (2026-09-04).  `~/.claude/hooks/subagent-economy-pretooluse.py`
+6. **This is hook-enforced, not remembered** (2026-09-04).  `~/.claude/hooks/subagent-economy-pretooluse.py`
    is a Claude Code `PreToolUse` hook on `Agent|Task|Workflow` that hard-denies a spawn with no
    explicit `model`, an unknown tier, `run_in_background: false`, a doubled worktree, a workflow
    that assigns no model anywhere, and an all-frontier assignment across three or more agents.
@@ -1394,6 +1630,15 @@ Cloudflare 302 to that same `/board` URL (query string preserved).  The page its
 is gated, not just its data.  It has a "+ New item" composer, so the owner can file
 straight into the same queue agents use.
 
+A browser whose password manager cannot fill the native Basic dialog (a browser-only seat
+such as Instinct) signs in at `https://mac.jays.services/login` instead: same token, same
+identity mapping, same 30-day HttpOnly cookie.  Give such a seat its own
+`MAC_COLLAB_TOKEN_<SEAT>=` line in `~/.secrets/mac-collab.env` so the board attributes its
+writes to that seat and refuses any other name in reported-by or addressed-by.  A seat that
+can drive GitHub but cannot set an `Authorization` header reaches `#agent-sync` through
+`com.jay.github-outbox-bridge` (comments on a private outbox issue, posted as that seat;
+skim matches mirrored back): `docs/MAC-LOCAL-PROCESSES.md`.
+
 ### What every seat owes the board
 
 1. **Before starting substantial work:** `board list` the app you're touching.  If the
@@ -1664,6 +1909,7 @@ enabled for BotFleet only** (`autofixAutomationTuning=always`).  Hold
 Autofix on every other project.  Slack `3930668` notifies `#agent-sync`
 on `rca_completed` / `pr_ready_for_review`.  Do not mint extra Seer
 *user* seats for bot GitHub accounts.
+**Do not dismiss Sentry Seer findings on their literal claim.** Even if the exact symptom or literal claim Seer makes seems inaccurate, investigate the surrounding code and context. Seer often flags real underlying structural issues or hazards.
 
 ### Datadog vs Sentry (do not double-pay)
 
