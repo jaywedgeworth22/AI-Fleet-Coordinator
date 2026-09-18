@@ -15,20 +15,20 @@ Jay's Safari new-tab and new-window page.  One self-contained HTML file: no netw
 scripts/safari-start/install.sh
 ```
 
-Copies `index.html` to `~/Sites/safari-start/` and sets Safari's `HomePage`, `NewTabBehavior`, and `NewWindowBehavior` on both the global domain and the sandboxed container plist.  Safari is quit so the keys stick.  `install.sh --revert` restores Safari's built-in Start Page.
+Copies `public/index.html` to `~/Sites/safari-start/` and sets Safari's `HomePage`, `NewTabBehavior`, and `NewWindowBehavior` on both the global domain and the sandboxed container plist.  Safari is quit so the keys stick.  `install.sh --revert` restores Safari's built-in Start Page.
 
 If a new tab still shows Apple's Start Page, the container plist was not written or Safari was left running.  Re-run the installer.
 
+## Hosted
+
+The same page is public at https://start.jays.services, served from `public/` as a Cloudflare Worker static asset (`wrangler.jsonc`, account Usage.Jays.Services, zone `jays.services`).  It carries a `noindex` tag and a `robots.txt` that disallows crawling.  Deploy after editing:
+
+```bash
+cd scripts/safari-start && wrangler deploy
+```
+
+`wrangler` needs a login that can reach the Usage.Jays.Services account (`wrangler login`, or the Cloudflare keys from the handoff file as environment variables).
+
 ## iPhone
 
-iOS Safari has no homepage setting.  After Personal-Site deploys `site/public/start/index.html`:
-
-1. Open `https://jays.services/start/` in Safari.
-2. Share → Add to Home Screen (Title: Start).
-3. Optional: add that URL to Favorites so it appears on Safari's Start Page.
-
-Below 560px the page uses a phone layout with larger touch rows and safe-area padding.
-
-## Edit
-
-Default links are the `SECTIONS` array in the inline script.  Badge artwork is the `ICONS` table above it.  Re-run `install.sh` after editing, and copy the file to Personal-Site `site/public/start/index.html` when the phone copy should update.
+iOS Safari has no homepage or new-tab setting, so on the phone the page is a home-screen app.  Open https://start.jays.services in Safari, tap Share, then Add to Home Screen.  It opens full screen, and links open in an in-app browser sheet with a Done button that returns to the launcher.  Below 560px the page uses a phone layout with larger touch rows and safe-area padding.

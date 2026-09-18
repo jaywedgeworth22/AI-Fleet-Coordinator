@@ -1,5 +1,39 @@
 # Status
 
+Updated: 2026-09-18 (GROK — mac-collab-litestream inventory)
+
+## 2026-09-18 GROK — mac-collab-litestream on the master list
+
+Board `adc3f0d3`.  Branch `grok/litestream-inventory`.  Worktree
+`~/apps/fleet-grok-litestream-inv`.  pm2 job was already online (B2 replica of
+THE BOARD `findings.db`); the owner-facing table skipped it.  Tracked ecosystem
+on main still listed retired scout/senate jobs and omitted live `seat-mcp` +
+`mac-collab-litestream`.  Docs + ecosystem sync only.  No process restart.
+Rollout: `docs/rollouts/2026-09-18-mac-collab-litestream-inventory.md`.
+
+Updated: 2026-09-18 (CURSOR — Backup repos Sentry cron margin)
+
+## 2026-09-18 CURSOR — Backup repos Sentry cron margin
+
+FLEET-INFRA-CH is a missed check-in, not a failed backup.  GitHub starts
+`backup-repos.yml` 4–6.5h late; 15-min margin false-pages a healthy job.
+`CHECKIN_MARGIN_OVERRIDES["Backup fleet GitHub repositories"] = 600`.  Cron
+and backup unchanged.  Branch `cursor/backup-repos-cron-margin`.  Rollout:
+`docs/rollouts/2026-09-18-backup-repos-monitor-margin.md`.  Do not
+`workflow_dispatch`.  Extra-ship no.  No Coolify.
+
+Updated: 2026-09-18 (GROK — secret-guard Rule E, od/hexdump/xxd of loaded keys)
+
+## 2026-09-18 GROK — secret-guard blocks od/hexdump/xxd of a loaded key
+
+Board `1e4a9d2f`.  Branch `grok/secret-guard-od`.  Worktree
+`~/apps/fleet-grok-secret-guard-od`.  Hook is now tracked
+(`scripts/hooks/secret-guard-pretooluse.py`) and denies byte-dump / `cut -c` /
+last-command `printf %s` of `$NAME` when NAME looks like KEY/TOKEN/SECRET.
+Incident command `od -c <<< "$SILICONFLOW_API_KEY"` is denied.  53 unit tests.
+Canon: AGENT-SYNC § Loaded-key byte dumps.  Rollout:
+`docs/rollouts/2026-09-18-secret-guard-od.md`.
+
 Updated: 2026-09-17 (CLAUDE — Instinct iMessage interface seat onboarding prompt)
 
 ## 2026-09-17 CLAUDE — Instinct onboarding prompt

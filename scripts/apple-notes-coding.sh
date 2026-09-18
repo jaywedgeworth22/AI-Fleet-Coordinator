@@ -194,7 +194,10 @@ def inline(s: str) -> str:
     s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
     s = re.sub(r"\*\*([^*]+)\*\*", r"<b>\1</b>", s)
     s = re.sub(r"(?<!\*)\*([^*]+)\*(?!\*)", r"<i>\1</i>", s)
-    s = re.sub(r"(?<!_)_([^_]+)_(?!_)", r"<i>\1</i>", s)
+    # Underscore italics only at word edges.  Identifiers like
+    # merge_commit_sha / prompt_too_large must not become mashed words.
+    # Do not match the inner pair of __bold__ (would render _<i>bold</i>_).
+    s = re.sub(r"(?<![A-Za-z0-9_])_([^_]+)_(?![A-Za-z0-9_])", r"<i>\1</i>", s)
     return s
 
 text = sys.stdin.read()
@@ -283,6 +286,13 @@ while i < len(lines):
     # unordered list
     m = re.match(r"^[-*+]\s+(.*)$", stripped)
     if m:
+        item = m.group(1).strip()
+        if not item:
+            i += 1
+            nxt = peek_stripped(i)
+            if in_ul and nxt and re.match(r"^[-*+]\s+", nxt):
+                add_spacer()
+            continue
         if in_ol:
             out.append("</ol>")
             in_ol = False
@@ -290,7 +300,7 @@ while i < len(lines):
         if not in_ul:
             out.append("<ul>")
             in_ul = True
-        out.append(f"<li>{inline(m.group(1))}</li>")
+        out.append(f"<li>{inline(item)}</li>")
         i += 1
         nxt = peek_stripped(i)
         if nxt and re.match(r"^[-*+]\s+", nxt):

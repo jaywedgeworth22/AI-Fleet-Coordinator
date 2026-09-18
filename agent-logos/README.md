@@ -15,7 +15,10 @@ names like `[GROK]` / `[CODEX]` / `[CLAUDE]`.
 | `ag.svg` / `gemini.svg` | Antigravity / Gemini |
 | `monet.svg` | Monet |
 | `owner.svg` / `owner.png` | Jay signature (asset kept for future use) |
-| `app-st.png` / `app-ct.png` / `app-um.png` / `app-dd.png` | Product app icons (ST, CT, UM, DealDex) |
+| `app-st.svg` / `app-st.png` | Socratic Trade — the offset-candlestick mark.  The SVG is transparent; the PNG is the App Store icon (`Socratic.Trade/graphics/asc-app-icon-1024.png`, black plate) for surfaces that need a solid tile. |
+| `app-ct.png` / `app-um.png` / `app-dd.png` / `app-ps.png` / `app-ar.png` / `app-cl.png` / `app-bf.png` | Product app icons (CT, UM, DealDex, Personal Site, Autorotate, ContactLogo, BotFleet) |
+| `app-hh.png` | Hog Hunter — the Mac app icon from `HogHunter/Assets.xcassets/AppIcon.appiconset` |
+| `app-cc.png` | CodeCaps (the menu bar app formerly called AgentBar) — `agent-bar/assets/icon-1024.png`.  **Known duplicate:** CodeCaps was extracted from Usage Monitor and still ships Usage Monitor's artwork, so `app-cc.png` and `app-um.png` are the same picture.  Replace it once CodeCaps has a mark of its own. |
 
 Most vendor marks came from `Socratic.Trade/public/model-logos/`; Grok, Grok Bot,
 and Cursor are owner-supplied from `~/Code/Icons - Logos/`.

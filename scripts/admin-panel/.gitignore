@@ -1,0 +1,3 @@
+# Local wrangler dev state (miniflare caches, bundles, observability traces).
+.wrangler/
+node_modules/
