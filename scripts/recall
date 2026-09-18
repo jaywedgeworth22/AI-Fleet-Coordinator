@@ -276,7 +276,7 @@ def cmd_ingest(a: argparse.Namespace) -> int:
 def cmd_doctor(a: argparse.Namespace) -> int:
     if a.platforms:
         blocked = (not public_fallback.using_fake_backend() and not public_fallback.local_override_active()
-                  and public_fallback.tailscale_believed_down(public_fallback.tailscale_status_text()))
+                  and public_fallback.direct_path_blocked(public_fallback.tailscale_status_text()))
         rep = doctor.platforms_report(box=a.box, direct_path_blocked=blocked)
         if a.json:
             print(json.dumps(rep, indent=2))

@@ -210,6 +210,21 @@ class SessionStartHookTests(HookBase):
     def write_last_run(self, ok: bool = True) -> None:
         (self.state / "last-run.json").write_text(json.dumps({"ok": ok, "finished_at": 1788350239645}))
 
+    def write_fake_recall(self, path: pathlib.Path, body: str) -> None:
+        """Write an executable fake `recall` and exec it once before any timed hook call.
+
+        macOS assesses a freshly written executable on its first exec, and on a busy Mac that
+        stalls for up to ~3 s (measured: 14-22 of 80 new-file execs over 0.5 s while this module
+        looped, versus a max of 11 ms re-exec'ing an already-run file).  Inside the hook that
+        stall lands in the 3 s foreground `recall stats --json` timeout and silently turns a good
+        count into no output.  Paying it here keeps it out of every timed window without touching
+        the hook's budget or the assertions.  `--warm` exits before the body, so a fake that
+        hangs does not hang setup; the hook always calls `stats --json`, never `--warm`.
+        """
+        path.write_text("#!/bin/sh\n[ \"$1\" = --warm ] && exit 0\n" + body)
+        path.chmod(0o755)
+        subprocess.run([str(path), "--warm"], check=True, capture_output=True, timeout=30)
+
     def test_fresh_cache_gives_the_one_liner_fast(self):
         self.write_cache(38716)
         out, dt = self.start()
@@ -237,8 +252,7 @@ class SessionStartHookTests(HookBase):
         bindir = self.home / "bin"
         bindir.mkdir()
         fake = bindir / "recall"
-        fake.write_text("#!/bin/sh\nsleep 1\necho '{\"points\": 424242, \"status\": \"green\"}'\n")
-        fake.chmod(0o755)
+        self.write_fake_recall(fake, "sleep 1\necho '{\"points\": 424242, \"status\": \"green\"}'\n")
         self.write_cache(100, age_s=10 * 3600)
         out, dt = self.start({"PATH": f"{bindir}:/usr/bin:/bin"})
         self.assertIn("100 points", out["hookSpecificOutput"]["additionalContext"])   # stale value served
@@ -255,14 +269,13 @@ class SessionStartHookTests(HookBase):
         bindir = self.home / "bin"
         bindir.mkdir()
         fake = bindir / "recall"
-        fake.write_text("#!/bin/sh\necho '{\"points\": 7, \"status\": \"green\"}'\n")
-        fake.chmod(0o755)
+        self.write_fake_recall(fake, "echo '{\"points\": 7, \"status\": \"green\"}'\n")
         out, _ = self.start({"PATH": f"{bindir}:/usr/bin:/bin", "FLEET_RECALL_HOOK_NO_REFRESH": "1"})
         self.assertIn("corpus 7 points", out["hookSpecificOutput"]["additionalContext"])
         self.assertEqual(json.loads((self.state / "hook-points-cache.json").read_text())["points"], 7)
         # A hanging recall must not hang the hook: 3 s timeout, then last-run fallback / nothing.
         (self.state / "hook-points-cache.json").unlink()
-        fake.write_text("#!/bin/sh\nsleep 20\n")
+        self.write_fake_recall(fake, "sleep 20\n")
         out, dt = self.start({"PATH": f"{bindir}:/usr/bin:/bin", "FLEET_RECALL_HOOK_NO_REFRESH": "1"})
         self.assertIsNone(out)
         self.assertLess(dt, 6)
@@ -273,8 +286,7 @@ class SessionStartHookTests(HookBase):
         bindir = self.home / "bin"
         bindir.mkdir()
         fake = bindir / "recall"
-        fake.write_text("#!/bin/sh\necho '{\"points\": 0, \"status\": \"green\"}'\n")
-        fake.chmod(0o755)
+        self.write_fake_recall(fake, "echo '{\"points\": 0, \"status\": \"green\"}'\n")
         env = {"PATH": f"{bindir}:/usr/bin:/bin", "FLEET_RECALL_HOOK_NO_REFRESH": "1"}
         out, _ = self.start(env)
         self.assertIsNone(out)                                    # no last-run.json yet either
@@ -302,8 +314,7 @@ class SessionStartHookTests(HookBase):
         bindir = self.home / "bin"
         bindir.mkdir()
         fake = bindir / "recall"
-        fake.write_text("#!/bin/sh\nsleep 0.2\necho '{\"points\": 0, \"status\": \"green\"}'\n")
-        fake.chmod(0o755)
+        self.write_fake_recall(fake, "sleep 0.2\necho '{\"points\": 0, \"status\": \"green\"}'\n")
         self.write_cache(100, age_s=10 * 3600)                    # stale, good count
         out, dt = self.start({"PATH": f"{bindir}:/usr/bin:/bin"})
         self.assertIn("100 points", out["hookSpecificOutput"]["additionalContext"])
@@ -314,8 +325,7 @@ class SessionStartHookTests(HookBase):
 
     def test_prefers_installed_recall_over_path(self):
         installed = self.home / "apps" / "fleet-rag" / "recall"
-        installed.write_text("#!/bin/sh\necho '{\"points\": 11}'\n")
-        installed.chmod(0o755)
+        self.write_fake_recall(installed, "echo '{\"points\": 11}'\n")
         out, _ = self.start({"PATH": "/usr/bin:/bin", "FLEET_RECALL_HOOK_NO_REFRESH": "1"})
         self.assertIn("corpus 11 points", out["hookSpecificOutput"]["additionalContext"])
 

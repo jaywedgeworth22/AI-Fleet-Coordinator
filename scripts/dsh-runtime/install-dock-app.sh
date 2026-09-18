@@ -1,12 +1,14 @@
 #!/usr/bin/env bash
-# Build ~/Applications/DeepSeek Harness Web.app (WKWebView, Dock running-dot)
-# and pin it to the Dock.  Icon is a full-bleed 1:1 square, sharp 90° corners.
+# Build ~/Applications/Harness.app (WKWebView shell around DeepSeek Harness web,
+# Dock running-dot) and pin it to the Dock.  Icon is a full-bleed 1:1 square,
+# sharp 90° corners.  Display name "Harness"; bundle id kept stable as
+# com.jays.dsh-harness-web so existing Dock pins and saved frames survive.
 set -euo pipefail
 export PATH="/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:$PATH"
 
 ROOT="$(cd "$(dirname "$0")" && pwd)"
 LIVE="${HOME}/apps/dsh-runtime"
-APP="${HOME}/Applications/DeepSeek Harness Web.app"
+APP="${HOME}/Applications/Harness.app"
 PNG="${ROOT}/assets/harness-icon-1024.png"
 [[ -f "$PNG" ]] || PNG="${LIVE}/assets/harness-icon-1024.png"
 SWIFT="${ROOT}/HarnessWindow.swift"
@@ -49,12 +51,12 @@ cat > "$APP/Contents/Info.plist" <<'PLIST'
 <plist version="1.0">
 <dict>
   <key>CFBundleDevelopmentRegion</key><string>en</string>
-  <key>CFBundleDisplayName</key><string>DeepSeek Harness</string>
+  <key>CFBundleDisplayName</key><string>Harness</string>
   <key>CFBundleExecutable</key><string>DeepSeekHarness</string>
   <key>CFBundleIconFile</key><string>AppIcon</string>
   <key>CFBundleIdentifier</key><string>com.jays.dsh-harness-web</string>
   <key>CFBundleInfoDictionaryVersion</key><string>6.0</string>
-  <key>CFBundleName</key><string>DeepSeek Harness</string>
+  <key>CFBundleName</key><string>Harness</string>
   <key>CFBundlePackageType</key><string>APPL</string>
   <key>CFBundleShortVersionString</key><string>1.1</string>
   <key>CFBundleVersion</key><string>2</string>
@@ -80,11 +82,22 @@ cp "${ROOT}/open-harness.sh" "${LIVE}/open-harness.sh"
 cp "$PNG" "${LIVE}/assets/harness-icon-1024.png"
 cp "$ROOT/install-dock-app.sh" "${LIVE}/install-dock-app.sh"
 chmod 755 "${LIVE}/ensure-web.sh" "${LIVE}/open-harness.sh" "${LIVE}/install-dock-app.sh"
+if [[ -f "${ROOT}/dsh.sh" ]]; then
+  cp "${ROOT}/dsh.sh" "${LIVE}/dsh.sh"
+  chmod 755 "${LIVE}/dsh.sh"
+fi
+if [[ -f "${ROOT}/start-web.sh" ]]; then
+  cp "${ROOT}/start-web.sh" "${LIVE}/start-web.sh"
+  chmod 755 "${LIVE}/start-web.sh"
+fi
 
 if command -v dockutil >/dev/null 2>&1; then
-  if dockutil --list | grep -q "DeepSeek Harness Web"; then
-    dockutil --remove "DeepSeek Harness Web" --no-restart || true
-  fi
+  # Legacy pins from the pre-rebrand .app name.  Remove by either label.
+  for label in "Harness" "DeepSeek Harness Web"; do
+    if dockutil --list | grep -q "$label"; then
+      dockutil --remove "$label" --no-restart || true
+    fi
+  done
   if dockutil --list | awk -F'\t' '{print $1}' | grep -qx "DeepSeek"; then
     dockutil --add "$APP" --after "DeepSeek" --no-restart
   else

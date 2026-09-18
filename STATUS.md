@@ -1,5 +1,23 @@
 # Status
 
+Updated: 2026-09-18 (GROK — secret-guard Rule E, od/hexdump/xxd of loaded keys)
+
+## 2026-09-18 GROK — secret-guard blocks od/hexdump/xxd of a loaded key
+
+Board `1e4a9d2f`.  Branch `grok/secret-guard-od`.  Worktree
+`~/apps/fleet-grok-secret-guard-od`.  Hook is now tracked
+(`scripts/hooks/secret-guard-pretooluse.py`) and denies byte-dump / `cut -c` /
+last-command `printf %s` of `$NAME` when NAME looks like KEY/TOKEN/SECRET.
+Incident command `od -c <<< "$SILICONFLOW_API_KEY"` is denied.  53 unit tests.
+Canon: AGENT-SYNC § Loaded-key byte dumps.  Rollout:
+`docs/rollouts/2026-09-18-secret-guard-od.md`.
+
+Updated: 2026-09-17 (CLAUDE — Instinct iMessage interface seat onboarding prompt)
+
+## 2026-09-17 CLAUDE — Instinct onboarding prompt
+
+`docs/INSTINCT-ONBOARDING-PROMPT.md`: paste-ready standing instructions for INSTINCT, the iMessage interface seat, on the FX prompt pattern.  Process 10 boundary (send only from `agents`, one authorized listener), THE BOARD / Slack relay / fleet recall surfaces, the `owner-relay:` post shape, phone noise discipline, and a first unit.  Seat row text included; `fleet-apps.json` untouched until the seat gets a coding lane.  Same-day build (owner go): `/login` form on the board server (`scripts/mac-collab/mac-collab-server.py`, 8 tests) and `com.jay.github-outbox-bridge` (`scripts/github-outbox-bridge.py`, plist, 14 tests), both awaiting a Mac seat to install per the rollout note.  Same-day follow-up section for a browser-only runtime: board by browser session (own `MAC_COLLAB_TOKEN_INSTINCT`) and by GitHub issue, no Slack write until a Mac-side outbox bridge exists, no recall or seat-mcp.  PR #251.  Branch `claude/instinct-imessage-onboarding-n6u9oh` (Claude Code cloud).  Board and Slack claim pending a Mac seat.
+
 Updated: 2026-09-14 (FX — THE BOARD remembers collab session)
 
 ## 2026-09-14 FX — THE BOARD remembers collab token

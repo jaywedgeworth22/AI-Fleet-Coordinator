@@ -246,6 +246,7 @@ def _last_run_row(home: pathlib.Path, now: int) -> dict:
 
 
 DIRECT_PATH_BLOCKED_DETAIL = "tailscale logged out; direct path skipped (use recall-tunnel or tailscale login)"
+RERANK_BLOCKED_DETAIL = "direct path skipped (Tailscale down); rerank served by recall.jays.services"
 
 
 def _sentinel_row(qdrant_factory: Callable[[], Any], now: int, direct_path_blocked: bool = False) -> dict:
@@ -287,7 +288,14 @@ def default_rerank_check() -> bool | None:
     return core.rerank_healthy(cfg)
 
 
-def _rerank_row(rerank_check: Callable[[], bool | None]) -> dict:
+def _rerank_row(rerank_check: Callable[[], bool | None], direct_path_blocked: bool = False) -> dict:
+    if direct_path_blocked:
+        # Same reasoning as _sentinel_row: TEI_RERANK_URL is a Tailscale-mesh address too (see
+        # docs/RAG-FLEET-INFRA.md), so probing it directly when the caller has already
+        # established Tailscale is believed down (with no operator override) would just spend a
+        # probe timeout to rediscover what's already known, and would report a live rerank
+        # service as FAIL.  See public_fallback.require_direct_path.
+        return _row("WARN", "tei:rerank", RERANK_BLOCKED_DETAIL)
     try:
         healthy = rerank_check()
     except Exception as e:  # noqa: BLE001 - class only
@@ -347,8 +355,10 @@ def platforms_report(home: pathlib.Path | str | None = None, box: bool = False,
     `direct_path_blocked` is decided by the caller (recall's cmd_doctor, via
     public_fallback.require_direct_path's same Tailscale-down-with-no-override check) -- this
     module never probes Tailscale itself, keeping the report pure given its inputs.  When set,
-    the ingest:sentinel row is WARN "direct path skipped" instead of attempting (and, on this
-    Mac tonight, waiting several minutes to fail) the real Qdrant call.
+    the ingest:sentinel and tei:rerank rows are WARN "direct path skipped" instead of attempting
+    (and, on this Mac tonight, waiting to fail or falsely FAILing a healthy box) the real
+    Qdrant / TEI rerank calls -- both addresses are Tailscale-mesh-only (see
+    docs/RAG-FLEET-INFRA.md).
     """
     home = pathlib.Path(home) if home else pathlib.Path(os.path.expanduser("~"))
     now = now if now is not None else now_ms()
@@ -363,7 +373,7 @@ def platforms_report(home: pathlib.Path | str | None = None, box: bool = False,
     rows += _routine_rows(http_get)
     rows.append(_last_run_row(home, now))
     rows.append(_sentinel_row(qdrant_factory, now, direct_path_blocked=direct_path_blocked))
-    rows.append(_rerank_row(rerank_check))
+    rows.append(_rerank_row(rerank_check, direct_path_blocked=direct_path_blocked))
     if box:
         rows += _box_rows(ssh_run)
     counts = {s: sum(1 for r in rows if r["status"] == s) for s in ("OK", "WARN", "FAIL")}

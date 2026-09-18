@@ -21,7 +21,14 @@ This module gives those two surfaces a fast, actionable alternative:
      tries to start Tailscale.app and returns `CLIError 3` instead of "logged out"; that is
      treated as down so `recall stats` does not wait on private Qdrant's 120s per-call
      timeout.  `RECALL_SKIP_PRIVATE=1` skips the Tailscale binary entirely (no GUI start)
-     and skips the private path even when QDRANT_URL/TEI_URL are set.
+     and skips the private path even when QDRANT_URL/TEI_URL are set.  On macOS, when the
+     status check itself is unknown (no Tailscale.app at all), `private_route_bypasses_
+     tailscale` reads the OS routing table for the configured Qdrant host as a second,
+     independent signal -- a route that resolves to a non-"utun" interface is positive
+     evidence the private hop is gone, so the same fast public path is taken instead of
+     hanging on this network's transparent TCP proxy until the 120s read timeout.  Both
+     signals are combined in `direct_path_blocked`, shared by `call_with_fallback` and
+     `recall doctor --platforms`.
   2. Otherwise the local path still runs first -- Tailscale can flap, and "believed up" is a
      hint, not a guarantee -- but a CONNECTION-LEVEL failure from it (never an HTTP 4xx/5xx,
      which is a real answer from a reachable server) is caught and retried once against
@@ -39,9 +46,10 @@ This module gives those two surfaces a fast, actionable alternative:
      down), produces one plain-English, actionable line -- never a second opaque exception.
 
 Only recall_search / recall_stats / recall_contribute are covered (the shared tool contract).
-The public service's own argument set is a subset of the local one (no `per_doc`, `rerank`,
-`prefer_lessons`, `force`; see `scripts/fleet-recall-service/server.py` TOOLS) -- those knobs
-are silently dropped when a call actually falls back, and the near-duplicate contribute guard
+The public service's recall_search route now accepts every recall_search() keyword, including
+`per_doc`, `rerank`, and `prefer_lessons` (see `scripts/fleet-recall-service/server.py` TOOLS).
+The CLI-only `--force` dedup-guard override has no public twin -- it is silently dropped when a
+call actually falls back, and the near-duplicate contribute guard
 (a local-only nicety, not part of the shared tool contract) is skipped rather than run against
 an unreachable backend.
 
@@ -53,10 +61,13 @@ Callers must never engage the network path while a test has swapped `recall_api.
 """
 from __future__ import annotations
 
+import ipaddress
 import os
 import pathlib
 import re
 import subprocess
+import sys
+import urllib.parse
 from typing import Any, Callable
 
 from . import __version__, core, recall_api
@@ -67,6 +78,18 @@ TAILSCALE_STATUS_TIMEOUT = 3.0
 # BotFleet LaunchAgent / other GUI-less callers set this so `recall stats --json` never
 # starts Tailscale.app and never waits 120s on private Qdrant.
 SKIP_PRIVATE_ENV = "RECALL_SKIP_PRIVATE"
+
+# macOS-only corroborating signal for when tailscale_status_text() itself returns None (no
+# Tailscale.app to ask).  Tailscale's mesh addresses are all inside this CGNAT range
+# (https://tailscale.com/kb/1015/100.x-addresses); a route to a host in it that resolves to a
+# non-"utun" interface is positive evidence the private hop is gone, not silence to read as
+# "assume up".
+TAILSCALE_CGNAT = ipaddress.ip_network("100.64.0.0/10")
+# The private Qdrant host documented in docs/RAG-FLEET-INFRA.md, used only as a fallback when
+# QDRANT_URL is not set in the environment (e.g. before recall_api.load_config() has run).
+DEFAULT_QDRANT_URL = "http://100.69.77.26:6333"
+ROUTE_BIN = "/sbin/route"
+ROUTE_TIMEOUT = 2.0
 
 PUBLIC_BASE = "https://recall.jays.services"
 PUBLIC_ENV_KEYS = ("RECALL_API_TOKEN", "CF_ACCESS_CLIENT_ID", "CF_ACCESS_CLIENT_SECRET")
@@ -112,10 +135,13 @@ def _read_named_line(path: pathlib.Path, name: str) -> "str | None":
 REST_PATH = {"recall_search": "/recall/search", "recall_stats": "/recall/stats",
              "recall_contribute": "/recall/contribute"}
 REST_METHOD = {"recall_search": "POST", "recall_stats": "GET", "recall_contribute": "POST"}
-# The public tool contract is a subset of the local one (scripts/fleet-recall-service/server.py
-# TOOLS) -- extra local-only knobs are dropped rather than sent and rejected.
+# The public tool contract mirrors the local one (scripts/fleet-recall-service/server.py TOOLS)
+# for recall_search -- every recall_search() keyword argument has a public route.  recall_
+# contribute stays a deliberate subset: `force` is a local-only dedup-guard nicety (see the
+# module docstring) with no public twin.
 PUBLIC_ALLOWED_ARGS = {
-    "recall_search": {"query", "limit", "category", "app", "source", "seat", "since_days"},
+    "recall_search": {"query", "limit", "category", "app", "source", "seat", "since_days",
+                      "per_doc", "rerank", "prefer_lessons"},
     "recall_stats": set(),
     "recall_contribute": {"text", "category", "app", "seat", "title", "url"},
 }
@@ -178,6 +204,82 @@ def tailscale_believed_down(status_text: "str | None") -> bool:
         return True
     if "the tailscale gui failed to start" in low:
         return True
+    return False
+
+
+def _qdrant_url_for_route_check() -> str:
+    """QDRANT_URL from the environment, or the documented default private host -- only used to
+    pick which host to ask the routing table about, never to make a network call itself."""
+    return os.environ.get("QDRANT_URL", "").strip() or DEFAULT_QDRANT_URL
+
+
+def private_route_bypasses_tailscale(url: "str | None" = None,
+                                     run: Callable[..., Any] | None = None) -> bool:
+    """True on positive evidence from the macOS routing table that the private Qdrant host is
+    NOT reachable through a Tailscale (utun) interface.
+
+    This exists for the case `tailscale_status_text()` cannot resolve on its own: no
+    `Tailscale.app` at all (Tailscale.app removed from the Mac, or a relocated/CI binary).
+    `tailscale_believed_down(None)` is "unknown", read as "assume up" by design -- correct for
+    a Linux/CI box that never had Tailscale.app -- but on a Mac this network's transparent TCP
+    proxy makes a direct connect to a dead private address "succeed" in ~0.2s and then hang
+    until `core.DEFAULT_TIMEOUT` (120s) on the read, instead of failing fast.  A `route -n get`
+    lookup is a local, offline, sub-second check that settles the ambiguity independently of
+    Tailscale's own binary.
+
+    Returns True only when ALL of:
+      - `sys.platform == "darwin"` (this signal is macOS-specific; every other platform, CI
+        included, returns False unconditionally -- unchanged behavior there)
+      - the configured (or documented-default) `QDRANT_URL` host is an IPv4 literal inside
+        Tailscale's CGNAT range (`TAILSCALE_CGNAT`, 100.64.0.0/10) -- an operator's `Run your
+        own` deployment on a normal host is never treated as Tailscale-routed
+      - `route -n get <ip>` (via `run`, injectable, defaults to `subprocess.run`) completes
+        within `ROUTE_TIMEOUT` and its output parses an `interface:` line
+      - that interface does NOT start with `"utun"` (Tailscale's interface family on macOS)
+
+    Everything else -- a non-Darwin platform, a non-CGNAT/non-IP host, a `route` call that
+    fails, times out, or produces unparseable output, or an interface that DOES start with
+    `"utun"` -- returns False.  This helper only ever adds a fast "blocked" verdict on top of
+    today's "unknown = assume up" default; it never claims the private path IS reachable, so it
+    can only make a hang shorter, never mask a real outage as healthy.
+    """
+    if sys.platform != "darwin":
+        return False
+    host = urllib.parse.urlparse(url or _qdrant_url_for_route_check()).hostname
+    if not host:
+        return False
+    try:
+        addr = ipaddress.ip_address(host)
+    except ValueError:
+        return False
+    if addr.version != 4 or addr not in TAILSCALE_CGNAT:
+        return False
+    runner = run or subprocess.run
+    try:
+        proc = runner([ROUTE_BIN, "-n", "get", str(addr)], capture_output=True, text=True,
+                      timeout=ROUTE_TIMEOUT)
+    except (OSError, subprocess.TimeoutExpired):
+        return False
+    m = re.search(r"^\s*interface:\s*(\S+)", proc.stdout or "", re.MULTILINE)
+    if not m:
+        return False
+    return not m.group(1).startswith("utun")
+
+
+def direct_path_blocked(status_text: "str | None") -> bool:
+    """The one shared verdict `call_with_fallback` and `recall doctor --platforms` both use to
+    decide the direct Qdrant/TEI path is not worth attempting: positive Tailscale evidence
+    (`tailscale_believed_down`), OR -- only when `status_text` is unknown (None), i.e. there was
+    no Tailscale.app to ask -- positive evidence from the macOS routing table
+    (`private_route_bypasses_tailscale`).  Callers still gate this on `using_fake_backend()` /
+    `local_override_active()` / `skip_private_requested()` themselves (as they already do);
+    keeping the "unknown status" corroboration in one place means the two call sites can never
+    quietly drift apart on what "blocked" means.
+    """
+    if tailscale_believed_down(status_text):
+        return True
+    if status_text is None:
+        return private_route_bypasses_tailscale()
     return False
 
 
@@ -346,8 +448,11 @@ def call_with_fallback(name: str, kwargs: dict, run_local: RunLocal,
             "RECALL_SKIP_PRIVATE is set; skipping Tailscale and the private Qdrant path")
     if not local_override_active():
         probe = status_probe or tailscale_status_text
-        if tailscale_believed_down(probe()):
-            return _fallback(name, kwargs, "Tailscale is logged out on this Mac")
+        status_text = probe()
+        if direct_path_blocked(status_text):
+            why = ("Tailscale is logged out on this Mac" if tailscale_believed_down(status_text)
+                   else "the routing table shows no Tailscale interface for the private Qdrant host")
+            return _fallback(name, kwargs, why)
     try:
         return run_local()
     except FleetRagError as e:
