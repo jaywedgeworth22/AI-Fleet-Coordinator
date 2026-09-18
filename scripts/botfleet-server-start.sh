@@ -10,8 +10,12 @@ PORT="${BOTFLEET_PORT:-8799}"
 NODE="${BOTFLEET_NODE:-/opt/homebrew/bin/node}"
 PREFIX="[botfleet-server-start]"
 
+# BotFleet's only health route is /api/health (server/index.ts).  /health
+# answers 404 "no route", which `curl -f` treats as unhealthy, so probing it made
+# this "already up" branch dead and let a wrapper run while the packaged app held
+# the port fall through to the node_modules check and exit 1 in a restart loop.
 health() {
-  /usr/bin/curl -sf -m 2 "http://127.0.0.1:${PORT}/health" >/dev/null 2>&1
+  /usr/bin/curl -sf -m 2 "http://127.0.0.1:${PORT}/api/health" >/dev/null 2>&1
 }
 
 if health; then
