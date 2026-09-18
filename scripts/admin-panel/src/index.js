@@ -6,8 +6,22 @@
  * missing secret reports "Not configured", a failing call reports its error
  * text, and neither stops the other cards from rendering.
  *
+ * Two fields, two meanings, never conflated:
+ *   ok     the API call itself worked.  false means we could not ask.
+ *   state  what the answer said: up / warn / down / off / pending.
+ * A section is allowed to be ok:true state:"down" — that is a healthy check
+ * reporting an unhealthy fleet, which is the normal case for a status page.
+ *
+ * SUBREQUEST BUDGET.  A Worker invocation on the free plan may make 50
+ * subrequests.  Probing everything in one invocation blew through that, so the
+ * page asks for one section per request and each section states its own
+ * worst case below.  `/api/status` still answers, but it runs the sections in
+ * order against a 45-subrequest budget and defers whatever does not fit to the
+ * next call, by which time the earlier sections are cached and cost nothing.
+ *
  * Routes:
- *   GET /api/status              every integration, cached in memory for 30 s
+ *   GET /api/status              every section, sequenced under the budget
+ *   GET /api/status?section=…    one section, its own 30 s cache
  *   GET /api/recall/search?q=    proxy for the fleet RAG search
  *   *                            static assets from ./public
  */
@@ -16,9 +30,23 @@ const UA = 'admin-jays-services/1.0';
 const CACHE_TTL_MS = 30_000;
 const PROBE_TIMEOUT_MS = 8_000;
 const API_TIMEOUT_MS = 12_000;
+// Hybrid search plus rerank is genuinely slow — the Mac measures several
+// seconds for a warm query and more for a cold one.  8 s was cutting it off.
+const RECALL_SEARCH_TIMEOUT_MS = 25_000;
+const RECALL_CANARY_LIMIT = 3;
+const RECALL_SEARCH_LIMIT = 8;
+
+// How many subrequests one invocation of /api/status may spend.  Below the
+// platform's 50 so the response itself and any retry still have room.
+const STATUS_BUDGET = 45;
 
 // Public surfaces to probe.  Anything behind Cloudflare Access answers with a
-// redirect to cloudflareaccess.com, which still counts as up.
+// redirect to cloudflareaccess.com or with 401/403, both of which mean the
+// service is up and guarding itself.
+//
+// admin.jays.services is deliberately absent: a Worker probing its own
+// hostname spends a subrequest to learn something it already knows, and on
+// some routings talks to itself.
 const ENDPOINTS = [
   { name: 'Socratic Trade', url: 'https://socratictrade.com' },
   { name: 'Congress.Trade', url: 'https://congress.trade' },
@@ -28,6 +56,8 @@ const ENDPOINTS = [
   { name: 'BotFleet', url: 'https://botfleet.app' },
   { name: 'Autorotate', url: 'https://autorotate.codes' },
   { name: 'ContactLogo', url: 'https://contactlogo.com' },
+  { name: 'CodeCaps', url: 'https://jaywedgeworth22.github.io/agent-bar/' },
+  { name: 'Fleet Activity', url: 'https://jaywedgeworth22.github.io/ai-fleet-coordinator/' },
   { name: 'Start Page', url: 'https://start.jays.services' },
   { name: 'The Board', url: 'https://mac.jays.services/board' },
   { name: 'Coolify', url: 'https://host.jays.services' },
@@ -40,7 +70,12 @@ const ENDPOINTS = [
 
 // Mirrors fleet-apps.json at the repo root (apps[].repo / .displayName / .kind).
 // The Worker has no filesystem, so the registry is inlined here.  Keep in sync
-// when an app is onboarded.
+// when an app is onboarded — scripts/check-fleet-registry.py will not catch
+// drift in this copy.
+//
+// Hog Hunter is a local-only Mac app and CodeCaps is not registered in
+// fleet-apps.json yet, so neither has a product domain in ENDPOINTS above;
+// CodeCaps is probed at its download page instead.
 const APPS = [
   { repo: 'Socratic.Trade', name: 'Socratic Trade', kind: 'product' },
   { repo: 'Congress.Trade', name: 'Congress.Trade', kind: 'product' },
@@ -56,11 +91,19 @@ const APPS = [
   { repo: 'fleet-ops', name: 'Fleet Ops', kind: 'infra' },
 ];
 
+// Vercel personal projects come back on the first call; team-scoped ones need
+// one call per team.  Capped so the declared cost below stays honest.
+const VERCEL_MAX_TEAMS = 4;
+
 /* ------------------------------------------------------------------ utils */
 
-function errText(err) {
+function isTimeout(err) {
   const name = err && err.name;
-  if (name === 'TimeoutError' || name === 'AbortError') return 'Timed out';
+  return name === 'TimeoutError' || name === 'AbortError';
+}
+
+function errText(err) {
+  if (isTimeout(err)) return 'Timed out';
   const msg = (err && err.message) || String(err);
   // workerd reports a connection failure as "internal error; reference = …",
   // which is noise on a status page.
@@ -91,7 +134,9 @@ async function apiJson(url, { headers = {}, method = 'GET', body, timeoutMs = AP
   }
 }
 
-// Wraps a section so one failure can never take the page down.
+// Wraps a section so one failure can never take the page down.  A throw here
+// is the one case where ok is false and state is down at the same time: we
+// could not ask, so we do not know.
 async function section(fn) {
   const started = Date.now();
   try {
@@ -124,6 +169,7 @@ function accessHeaders(env) {
 }
 
 /* -------------------------------------------------------------- endpoints */
+/* Subrequests: one per entry in ENDPOINTS.  Worst case 18.                  */
 
 async function probe(ep) {
   const started = Date.now();
@@ -150,8 +196,28 @@ async function probe(ep) {
         detail: behindAccess ? 'Up, behind Access' : 'Up, redirects',
       };
     }
+    // A service that answers 401 or 403 is running and refusing us, which is
+    // exactly what every Access-protected and bearer-protected host on this
+    // list is supposed to do.  Calling that "down" was the panel lying.
+    if (status === 401 || status === 403) {
+      return { name: ep.name, url: ep.url, state: 'up', status, ms, detail: 'Up, auth required' };
+    }
     return { name: ep.name, url: ep.url, state: 'down', status, ms, detail: `HTTP ${status}` };
   } catch (err) {
+    // The tunnel-backed hosts (the Mac's board, the Xcode bridge, agent sync)
+    // answer in well under a second from the Mac and time out from
+    // Cloudflare's edge.  That is a route we cannot see from here, not a dead
+    // service, so it is amber and says where the timeout was measured.
+    if (isTimeout(err)) {
+      return {
+        name: ep.name,
+        url: ep.url,
+        state: 'warn',
+        status: 0,
+        ms: Date.now() - started,
+        detail: 'Timed out from Cloudflare',
+      };
+    }
     return {
       name: ep.name,
       url: ep.url,
@@ -165,18 +231,24 @@ async function probe(ep) {
 
 async function checkEndpoints() {
   const items = await Promise.all(ENDPOINTS.map(probe));
-  const down = items.filter((i) => i.state === 'down');
+  const down = items.filter((i) => i.state === 'down').length;
+  const warn = items.filter((i) => i.state === 'warn').length;
+  const up = items.length - down - warn;
+
+  const parts = [`${up} of ${items.length} up`];
+  if (warn) parts.push(`${warn} timed out from Cloudflare`);
+  if (down) parts.push(`${down} down`);
+
   return {
-    ok: down.length === 0,
-    state: down.length === 0 ? 'up' : 'down',
-    summary: down.length === 0
-      ? `${items.length} of ${items.length} up`
-      : `${items.length - down.length} of ${items.length} up, ${down.length} down`,
+    ok: true,
+    state: down ? 'down' : (warn ? 'warn' : 'up'),
+    summary: parts.join(', '),
     items,
   };
 }
 
 /* ------------------------------------------------------------ fleet recall */
+/* Subrequests: health + stats + canary search.  Worst case 3.               */
 
 // Contract lives in scripts/fleet-recall-service/server.py and
 // scripts/fleet_rag/recall_api.py:
@@ -204,11 +276,14 @@ function recallPublicHeaders(env) {
   return env.CF_ACCESS_CLIENT_ID && env.CF_ACCESS_CLIENT_SECRET ? accessHeaders(env) : {};
 }
 
-export async function recallSearch(env, query, limit = 8) {
+// POST, JSON body, and the field really is called `query` — recall_api.py
+// reads body["query"], not "q" and not "text".
+export async function recallSearch(env, query, limit = RECALL_SEARCH_LIMIT) {
   const data = await apiJson(`${recallBase(env)}/recall/search`, {
     method: 'POST',
     headers: recallHeaders(env),
     body: JSON.stringify({ query, limit }),
+    timeoutMs: RECALL_SEARCH_TIMEOUT_MS,
   });
   return { hits: (data.hits || []).map(normaliseHit), mode: data.mode || '' };
 }
@@ -240,9 +315,10 @@ async function checkRecall(env) {
     });
     const up = data.ok === true && data.backend_ok !== false;
     return {
-      ok: up,
+      ok: true,
       state: up ? 'up' : 'warn',
       summary: up ? 'Healthy' : (data.error ? String(data.error) : 'Backend is not answering'),
+      healthy: up,
       points: typeof data.points === 'number' ? data.points : null,
       collection: data.collection || '',
       version: data.version || '',
@@ -256,8 +332,8 @@ async function checkRecall(env) {
       health,
       points: health.points ?? null,
       collection: health.collection || '',
-      state: health.ok ? 'warn' : 'off',
-      summary: health.ok ? 'Healthy, but search is not configured' : 'Not configured',
+      state: health.healthy ? 'warn' : 'off',
+      summary: health.healthy ? 'Healthy, but search is not configured' : 'Not configured',
     };
   }
 
@@ -278,12 +354,13 @@ async function checkRecall(env) {
       };
     }),
     section(async () => {
-      const { hits, mode } = await recallSearch(env, 'fleet mode', 5);
-      const ok = hits.length > 0;
+      const { hits, mode } = await recallSearch(env, 'fleet mode', RECALL_CANARY_LIMIT);
+      const found = hits.length > 0;
       return {
-        ok,
-        state: ok ? 'up' : 'warn',
-        summary: ok ? `${hits.length} hits, mode ${mode || 'unknown'}` : 'No hits for the canary query',
+        ok: true,
+        state: found ? 'up' : 'warn',
+        summary: found ? `${hits.length} hits, mode ${mode || 'unknown'}` : 'No hits for the canary query',
+        found,
         items: hits,
       };
     }),
@@ -292,13 +369,13 @@ async function checkRecall(env) {
   const points = stats.points ?? health.points ?? null;
   const parts = [];
   if (points !== null) parts.push(`${points.toLocaleString('en-US')} points`);
-  parts.push(health.ok ? 'healthy' : 'health check failed');
-  parts.push(canary.ok ? 'canary passed' : 'canary failed');
+  parts.push(health.healthy ? 'healthy' : 'health check failed');
+  parts.push(canary.found ? 'canary passed' : 'canary failed');
   if (stats.reranker === false) parts.push('reranker unhealthy');
 
-  const state = health.ok && canary.ok && stats.ok
+  const state = health.healthy && canary.found && stats.ok
     ? (stats.state === 'warn' ? 'warn' : 'up')
-    : (health.ok ? 'warn' : 'down');
+    : (health.healthy ? 'warn' : 'down');
 
   // Top sources by point count, so the card says something about the corpus.
   const breakdown = Object.entries(stats.bySource || {})
@@ -307,7 +384,7 @@ async function checkRecall(env) {
     .map(([name, count]) => ({ name, count, state: 'up' }));
 
   return {
-    ok: state === 'up',
+    ok: health.ok && stats.ok && canary.ok,
     state,
     summary: parts.join(', '),
     health,
@@ -323,6 +400,7 @@ async function checkRecall(env) {
 }
 
 /* -------------------------------------------------------------- the board */
+/* Subrequests: stats + findings list.  Worst case 2.                       */
 
 // scripts/mac-collab/mac-collab-server.py:
 //   GET /health         public
@@ -375,7 +453,7 @@ async function checkBoard(env) {
   const state = bySeverity.P0 > 0 ? 'down' : (p0p1 > 0 ? 'warn' : 'up');
 
   return {
-    ok: state === 'up',
+    ok: !(rows && rows.__error),
     state,
     summary: `${open} open, ${inProgress} in progress, ${p0p1} at P0 or P1`,
     items,
@@ -388,6 +466,7 @@ async function checkBoard(env) {
 }
 
 /* ---------------------------------------------------------------- coolify */
+/* Subrequests: applications + servers.  Worst case 2.                      */
 
 async function checkCoolify(env) {
   if (!env.COOLIFY_TOKEN) return notConfigured('COOLIFY_TOKEN');
@@ -421,7 +500,7 @@ async function checkCoolify(env) {
   const bad = items.filter((i) => i.state === 'down').length;
   const warn = items.filter((i) => i.state === 'warn').length;
   return {
-    ok: bad === 0,
+    ok: !(servers && servers.__error),
     state: bad > 0 ? 'down' : (warn > 0 ? 'warn' : 'up'),
     summary: `${items.length - bad - warn} of ${items.length} running`,
     items,
@@ -439,6 +518,9 @@ function coolifyState(status) {
 }
 
 /* ----------------------------------------------------------------- github */
+/* Subrequests: one org-wide PR search + one actions/runs call per repo.     */
+/* Worst case 1 + APPS.length = 13.  It used to be two per repo — 24 — and   */
+/* that alone was half the platform's budget.                                */
 
 async function checkGitHub(env) {
   if (!env.GITHUB_TOKEN) return notConfigured('GITHUB_TOKEN');
@@ -449,22 +531,46 @@ async function checkGitHub(env) {
     'X-GitHub-Api-Version': '2022-11-28',
   };
 
+  // One search for every open PR the owner has, grouped by repo afterwards.
+  const search = await apiJson(
+    `https://api.github.com/search/issues?q=${encodeURIComponent(`is:pr is:open user:${owner}`)}&per_page=100`,
+    { headers },
+  ).catch((err) => ({ __error: errText(err) }));
+
+  const prCounts = new Map();
+  let openPrs = null;
+  let prError = '';
+  let prTruncated = false;
+  if (search && search.__error) {
+    prError = search.__error;
+  } else {
+    const found = search.items || [];
+    for (const item of found) {
+      // repository_url is https://api.github.com/repos/<owner>/<repo>
+      const repo = String(item.repository_url || '').split('/').pop();
+      if (repo) prCounts.set(repo, (prCounts.get(repo) || 0) + 1);
+    }
+    openPrs = Number(search.total_count || 0);
+    // per_page caps at 100, so beyond that the per-repo split is partial even
+    // though the total is exact.  Say so rather than quietly under-reporting.
+    prTruncated = openPrs > found.length;
+  }
+
   const items = await Promise.all(APPS.map(async (app) => {
-    const row = { name: app.name, repo: app.repo, kind: app.kind, prs: null, run: null, state: 'warn' };
+    const row = {
+      name: app.name,
+      repo: app.repo,
+      kind: app.kind,
+      prs: prError ? null : (prCounts.get(app.repo) || 0),
+      run: null,
+      state: 'warn',
+    };
+    if (prError) row.prError = prError;
 
-    const [prs, runs] = await Promise.all([
-      apiJson(
-        `https://api.github.com/search/issues?q=${encodeURIComponent(`repo:${owner}/${app.repo} is:pr is:open`)}`,
-        { headers },
-      ).catch((err) => ({ __error: errText(err) })),
-      apiJson(
-        `https://api.github.com/repos/${owner}/${app.repo}/actions/runs?branch=main&per_page=1`,
-        { headers },
-      ).catch((err) => ({ __error: errText(err) })),
-    ]);
-
-    if (prs && prs.__error) row.prError = prs.__error;
-    else row.prs = Number(prs.total_count || 0);
+    const runs = await apiJson(
+      `https://api.github.com/repos/${owner}/${app.repo}/actions/runs?branch=main&per_page=1`,
+      { headers },
+    ).catch((err) => ({ __error: errText(err) }));
 
     if (runs && runs.__error) {
       row.runError = runs.__error;
@@ -486,12 +592,17 @@ async function checkGitHub(env) {
   }));
 
   const failing = items.filter((i) => i.state === 'down');
-  const openPrs = items.reduce((n, i) => n + (i.prs || 0), 0);
+  const runErrors = items.filter((i) => i.runError).length;
+  const total = openPrs === null
+    ? 'PR count failed'
+    : `${openPrs} open PR${openPrs === 1 ? '' : 's'}${prTruncated ? ' (per-repo split capped at 100)' : ''}`;
+
   return {
-    ok: failing.length === 0,
+    ok: !prError && runErrors === 0,
     state: failing.length === 0 ? 'up' : 'down',
-    summary: `${openPrs} open PRs, ${failing.length === 0 ? 'main green everywhere' : `${failing.length} repos failing on main`}`,
+    summary: `${total}, ${failing.length === 0 ? 'main green everywhere' : `${failing.length} repo${failing.length === 1 ? '' : 's'} failing on main`}`,
     items,
+    error: prError ? `PR search: ${prError}` : undefined,
   };
 }
 
@@ -504,6 +615,8 @@ function runState(run) {
 }
 
 /* ----------------------------------------------------------------- vercel */
+/* Subrequests: personal projects, then teams + one call per team.           */
+/* Worst case 2 + VERCEL_MAX_TEAMS = 6.                                     */
 
 async function checkVercel(env) {
   if (!env.VERCEL_TOKEN) return notConfigured('VERCEL_TOKEN');
@@ -513,7 +626,7 @@ async function checkVercel(env) {
   const scopes = [];
   if (!projects.length) {
     const teams = await apiJson('https://api.vercel.com/v2/teams', { headers }).catch(() => ({ teams: [] }));
-    for (const team of teams.teams || []) {
+    for (const team of (teams.teams || []).slice(0, VERCEL_MAX_TEAMS)) {
       const scoped = await fetchVercelProjects(headers, `&teamId=${encodeURIComponent(team.id)}`);
       if (scoped.length) scopes.push(team.slug || team.name || team.id);
       projects = projects.concat(scoped);
@@ -534,7 +647,7 @@ async function checkVercel(env) {
 
   const bad = items.filter((i) => i.state === 'down').length;
   return {
-    ok: bad === 0,
+    ok: true,
     state: bad > 0 ? 'down' : 'up',
     summary: items.length
       ? `${items.length} projects, ${bad === 0 ? 'no failed deployments' : `${bad} failed`}${scopes.length ? ` (teams: ${scopes.join(', ')})` : ''}`
@@ -557,6 +670,7 @@ function vercelState(readyState) {
 }
 
 /* ----------------------------------------------------------------- sentry */
+/* Subrequests: one issues query.  Worst case 1.                            */
 
 async function checkSentry(env) {
   if (!env.SENTRY_AUTH_TOKEN) return notConfigured('SENTRY_AUTH_TOKEN');
@@ -580,7 +694,7 @@ async function checkSentry(env) {
     .sort((a, b) => b.count - a.count);
 
   return {
-    ok: issues.length === 0,
+    ok: true,
     state: issues.length === 0 ? 'up' : (issues.length > 25 ? 'down' : 'warn'),
     summary: issues.length === 0
       ? 'No unresolved issues in the last 24 hours'
@@ -591,11 +705,15 @@ async function checkSentry(env) {
 }
 
 /* -------------------------------------------------------------- pagerduty */
+/* Subrequests: one incidents query.  Worst case 1.                         */
 
 async function checkPagerDuty(env) {
   if (!env.PAGERDUTY_API_KEY) return notConfigured('PAGERDUTY_API_KEY');
+  // limit is the page size, not the count.  Asking for total=true makes
+  // PagerDuty return the real number, so a full page stops reading as
+  // "exactly 25 incidents".
   const data = await apiJson(
-    'https://api.pagerduty.com/incidents?statuses[]=triggered&statuses[]=acknowledged&limit=25',
+    'https://api.pagerduty.com/incidents?statuses[]=triggered&statuses[]=acknowledged&limit=25&total=true',
     {
       headers: {
         Authorization: `Token token=${env.PAGERDUTY_API_KEY}`,
@@ -613,15 +731,23 @@ async function checkPagerDuty(env) {
     urgency: i.urgency || '',
   }));
 
+  // total is authoritative when present.  Without it, a full page plus more
+  // pages is at least this many, so say so rather than guessing a number.
+  const total = typeof data.total === 'number' ? data.total : null;
+  const count = total !== null ? String(total) : (data.more ? `${items.length}+` : String(items.length));
+  const none = total !== null ? total === 0 : items.length === 0;
+
   return {
-    ok: items.length === 0,
-    state: items.some((i) => i.state === 'down') ? 'down' : (items.length ? 'warn' : 'up'),
-    summary: items.length === 0 ? 'No open incidents' : `${items.length} open incidents`,
+    ok: true,
+    state: items.some((i) => i.state === 'down') ? 'down' : (none ? 'up' : 'warn'),
+    summary: none ? 'No open incidents' : `${count} open incidents`,
     items,
+    total,
   };
 }
 
 /* ---------------------------------------------------------------- datadog */
+/* Subrequests: one monitor listing.  Worst case 1.                         */
 
 async function checkDatadog(env) {
   const gaps = missing(env, 'DD_API_KEY', 'DD_APP_KEY');
@@ -656,7 +782,7 @@ async function checkDatadog(env) {
     }));
 
   return {
-    ok: counts.Alert === 0,
+    ok: true,
     state: counts.Alert > 0 ? 'down' : (counts.Warn > 0 ? 'warn' : 'up'),
     summary: `${monitors.length} monitors, ${counts.Alert} alerting, ${counts.Warn} warning`,
     items,
@@ -666,29 +792,78 @@ async function checkDatadog(env) {
 
 /* ------------------------------------------------------------ orchestration */
 
-let cache = { at: 0, payload: null };
+// Worst-case subrequests per section.  These are the numbers the comment above
+// each check states; keep them together or the budget stops meaning anything.
+const CHECKS = {
+  endpoints: { cost: ENDPOINTS.length, run: () => checkEndpoints() },
+  recall: { cost: 3, run: (env) => checkRecall(env) },
+  board: { cost: 2, run: (env) => checkBoard(env) },
+  coolify: { cost: 2, run: (env) => checkCoolify(env) },
+  github: { cost: 1 + APPS.length, run: (env) => checkGitHub(env) },
+  vercel: { cost: 2 + VERCEL_MAX_TEAMS, run: (env) => checkVercel(env) },
+  sentry: { cost: 1, run: (env) => checkSentry(env) },
+  pagerduty: { cost: 1, run: (env) => checkPagerDuty(env) },
+  datadog: { cost: 1, run: (env) => checkDatadog(env) },
+};
 
+const SECTION_NAMES = Object.keys(CHECKS);
+
+// One cache entry per section, so a page that asks for nine sections in
+// parallel and then refreshes does not re-probe everything.
+const sectionCache = new Map();
+
+function cached(name) {
+  const hit = sectionCache.get(name);
+  if (!hit) return null;
+  return { ...hit, fresh: Date.now() - hit.at < CACHE_TTL_MS };
+}
+
+async function runSection(name, env) {
+  const hit = cached(name);
+  if (hit && hit.fresh) return { ...hit.data, cached: true, checkedAt: hit.checkedAt };
+  const data = await section(() => CHECKS[name].run(env));
+  const checkedAt = new Date().toISOString();
+  sectionCache.set(name, { at: Date.now(), data, checkedAt });
+  return { ...data, cached: false, checkedAt };
+}
+
+// Sequenced, not parallel, and stops spending once the budget is gone.  A
+// section that does not fit is served stale if we have it and marked pending
+// if we do not; either way the next call picks it up, because by then the
+// expensive sections ahead of it are cached and cost nothing.
 async function buildStatus(env) {
-  const names = ['endpoints', 'recall', 'board', 'coolify', 'github', 'vercel', 'sentry', 'pagerduty', 'datadog'];
-  const results = await Promise.all([
-    section(() => checkEndpoints()),
-    section(() => checkRecall(env)),
-    section(() => checkBoard(env)),
-    section(() => checkCoolify(env)),
-    section(() => checkGitHub(env)),
-    section(() => checkVercel(env)),
-    section(() => checkSentry(env)),
-    section(() => checkPagerDuty(env)),
-    section(() => checkDatadog(env)),
-  ]);
-
   const sections = {};
-  names.forEach((n, i) => { sections[n] = results[i]; });
+  let spent = 0;
 
-  const states = Object.values(sections).map((s) => s.state);
+  for (const name of SECTION_NAMES) {
+    const hit = cached(name);
+    if (hit && hit.fresh) {
+      sections[name] = { ...hit.data, cached: true, checkedAt: hit.checkedAt };
+      continue;
+    }
+    const cost = CHECKS[name].cost;
+    if (spent + cost > STATUS_BUDGET) {
+      sections[name] = hit
+        ? { ...hit.data, cached: true, stale: true, checkedAt: hit.checkedAt }
+        : {
+          ok: true,
+          state: 'pending',
+          summary: 'Deferred to the next call to stay under the subrequest limit',
+          items: [],
+        };
+      continue;
+    }
+    spent += cost;
+    // eslint-disable-next-line no-await-in-loop -- sequencing is the point
+    sections[name] = await runSection(name, env);
+  }
+
+  const states = Object.values(sections)
+    .map((s) => s.state)
+    .filter((s) => s !== 'off' && s !== 'pending');
   const overall = states.includes('down') ? 'down' : (states.includes('warn') ? 'warn' : 'up');
 
-  return { checkedAt: new Date().toISOString(), overall, sections };
+  return { checkedAt: new Date().toISOString(), overall, subrequests: spent, sections };
 }
 
 function jsonResponse(payload, status = 200) {
@@ -702,17 +877,23 @@ function jsonResponse(payload, status = 200) {
 }
 
 export default {
-  async fetch(request, env, ctx) {
+  async fetch(request, env) {
     const url = new URL(request.url);
 
     if (url.pathname === '/api/status') {
-      const now = Date.now();
-      if (cache.payload && now - cache.at < CACHE_TTL_MS) {
-        return jsonResponse({ ...cache.payload, cached: true });
+      const name = (url.searchParams.get('section') || '').trim();
+      if (name) {
+        if (!CHECKS[name]) {
+          return jsonResponse({ ok: false, error: `No such section. Try one of: ${SECTION_NAMES.join(', ')}.` }, 404);
+        }
+        const data = await runSection(name, env);
+        return jsonResponse({ checkedAt: data.checkedAt, section: name, data });
       }
-      const payload = await buildStatus(env);
-      cache = { at: now, payload };
-      return jsonResponse({ ...payload, cached: false });
+      return jsonResponse(await buildStatus(env));
+    }
+
+    if (url.pathname === '/api/sections') {
+      return jsonResponse({ sections: SECTION_NAMES });
     }
 
     if (url.pathname === '/api/recall/search') {
@@ -722,10 +903,13 @@ export default {
       if (gaps.length) {
         return jsonResponse({ ok: false, error: 'Not configured', hits: [] }, 503);
       }
-      const limit = Math.min(Number(url.searchParams.get('limit') || 10) || 10, 25);
+      const asked = Number(url.searchParams.get('limit'));
+      const limit = Math.min(Number.isFinite(asked) && asked > 0 ? asked : RECALL_SEARCH_LIMIT, 25);
       try {
-        const hits = await recallSearch(env, q, limit);
-        return jsonResponse({ ok: true, query: q, hits });
+        // recallSearch returns { hits, mode } — hand the array to the page, not
+        // the wrapper, or every search renders as "no hits".
+        const { hits, mode } = await recallSearch(env, q, limit);
+        return jsonResponse({ ok: true, query: q, mode, hits });
       } catch (err) {
         return jsonResponse({ ok: false, error: errText(err), hits: [] }, 502);
       }

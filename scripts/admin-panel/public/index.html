@@ -96,6 +96,11 @@
     margin: 0 10px 10px; color: var(--bad); background: var(--bad-bg); border-radius: 8px;
     padding: 7px 9px; font-size: 12px; word-break: break-word;
   }
+  /* The call worked and still had something to say — a note, not a failure. */
+  .card-note {
+    margin: 0 10px 10px; color: var(--muted); background: var(--hover); border-radius: 8px;
+    padding: 7px 9px; font-size: 12px; word-break: break-word;
+  }
 
   .rows { list-style: none; margin: 0; padding: 0; }
   .row {
@@ -122,7 +127,7 @@
   .pill.up { color: var(--ok); background: var(--ok-bg); }
   .pill.warn { color: var(--warn); background: var(--warn-bg); }
   .pill.down { color: var(--bad); background: var(--bad-bg); }
-  .pill.off { color: var(--off); background: var(--off-bg); }
+  .pill.off, .pill.pending { color: var(--off); background: var(--off-bg); }
   .pill.lg { height: 26px; font-size: 12.5px; padding: 0 11px; }
 
   .search-row { display: flex; gap: 8px; margin: 0 10px 12px; }
@@ -228,7 +233,7 @@
   }
 
   function pill(state, text) {
-    var known = { up: 1, warn: 1, down: 1, off: 1 };
+    var known = { up: 1, warn: 1, down: 1, off: 1, pending: 1 };
     var node = el('span', 'pill ' + (known[state] ? state : 'warn'));
     node.appendChild(el('span', 'pill-text', text));
     node.title = String(text == null ? '' : text);
@@ -239,6 +244,7 @@
     if (state === 'up') return 'Up';
     if (state === 'down') return 'Down';
     if (state === 'off') return 'Not configured';
+    if (state === 'pending') return 'Not checked yet';
     return 'Degraded';
   }
 
@@ -557,13 +563,16 @@
 
     var summary = data.summary || stateWord(data.state);
     if (typeof data.ms === 'number') summary += ' · ' + ms(data.ms);
+    if (data.cached) summary += ' · cached';
     sub.textContent = summary;
 
     body.textContent = '';
+    // ok is about the call, state is about the answer.  A red block means we
+    // could not ask; anything else the check wanted to say is a note.
     if (data.error) {
-      body.appendChild(el('p', 'card-err', data.error));
+      body.appendChild(el('p', data.ok === false ? 'card-err' : 'card-note', data.error));
     }
-    if (data.state === 'off') return;
+    if (data.state === 'off' || data.state === 'pending') return;
     try {
       body.appendChild(card.render(data));
     } catch (err) {
@@ -571,58 +580,98 @@
     }
   }
 
-  function paint(payload) {
-    grid.classList.remove('loading');
-    CARDS.forEach(function (card) {
-      paintCard(card, (payload.sections && payload.sections[card.key]) || { state: 'warn', summary: 'No data returned' });
-    });
-
-    var fresh = pill(payload.overall || 'warn', overallWord(payload.overall));
-    fresh.id = 'overall';
-    fresh.className += ' lg';
-    overallEl.replaceWith(fresh);
-    overallEl = fresh;
-
-    var when = new Date(payload.checkedAt);
-    checkedEl.textContent = isNaN(when.getTime())
-      ? '—'
-      : when.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT';
+  function markChecking(card) {
+    var sec = document.getElementById('card-' + card.key);
+    if (!sec) return;
+    var head = sec.querySelector('[data-role="pill"]');
+    var body = sec.querySelector('[data-role="body"]');
+    var fresh = pill('pending', 'Checking');
+    fresh.dataset.role = 'pill';
+    head.replaceWith(fresh);
+    body.textContent = '';
+    body.appendChild(skeletonRows(card.skeleton));
   }
 
   function overallWord(state) {
     if (state === 'up') return 'All systems up';
     if (state === 'down') return 'Attention needed';
     if (state === 'off') return 'Not configured';
+    if (state === 'pending') return 'Checking';
     return 'Degraded';
+  }
+
+  // Sections that are switched off or not yet checked say nothing about the
+  // fleet, so they never drag the headline down.
+  function paintOverall(states, latest) {
+    var seen = [];
+    CARDS.forEach(function (card) {
+      var s = states[card.key];
+      if (s && s !== 'off' && s !== 'pending') seen.push(s);
+    });
+    var overall = !seen.length
+      ? 'pending'
+      : (seen.indexOf('down') >= 0 ? 'down' : (seen.indexOf('warn') >= 0 ? 'warn' : 'up'));
+
+    var fresh = pill(overall, overallWord(overall));
+    fresh.id = 'overall';
+    fresh.className += ' lg';
+    overallEl.replaceWith(fresh);
+    overallEl = fresh;
+
+    checkedEl.textContent = latest
+      ? new Date(latest).toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', timeZone: 'America/Chicago' }) + ' CT'
+      : '—';
   }
 
   var inFlight = false;
 
+  // One request per card, all in flight at once.  Asking for everything in a
+  // single call made one Worker invocation fan out past Cloudflare's
+  // subrequest limit, and the whole page waited on the slowest integration.
   function load() {
     if (inFlight) return;
     inFlight = true;
     refreshBtn.disabled = true;
-    fetch('/api/status', { cache: 'no-store', headers: { Accept: 'application/json' } })
-      .then(function (r) {
-        if (!r.ok) throw new Error('HTTP ' + r.status);
-        return r.json();
-      })
-      .then(paint)
-      .catch(function (err) {
-        grid.classList.remove('loading');
-        checkedEl.textContent = 'Failed';
-        var fresh = pill('down', 'Status call failed');
-        fresh.className += ' lg';
-        overallEl.replaceWith(fresh);
-        overallEl = fresh;
-        CARDS.forEach(function (card) {
-          paintCard(card, { state: 'down', summary: 'The status call failed', error: String(err.message || err), items: [] });
+    grid.classList.add('loading');
+
+    var states = {};
+    var latest = 0;
+    var outstanding = CARDS.length;
+
+    CARDS.forEach(function (card) {
+      markChecking(card);
+      fetch('/api/status?section=' + encodeURIComponent(card.key), { cache: 'no-store', headers: { Accept: 'application/json' } })
+        .then(function (r) {
+          if (!r.ok) throw new Error('HTTP ' + r.status);
+          return r.json();
+        })
+        .then(function (payload) {
+          var data = payload.data || { ok: false, state: 'warn', summary: 'No data returned' };
+          states[card.key] = data.state;
+          paintCard(card, data);
+          var when = Date.parse(payload.checkedAt || data.checkedAt || '');
+          if (when && when > latest) latest = when;
+        })
+        .catch(function (err) {
+          states[card.key] = 'down';
+          paintCard(card, {
+            ok: false,
+            state: 'down',
+            summary: 'This section could not be loaded',
+            error: String(err.message || err),
+            items: []
+          });
+        })
+        .then(function () {
+          outstanding -= 1;
+          paintOverall(states, latest);
+          if (outstanding === 0) {
+            grid.classList.remove('loading');
+            inFlight = false;
+            refreshBtn.disabled = false;
+          }
         });
-      })
-      .then(function () {
-        inFlight = false;
-        refreshBtn.disabled = false;
-      });
+    });
   }
 
   function runRecallSearch(q) {
@@ -636,7 +685,7 @@
     }
     box.textContent = '';
     box.appendChild(el('p', 'card-sub', 'Searching for "' + q + '"'));
-    fetch('/api/recall/search?q=' + encodeURIComponent(q) + '&limit=10', { cache: 'no-store' })
+    fetch('/api/recall/search?q=' + encodeURIComponent(q) + '&limit=8', { cache: 'no-store' })
       .then(function (r) { return r.json(); })
       .then(function (data) {
         box.textContent = '';
@@ -648,7 +697,8 @@
           box.appendChild(emptyNode('No hits for "' + q + '".'));
           return;
         }
-        box.appendChild(el('p', 'card-sub', data.hits.length + ' hits for "' + q + '"'));
+        box.appendChild(el('p', 'card-sub',
+          data.hits.length + ' hits for "' + q + '"' + (data.mode ? ' · mode ' + data.mode : '')));
         box.appendChild(hitList(data.hits));
       })
       .catch(function (err) {
