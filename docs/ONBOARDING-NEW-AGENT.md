@@ -64,7 +64,8 @@ is **not** a per-app seat.  Do not run this script to create
    Infisical is the runtime source of truth. Never `infisical secrets` bare.
    Never `grep` / `rg` a handoff file without `-o` — `grep '^[A-Z0-9_]+='`
    prints **values**.  Names only: `grep -oE '^[A-Z][A-Z0-9_]*'`.  Never
-   `cat` or open `~/.secrets/global-api-keys` with a Read tool.
+   `cat` or open `~/.secrets/global-api-keys` with a Read tool.  Never
+   `od` / `xxd` / `hexdump` a loaded `$KEY` / `$TOKEN` / `$SECRET` variable.
 7. **Light theme default.  Two spaces between sentences everywhere**,
    including App Store listing and review notes.  See `AGENT-SYNC.md`
    § Two spaces and `FLEET-UI-COPY.md`.
