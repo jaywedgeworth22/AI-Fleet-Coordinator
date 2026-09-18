@@ -95,7 +95,17 @@ CRON_SCHEDULES = {
 _CRON_SCHEDULES_FOLDED = {name.casefold(): expr for name, expr in CRON_SCHEDULES.items()}
 
 DEFAULT_CHECKIN_MARGIN = 15
-CHECKIN_MARGIN_OVERRIDES = {}
+# GitHub `schedule` delivery is best-effort.  These daily monitors always
+# eventually run, but the start is hours late, so a 15-minute margin
+# false-pages a healthy job.  600 min matches ST #3194 (FLEET-INFRA-C1),
+# #3387 (C3), #3389 (BY), #3390 (C0), Autorotate #219 (CD), UM #1491 (CF),
+# CT #2501 (23), and DealDex #328 (CG).  Backup fleet GitHub repositories
+# typically starts 4-6.5h after 07:00Z (worst recent 2026-09-14 13:34Z,
+# ~6h 34m).  Do not copy this onto 30-min macos ship crons (FLEET-INFRA-CC /
+# DA / CX): those drop ticks entirely, so a wider margin still misses.
+CHECKIN_MARGIN_OVERRIDES = {
+    "Backup fleet GitHub repositories": 600,
+}
 _CHECKIN_MARGINS_FOLDED = {name.casefold(): margin for name, margin in CHECKIN_MARGIN_OVERRIDES.items()}
 
 DEFAULT_MAX_RUNTIME = 60
