@@ -152,7 +152,8 @@
       "worktreePrefix": "hoghunter",
       "badgeClass": "repo-hh",
       "digestColor": "#92400e",
-      "hasAppIcon": false,
+      "hasAppIcon": true,
+      "iconFile": "agent-logos/app-hh.png",
       "kind": "product"
     },
     {
