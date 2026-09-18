@@ -14,12 +14,12 @@ Access is the only thing standing in front of it.
 
 | Card | Source | What a row means |
 |---|---|---|
-| **Public Endpoints** | Direct HTTPS probe of 18 fleet surfaces, 8 s timeout, run in parallel | HTTP status and latency.  2xx and 3xx are up; a redirect to `cloudflareaccess.com` reads "Up, behind Access"; 401 and 403 read "Up, auth required"; a timeout is amber and reads "Timed out from Cloudflare". |
+| **Public Endpoints** | Direct HTTPS probe of 17 fleet surfaces, 8 s timeout, run in parallel | HTTP status and latency.  2xx and 3xx are up; a redirect to `cloudflareaccess.com` reads "Up, behind Access"; 401 and 403 read "Up, auth required"; a timeout is amber and reads "Timed out from Cloudflare". |
 | **Fleet Recall** | `GET /health`, `GET /recall/stats`, and a canary `POST /recall/search` for `fleet mode` on `recall.jays.services` | Point count, collection name and status, embedder and reranker health, per-source breakdown, and the canary hits.  The search box at the top of the card queries the live corpus. |
 | **The Board** | `GET /findings/stats` and `GET /findings?status=open,in_progress` on `mac.jays.services` | Open and in-progress counts by severity, plus the P0 and P1 rows that need attention. |
 | **Coolify Applications** | `GET /api/v1/applications` and `/api/v1/servers` on `host.jays.services` | Container status (`running:healthy`, `exited:unhealthy`, …) per application, then server reachability. |
 | **GitHub Repositories** | One Search API call for every open PR the owner has, then the Actions API for the latest run on `main`, per repo in `fleet-apps.json` | Open PR count and the conclusion of the most recent `main` run.  The row links to that run.  Past 100 open PRs the total stays exact but the per-repo split is capped, and the card says so. |
-| **Vercel Projects** | `GET /v9/projects?limit=50`, retried per team when the personal scope is empty | `latestDeployments[0].readyState` — READY, ERROR, BUILDING. |
+| **Vercel Projects** | `GET /v9/projects?limit=50`, retried per team when the personal scope is empty | Newest READY deployment when present (else `latestDeployments[0].readyState`) — READY, ERROR, BUILDING, CANCELED. |
 | **Sentry Issues** | `GET /organizations/jays-services/issues/?query=is:unresolved&statsPeriod=24h` | Unresolved issue count grouped by project slug, with the newest title. |
 | **PagerDuty Incidents** | `GET /incidents?statuses[]=triggered&statuses[]=acknowledged&limit=25&total=true` | Open incident titles and their service.  The headline uses `total`, not the page size, so a full page no longer reads as "exactly 25". |
 | **Datadog Monitors** | `GET /api/v1/monitor?page_size=100` on the `us5` site | Monitor counts by `overall_state`, then the alerting and warning monitors by name. |
@@ -57,7 +57,7 @@ seconds.  Worst case per section:
 
 | Section | Subrequests |
 |---|---|
-| `endpoints` | 18 — one per entry in `ENDPOINTS` |
+| `endpoints` | 17 — one per entry in `ENDPOINTS` |
 | `recall` | 3 — health, stats, canary search |
 | `board` | 2 |
 | `coolify` | 2 |
@@ -172,10 +172,14 @@ The Worker has no filesystem, so the registry is inlined, and
 silent.  Add a row when an app is onboarded, and add its public URL to `ENDPOINTS`
 in the same file.
 
-Two deliberate absences:
+Deliberate absences and retired probes:
 
 - **`admin.jays.services` is never probed.**  A Worker probing its own hostname
   spends a subrequest to learn what it already knows.
 - **Hog Hunter has no endpoint row.**  It is a local-only Mac app with no product
-  domain.  CodeCaps is probed at its download page instead, and is not in
-  `fleet-apps.json` yet, so it has no `APPS` row either.
+  domain.  CodeCaps is probed at `github.io/codecaps/` (not the retired
+  `agent-bar/` path), and is not in `fleet-apps.json` yet, so it has no `APPS`
+  row either.
+- **Scout is retired (2026-09-09).**  Do not probe `scout.jays.services`.
+- **`autorotate.codes` is retired (NXDOMAIN).**  Probe `autorotate.vercel.app`
+  instead; Autorotate remains in `APPS` for the GitHub card.

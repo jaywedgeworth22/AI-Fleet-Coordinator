@@ -71,15 +71,16 @@ const ENDPOINTS = [
   { name: 'DealDex', url: 'https://dealdex.net' },
   { name: 'Personal Site', url: 'https://jays.services' },
   { name: 'BotFleet', url: 'https://botfleet.app' },
-  { name: 'Autorotate', url: 'https://autorotate.codes' },
+  // autorotate.codes is NXDOMAIN (retired); live product is on Vercel.
+  { name: 'Autorotate', url: 'https://autorotate.vercel.app' },
   { name: 'ContactLogo', url: 'https://contactlogo.com' },
-  { name: 'CodeCaps', url: 'https://jaywedgeworth22.github.io/agent-bar/' },
+  { name: 'CodeCaps', url: 'https://jaywedgeworth22.github.io/codecaps/' },
   { name: 'Fleet Activity', url: 'https://jaywedgeworth22.github.io/ai-fleet-coordinator/' },
   { name: 'Start Page', url: 'https://start.jays.services' },
   { name: 'The Board', url: 'https://mac.jays.services/board' },
   { name: 'Coolify', url: 'https://host.jays.services' },
   { name: 'Agents Gateway', url: 'https://agents.jays.services/health' },
-  { name: 'Scout', url: 'https://scout.jays.services/health' },
+  // Scout retired 2026-09-09 — DNS removed; do not probe scout.jays.services.
   { name: 'Xcode Bridge', url: 'https://xcode.jays.services/health' },
   { name: 'Agent Sync', url: 'https://agent-sync.jays.services/health' },
   { name: 'Fleet Recall', url: 'https://recall.jays.services/health' },
@@ -91,8 +92,9 @@ const ENDPOINTS = [
 // drift in this copy.
 //
 // Hog Hunter is a local-only Mac app and CodeCaps is not registered in
-// fleet-apps.json yet, so neither has a product domain in ENDPOINTS above;
-// CodeCaps is probed at its download page instead.
+// fleet-apps.json yet.  CodeCaps is probed at github.io/codecaps/ (not the
+// retired agent-bar/ path).  Autorotate stays in APPS for GitHub; its public
+// probe is autorotate.vercel.app — autorotate.codes and Scout are retired.
 const APPS = [
   { repo: 'Socratic.Trade', name: 'Socratic Trade', kind: 'product' },
   { repo: 'Congress.Trade', name: 'Congress.Trade', kind: 'product' },
@@ -212,7 +214,7 @@ function accessHeaders(env) {
 }
 
 /* -------------------------------------------------------------- endpoints */
-/* Subrequests: one per entry in ENDPOINTS.  Worst case 18.                  */
+/* Subrequests: one per entry in ENDPOINTS.  Worst case 17.                  */
 
 async function probe(ep) {
   const started = Date.now();
@@ -716,7 +718,9 @@ async function checkVercel(env) {
   }
 
   const items = projects.map((p) => {
-    const dep = (p.latestDeployments || [])[0] || {};
+    // latestDeployments[0] can be a fresh CANCELED while an older READY
+    // production deploy is still live (botfleet / personal-site false-warn).
+    const dep = pickVercelDeployment(p.latestDeployments);
     const readyState = dep.readyState || dep.state || 'UNKNOWN';
     return {
       name: p.name,
@@ -742,6 +746,15 @@ async function checkVercel(env) {
 async function fetchVercelProjects(headers, suffix) {
   const data = await apiJson(`https://api.vercel.com/v9/projects?limit=50${suffix}`, { headers });
   return data.projects || [];
+}
+
+// Prefer the newest READY deployment when the absolute latest is CANCELED
+// (or otherwise non-READY).  Falls back to [0] when nothing is READY yet.
+function pickVercelDeployment(deployments) {
+  const list = Array.isArray(deployments) ? deployments : [];
+  if (!list.length) return {};
+  const ready = list.find((d) => String(d.readyState || d.state || '').toUpperCase() === 'READY');
+  return ready || list[0] || {};
 }
 
 function vercelState(readyState) {
