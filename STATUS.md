@@ -1,5 +1,16 @@
 # Status
 
+Updated: 2026-09-18 (CURSOR — Backup repos Sentry cron margin)
+
+## 2026-09-18 CURSOR — Backup repos Sentry cron margin
+
+FLEET-INFRA-CH is a missed check-in, not a failed backup.  GitHub starts
+`backup-repos.yml` 4–6.5h late; 15-min margin false-pages a healthy job.
+`CHECKIN_MARGIN_OVERRIDES["Backup fleet GitHub repositories"] = 600`.  Cron
+and backup unchanged.  Branch `cursor/backup-repos-cron-margin`.  Rollout:
+`docs/rollouts/2026-09-18-backup-repos-monitor-margin.md`.  Do not
+`workflow_dispatch`.  Extra-ship no.  No Coolify.
+
 Updated: 2026-09-18 (GROK — secret-guard Rule E, od/hexdump/xxd of loaded keys)
 
 ## 2026-09-18 GROK — secret-guard blocks od/hexdump/xxd of a loaded key
