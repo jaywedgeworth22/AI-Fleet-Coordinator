@@ -232,6 +232,41 @@ if you "just wanted to see which keys exist."  Incident: a Grok session used
 `grep '^[A-Z0-9_]+='` on the handoff file and dumped the whole store into the
 chat.  The rule exists so the next seat does not repeat it.
 
+### Loaded-key byte dumps (2026-09-17 — binding for every agent)
+
+A variable that already holds a key is still a secret.  `od` / `xxd` /
+`hexdump` / `hd` / `strings` / `base64` print every byte.  `cut -c` prints a
+prefix.  A last-command `printf %s` / `%q` / `%b` of that variable makes the
+tool result the live value.  Same class as `cat` of the handoff file.
+
+Incident: a Claude subagent loaded `SILICONFLOW_API_KEY` correctly (never
+echoed), then ran `od -c` on the variable to look for stray quotes.  The full
+key landed in the transcript.  The secret-guard hook now denies this structure.
+
+**Forbidden** (NAME matches KEY / TOKEN / SECRET / PASSWORD / PASSWD / DSN):
+
+```bash
+od -c <<< "$SILICONFLOW_API_KEY"
+printf '%s' "$TOKEN" | xxd
+echo "$API_KEY" | hexdump -C
+cut -c1-4 <<< "$API_KEY"
+printf '%q' "$SECRET"
+xxd ~/.secrets/global-api-keys          # byte-dump of the file is cat
+```
+
+**Allowed** (shape / length only, or printf consumed by something else):
+
+```bash
+[ -n "$TOKEN" ]
+echo ${#TOKEN}
+[[ $TOKEN == *'"'* ]] && echo quoted || echo clean
+printf '%s' "$TOKEN" | wc -c
+```
+
+Hook (Claude Code Bash PreToolUse): `~/.claude/hooks/secret-guard-pretooluse.py`
+(tracked `scripts/hooks/secret-guard-pretooluse.py` in ai-fleet-coordinator).
+Seats without that hook still follow this rule in skills and global config.
+
 ---
 
 ## Prior messages stay in scope (owner preference — ALL agents, ALL platforms)

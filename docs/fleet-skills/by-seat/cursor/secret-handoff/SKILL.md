@@ -59,6 +59,36 @@ some-command 2>&1 | sed "s/${TOKEN}/[REDACTED]/g"
 
 Your file-read tool is `cat` for this purpose.  Do not "just look" with Read because grep quoting confused you.
 
+## Loaded-key byte dumps (2026-09-17)
+
+A variable that already holds a key is still a secret.  `od` / `xxd` /
+`hexdump` / `hd` / `strings` / `base64` print every byte.  `cut -c` prints a
+prefix.  Last-command `printf %s` / `%q` of `$NAME` (NAME looks like KEY /
+TOKEN / SECRET / PASSWORD / DSN) prints the live value.  Same class as `cat`
+of the handoff file.
+
+Forbidden:
+
+```bash
+od -c <<< "$SILICONFLOW_API_KEY"
+printf '%s' "$TOKEN" | xxd
+echo "$API_KEY" | hexdump -C
+cut -c1-4 <<< "$API_KEY"
+printf '%q' "$SECRET"
+```
+
+Allowed:
+
+```bash
+[ -n "$TOKEN" ]
+echo ${#TOKEN}
+[[ $TOKEN == *'"'* ]] && echo quoted || echo clean
+printf '%s' "$TOKEN" | wc -c
+```
+
+`~/.claude/hooks/secret-guard-pretooluse.py` denies the forbidden forms on
+Claude Code Bash.  Follow the rule on every seat even when that hook is absent.
+
 ## Infisical
 
 Never:
@@ -99,6 +129,7 @@ Empty `success:true` on a filtered Bearer call means "valid, not scoped to that 
 
 ## Canon
 
-- `/Users/jay/apps/AGENT-SYNC.md` § Secret handoff, Infisical, Coolify, grep trap, leak response
-- `~/.cursor/skills/secret-safety/SKILL.md`
+- `/Users/jay/apps/AGENT-SYNC.md` § Secret handoff, Infisical, Coolify, grep trap, loaded-key byte dumps, leak response
+- `<YOUR_SKILLS_DIR>/secret-safety/SKILL.md`
 - Coordinator `docs/rollouts/2026-08-15-secret-file-grep-ban.md`
+- Coordinator `docs/rollouts/2026-09-18-secret-guard-od.md`
