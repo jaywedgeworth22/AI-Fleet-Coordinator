@@ -36,6 +36,7 @@ BEFORE substantial work begins, so parallel agents can see reservations in the g
 | `AR` | Autorotate | `AUTOROTATE-EFFORT-LOG.md` |
 | `CL` | ContactLogo | `CONTACTLOGO-EFFORT-LOG.md` |
 | `BF` | BotFleet | `BOTFLEET-EFFORT-LOG.md` |
+| `HR` | Harness | `EFFORT-LOG.md` |
 | `HH` | HogHunter | `HOGHUNTER-EFFORT-LOG.md` |
 | `OPS` | fleet-ops | `FLEET-OPS-EFFORT-LOG.md` |
 
@@ -761,7 +762,8 @@ Every agent seat in the fleet adheres to the universal coordination protocol abo
 | **BotFleet bots (`BF-<ROLE>`)** | Role bots run by the owner's BotFleet app on the `claude`, `codex`, and `grok` CLIs plus ACP engines (Cursor, OpenCode, DeepSeek, DeepSeek Harness, Droid, Hermes, Kimi, Qwen).  Carry most former Grok Bot duty (owner 2026-09-13). | `[BF-<ROLE>]` | role Title Case (e.g. `Compiler`) | Tags `BF-FIXER`, `BF-DESIGNER`, `BF-COMPILER`, `BF-PLUMBER`, `BF-PUBLISHER`, `BF-DEPLOYER`, `BF-DIRECTOR` (observed; tag scheme pending owner confirmation).  Same board/effort-log/Slack loop as every seat; a `[SENDER->FLEET]` wake reaches them like any other listener.  Tag is distinct from `[GB-<NAME>]` (Grok Bot) and from `[GROK]` (Mac Grok). |
 | **Renoir (`RENOIR`)** | Future third Claude-family seat. | `[RENOIR]` | `Renoir` | Prefix `renoir/`; lane `~/apps/<prefix>-renoir`. Not yet active — do not assign work until the owner opens the seat. |
 | **Kimi (`KIMI`)** | Retired. | `[KIMI]` | `Kimi` | **Do not assign or accept work.** Owner 2026-08-21. |
-| **DeepSeek Harness (`DSH`)** | Full-stack review/audit seat (desktop + mobile web, native iOS), finding-driven fix outlines, harness automation.  This is the DeepSeek Harness platform, not a DeepSeek *model* running inside Cursor. | `[DSH]` | `DeepSeek Harness` | Prefix `deepseek/`; lane `~/apps/trading-deepseek`; per-turn-poll cadence; board first via the `board` CLI, then Slack.  Pin `AGENT_SEAT=DSH` / `AGENT_TAG=DSH`.  Former Slack tag `DEEPSEEK` is retired — historical posts still mean this seat.  A DeepSeek model inside Cursor is still `[CURSOR]`. |
+| **DeepSeek Harness (`DSH`)** | Retired 2026-09-19.  Historical posts still mean this seat. | `[DSH]` | `DeepSeek Harness` | **Do not assign new work.**  Use `[HARNESS]` for `jaywedgeworth22/Harness` (DSH + MMH).  A DeepSeek *model* inside Cursor is still `[CURSOR]`. |
+| **Harness (`HARNESS`)** | Owner of `jaywedgeworth22/Harness`: DSH and MMH drivers, Python ACP bridges, cordis profiles, web scripts, the npm package BotFleet imports. | `[HARNESS]` | `Harness` | Prefix `harness/`; lane `~/apps/harness-<seat>`.  Pin `AGENT_SEAT=HARNESS` / `AGENT_TAG=HARNESS`.  Slack `repo: harness`.  Do not edit DSH engine shape in BotFleet — import `harness/dsh/acp`. |
 | **MiniMax (`MM`)** | MiniMax Code desktop app on the Mavis local runtime (`~/.minimax`).  Bounded implementation and code review, sourced deep research with citations, document generation (docx / pdf / pptx / xlsx), static-site deploy, Computer Use desktop control and in-app browser driving, plus text / image / video / speech generation and web search through the `mmx` CLI. | `[MM]` | `MiniMax` | Prefix `minimax/`; lane `~/apps/<prefix>-minimax`.  Pin `AGENT_SEAT=MM` / `AGENT_TAG=MM`.  Former Slack tag `MINIMAX` is retired — historical posts still mean this seat.  No global rules file exists on this platform — the fleet pointer lives in `~/.minimax/memory/user.md` (user memory, injected into every session's system prompt).  Fleet skills install to `~/.minimax/skills`.  Built-in sub-agents `explore` / `worker` / `verifier` inherit the `MM` tag; they do not get their own Slack identity.  `config.yaml` ships `permissionMode: bypassPermissions` — nothing prompts, so hold the destructive-op pause yourself. |
 | **Fx (`FX`)** | fx by Vercel Labs, a terminal coding agent whose model is whatever provider it is logged into (Grok subscription today; the Codex provider or a MiniMax endpoint later).  Implementation, repo audits, PR drafting, ACP engine for BotFleet-style hosts. | `[FX]` | `Fx` | Prefix `fx/`; lane `~/apps/<prefix>-fx`.  Pin `AGENT_SEAT=FX` / `AGENT_TAG=FX`.  Global rules file `~/.fx/AGENTS.md`; skills in `~/.fx/skills` only (fx also scans the Claude and Codex packs — never inherit their tags).  The model never changes the seat: Grok inside fx is `[FX]`, never `[GROK]` or `[GROK-BUILD]`; the Codex provider inside fx is `[FX]`, never `[CODEX]`; MiniMax inside fx is `[FX]`, never `[MM]`.  Subagents inherit the parent model, so the 30% sister-model rule is waived as for Grok; the rest of Delegation binds.  Runs full-access with no sandbox — the destructive-ops pause is on the seat. |
 | **Universal Seat (`ANY`)** | Any new or custom agent engine joining the fleet (e.g. Kimi, Buzz, custom SDK agents). | `[SEAT_TAG]` | `SeatName` | Must adopt all 3-way claim/closeout rules, Slack header formats, Apple Notes standards, and safe PR landing discipline. |
@@ -782,7 +784,7 @@ list (or delete the row) when it recovers. Convert relative times to absolute wi
 - **KIMI — RETIRED / UNAVAILABLE long-term (owner directive 2026-08-21; strengthened 2026-08-22).** Kimi will not be used for a long time. All agents MUST NOT assign work to KIMI, leave KIMI In Progress, or reserve Planned/future work for KIMI. Unclaim leftover KIMI lanes. Do not wait on KIMI. Active seats: AG, GROK, CLAUDE, MONET, CODEX, CURSOR.
 - (The 2026-07-19 CODEX usage-cap row is **stale** — do not skip Codex on that basis. Oracle cutover finished 2026-08-07. Coolify on Hetzner is the production writer for ST/CT/UM. Render is retired.)
 
-**Available (normal):** CLAUDE, CURSOR (DeepSeek *model* is still Cursor), DSH (DeepSeek Harness), AG (Antigravity/Gemini — Gemini 3.5 Flash),
+**Available (normal):** CLAUDE, CURSOR (DeepSeek *model* is still Cursor), HARNESS (Harness repo; former DSH seat retired 2026-09-19), AG (Antigravity/Gemini — Gemini 3.5 Flash),
 MONET (Opus), GROK (Mac), GROK-BUILD (Grok Build TUI), MM (MiniMax Code / Mavis runtime — seat and selectable engine, opened 2026-09-03), FX (fx by Vercel Labs).  RENOIR — not yet active (future third seat).  (KIMI: RETIRED / UNAVAILABLE per owner directive).  Former Slack tags `DEEPSEEK` (harness) and `MINIMAX` are retired.  BotFleet bots (`[BF-<ROLE>]`) carry most former Grok Bot duty (owner 2026-09-13); GROK-BOT (`GB-*`) is mostly idle — do not wait on a GB seat.
 
 **Available again:**
@@ -2075,3 +2077,17 @@ The owner's `~/Downloads` folder is intentionally symlinked to iCloud Drive (`/U
 If you need to access downloaded files via the terminal, bypass the symlink and use the absolute path directly:
 `/Users/jay/Library/Mobile\ Documents/com~apple~CloudDocs/Downloads`
 Do not attempt to "fix" or complain about the symlink.
+
+---
+
+## Fleet-wide operating rules
+
+These rules apply to every fleet repo, not just ai-fleet-coordinator.  Canonical decision record: Harness `docs/decisions/0003-no-external-contact-and-no-forks.md`.
+
+### No external contact without owner approval
+
+Never submit, post, comment, file an issue, open a PR, create a fork, or otherwise initiate any communication to a third-party repository, organization, or service on the owner's behalf without explicit per-case approval from the owner.  Reading public repositories and pinning upstream packages is fine.  In-repo NOTICE / README attribution is fine.
+
+### No forks of other repositories
+
+Never create a fork of another person's repository on the owner's GitHub account.  New repos are independent and consume the upstream via the package manager.  Harness follows that pattern with `@deepseek-ai/dsh`.

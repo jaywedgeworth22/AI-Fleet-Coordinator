@@ -1,3 +1,5 @@
+- **2026-09-19 — GROK — IN PR — Register Harness (HR) as a fleet app and point pm2 at harness-web (`grok/harness-package`, worktree `~/apps/fleet-grok-harness-package`, board `0127d787`).**  MiniMax's local `harness/rollout-2026-09-19` sat on a stale sentry-ci base and was not PR'd.  This unit replays the registry onto current main: fleet-apps.json HR + HARNESS seat (DSH retired), digest/calendar/FLEET_REPOS, pm2 `harness-web` → `~/apps/harness-runtime/scripts/start-web.sh`, mac-process-watch, keep-list, MAC-LOCAL-PROCESSES.  Canonical package is `jaywedgeworth22/Harness`.  `python3 scripts/check-fleet-registry.py` OK (13 apps).
+
 - **2026-09-18 — GROK — IN PR — Apple Notes MD converter: do not italicize identifiers with underscores (merge_commit_sha), skip empty bullets (board leftover AG pickup).**
 > ⚠️ **AGENT AVAILABILITY NOTICE (2026-08-21):** KIMI is **RETIRED / UNAVAILABLE** long-term (owner directive). All agents MUST NOT assign work or wait on KIMI in-flight work. Reassign any open KIMI effort board lanes or GitHub issues to active seats (AG, GROK, CLAUDE, MONET, etc.).
 
