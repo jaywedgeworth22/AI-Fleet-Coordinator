@@ -149,15 +149,23 @@ module.exports = {
       error_file: `${logs}/grok-acp-error.log`,
     }),
     app({
-      name: "dsh-web",
-      script: `${home}/apps/dsh-runtime/start-web.sh`,
+      // Harness web UI on :3080.  Renamed from dsh-web 2026-09-19.
+      // Canonical scripts live in jaywedgeworth22/Harness; this Mac runs
+      // them via ~/apps/harness-runtime (symlink to ~/Code/Harness).
+      name: "harness-web",
+      script: `${home}/apps/harness-runtime/scripts/start-web.sh`,
       interpreter: "bash",
-      cwd: `${home}/apps/dsh-runtime`,
-      // 3 = :3080 held by a non-dsh process (start-web.sh).  Do not storm.
+      cwd: `${home}/apps/harness-runtime`,
+      // 3 = :3080 held by a non-harness process.  Do not storm.
       stop_exit_codes: [3],
-      env: { DSH_HOME: `${home}/.dsh`, DSH_WEB_HOST: "127.0.0.1", DSH_WEB_PORT: "3080" },
-      out_file: `${logs}/dsh-web-out.log`,
-      error_file: `${logs}/dsh-web-error.log`,
+      env: {
+        HARNESS_RUNTIME_ROOT: `${home}/apps/harness-runtime`,
+        DSH_HOME: `${home}/.dsh`,
+        DSH_WEB_HOST: "127.0.0.1",
+        DSH_WEB_PORT: "3080",
+      },
+      out_file: `${logs}/harness-web-out.log`,
+      error_file: `${logs}/harness-web-error.log`,
     }),
     app({
       name: "seat-mcp",

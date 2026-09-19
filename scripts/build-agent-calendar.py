@@ -44,6 +44,7 @@ DEFAULT_REPOS = [
     "BotFleet",
     "HogHunter",
     "fleet-ops",
+    "Harness",
 ]
 
 

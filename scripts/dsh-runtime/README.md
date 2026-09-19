@@ -1,19 +1,12 @@
-# dsh-runtime helpers (tracked)
+# dsh-runtime helpers (fallback copy)
 
-Copy into `~/apps/dsh-runtime/` after merge:
+Canonical scripts now live in `jaywedgeworth22/Harness`
+(`~/Code/Harness/scripts/`, live `~/apps/harness-runtime/`).  This
+directory is a fallback copy for seats that still have an AFC checkout
+and no Harness clone.
 
-- `dsh.sh` — execs `node_modules/.bin/dsh` only.  Never npx.  Never exec this file.
-- `start-web.sh` — pm2 `dsh-web`, binds `127.0.0.1:3080`.  Does not kill a healthy listener.
-- `serve-tailscale.sh` — Tailscale Serve HTTPS 3080 → loopback 3080
-- `open-harness.sh` — activate the Dock app
-- `ensure-web.sh` — start pm2 `dsh-web` if :3080 is down
-- `HarnessWindow.swift` — WKWebView shell (Dock running-dot, second click focuses)
-- `install-dock-app.sh` — build `~/Applications/Harness.app` + pin Dock
-  (display name "Harness"; on-disk name is `Harness.app`; bundle id stays
-  `com.jays.dsh-harness-web` so existing Dock pins and saved frames survive;
-  upstream is still `@deepseek-ai/dsh` — `Harness` is our local label)
-- `assets/harness-icon-1024.png` — full-bleed 1:1 square, sharp 90° corners
+pm2 `harness-web` runs `~/apps/harness-runtime/scripts/start-web.sh`.
+Do not point new jobs at this folder.  Do not `npx @deepseek-ai/dsh`.
 
-Idle cost of always-on `dsh-web`: ~12 MB RSS, 0% CPU.  Keep it running.
-
-Live ACP bridge stays `../dsh-acp.py` + `../dsh-acp.sh`.  Do not `npx`.
+After a Harness change that touches a live-install script, copy it here
+only if AFC still needs a tracked fallback; prefer a PR in Harness.

@@ -168,6 +168,21 @@
       "digestColor": "#64748b",
       "hasAppIcon": false,
       "kind": "infra"
+    },
+    {
+      "repo": "Harness",
+      "acronym": "HR",
+      "displayName": "Harness",
+      "slackRepo": "harness",
+      "codeDir": "Harness",
+      "liveBoard": "HARNESS-EFFORT-LOG.md",
+      "worktreePrefix": "harness",
+      "badgeClass": "repo-harness",
+      "digestColor": "#0ea5e9",
+      "hasAppIcon": true,
+      "iconFile": "agent-logos/app-harness.png",
+      "kind": "infra",
+      "notes": "Friendly adaptation of @deepseek-ai/dsh for DSH and MiniMax harness parity.  Always-on pm2 harness-web on 127.0.0.1:3080.  Live install ~/apps/harness-runtime (symlink to ~/Code/Harness/).  Canonical npm package for BotFleet's DSH driver."
     }
   ],
   "seats": [
@@ -235,6 +250,17 @@
       "worktreeSuffix": "deepseek",
       "branchPrefixes": [
         "deepseek/"
+      ],
+      "retired": true,
+      "retiredDate": "2026-09-19",
+      "retiredReason": "Harness seat owns DSH + MMH work.  Use HARNESS for new work in ~/Code/Harness/."
+    },
+    {
+      "tag": "HARNESS",
+      "notesName": "Harness",
+      "worktreeSuffix": "harness",
+      "branchPrefixes": [
+        "harness/"
       ]
     },
     {
