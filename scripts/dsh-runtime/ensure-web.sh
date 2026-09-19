@@ -22,12 +22,12 @@ if listening; then
 fi
 
 {
-  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) ensure-web starting dsh-web"
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ) ensure-web starting harness-web"
   if [[ -f "$ECO" ]] && command -v pm2 >/dev/null 2>&1; then
-    pm2 start "$ECO" --only dsh-web --update-env || true
+    pm2 start "$ECO" --only harness-web --update-env || true
   fi
-  if ! up && ! listening && [[ -x "${HOME}/apps/dsh-runtime/start-web.sh" ]]; then
-    nohup "${HOME}/apps/dsh-runtime/start-web.sh" >>"$LOG" 2>&1 &
+  if ! up && ! listening && [[ -x "${HOME}/apps/harness-runtime/scripts/start-web.sh" ]]; then
+    nohup "${HOME}/apps/harness-runtime/scripts/start-web.sh" >>"$LOG" 2>&1 &
   fi
 } >>"$LOG" 2>&1
 

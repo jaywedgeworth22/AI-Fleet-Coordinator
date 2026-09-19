@@ -25,6 +25,28 @@ per-release owner ask, **but only announce-then-deploy**:
    mid-session otherwise.
 4. Then deploy, **health-verify, and update the boards** (the deployer owns the close-out).
 
+**Back the announce with an atomic claim (added 2026-09-16, board item bd6d325e).** The
+Slack announce gives peers visibility, but it is not itself a lock — a poll-cadence gap is
+exactly what let two lanes deploy the same commit 2 seconds apart on 2026-07-09 (Coolify's
+cancel API is broken, so both builds ran). THE BOARD's claim endpoint now rejects a second
+claim of an `in_progress` item by a different seat within a 20-minute lease (`PATCH
+/findings/<id>` → `409 conflict` when `status=in_progress` and the existing `addressed_by`
+differs from the incoming one; see `scripts/mac-collab/mac-collab-server.py`
+`_handle_finding_update`). Use that as the real lock instead of trusting the timing window
+alone:
+
+```bash
+board file --title "DEPLOY LOCK: <app>" --app <app> --severity P2 --kind agent-report --by "$AGENT_SEAT" --env Mac
+board claim <id> --by "$AGENT_SEAT" --env Mac --where "deploying <commit>"   # 409 = someone already holds it, stop
+# ...announce, wait the window, deploy, health-verify...
+board status <id> completed --resolution "deployed <commit>"
+```
+
+A `409` means another seat already claimed that app's deploy lock — stand down, do not
+also trigger, and go find them in `#agent-sync` instead of assuming your Slack post won.
+This does not require GitHub Environments or a new board `source_kind`; it reuses the
+claim conflict check that already exists.
+
 This replaces the unconditional "deploy immediately on merge" reading of the 2026-07-06
 directive; the older "never deploy without an explicit owner ask" lines in repo docs are equally
 superseded. Batching several merged PRs into one announced release is preferred over

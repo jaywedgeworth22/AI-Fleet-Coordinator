@@ -1,5 +1,27 @@
 # Status
 
+Updated: 2026-09-18 (GROK — mac-collab-litestream inventory)
+
+## 2026-09-18 GROK — mac-collab-litestream on the master list
+
+Board `adc3f0d3`.  Branch `grok/litestream-inventory`.  Worktree
+`~/apps/fleet-grok-litestream-inv`.  pm2 job was already online (B2 replica of
+THE BOARD `findings.db`); the owner-facing table skipped it.  Tracked ecosystem
+on main still listed retired scout/senate jobs and omitted live `seat-mcp` +
+`mac-collab-litestream`.  Docs + ecosystem sync only.  No process restart.
+Rollout: `docs/rollouts/2026-09-18-mac-collab-litestream-inventory.md`.
+
+Updated: 2026-09-18 (CURSOR — Backup repos Sentry cron margin)
+
+## 2026-09-18 CURSOR — Backup repos Sentry cron margin
+
+FLEET-INFRA-CH is a missed check-in, not a failed backup.  GitHub starts
+`backup-repos.yml` 4–6.5h late; 15-min margin false-pages a healthy job.
+`CHECKIN_MARGIN_OVERRIDES["Backup fleet GitHub repositories"] = 600`.  Cron
+and backup unchanged.  Branch `cursor/backup-repos-cron-margin`.  Rollout:
+`docs/rollouts/2026-09-18-backup-repos-monitor-margin.md`.  Do not
+`workflow_dispatch`.  Extra-ship no.  No Coolify.
+
 Updated: 2026-09-18 (GROK — secret-guard Rule E, od/hexdump/xxd of loaded keys)
 
 ## 2026-09-18 GROK — secret-guard blocks od/hexdump/xxd of a loaded key
@@ -16,7 +38,7 @@ Updated: 2026-09-17 (CLAUDE — Instinct iMessage interface seat onboarding prom
 
 ## 2026-09-17 CLAUDE — Instinct onboarding prompt
 
-`docs/INSTINCT-ONBOARDING-PROMPT.md`: paste-ready standing instructions for INSTINCT, the iMessage interface seat, on the FX prompt pattern.  Process 10 boundary (send only from `agents`, one authorized listener), THE BOARD / Slack relay / fleet recall surfaces, the `owner-relay:` post shape, phone noise discipline, and a first unit.  Seat row text included; `fleet-apps.json` untouched until the seat gets a coding lane.  Same-day build (owner go): `/login` form on the board server (`scripts/mac-collab/mac-collab-server.py`, 8 tests) and `com.jay.github-outbox-bridge` (`scripts/github-outbox-bridge.py`, plist, 14 tests), both awaiting a Mac seat to install per the rollout note.  Same-day follow-up section for a browser-only runtime: board by browser session (own `MAC_COLLAB_TOKEN_INSTINCT`) and by GitHub issue, no Slack write until a Mac-side outbox bridge exists, no recall or seat-mcp.  PR #251.  Branch `claude/instinct-imessage-onboarding-n6u9oh` (Claude Code cloud).  Board and Slack claim pending a Mac seat.
+`docs/INSTINCT-ONBOARDING-PROMPT.md`: paste-ready standing instructions for INSTINCT, the iMessage interface seat, on the FX prompt pattern.  Process 10 boundary (send only from `agents`, one authorized listener), THE BOARD / Slack relay / fleet recall surfaces, the `owner-relay:` post shape, phone noise discipline, and a first unit.  Seat row text included; `fleet-apps.json` untouched until the seat gets a coding lane.  Same-day build (owner go): `/login` form on the board server (`scripts/mac-collab/mac-collab-server.py`, 8 tests) and `com.jay.github-outbox-bridge` (`scripts/github-outbox-bridge.py`, plist, 14 tests), both awaiting a Mac seat to install per the rollout note.  Same-day follow-up section for a browser-only runtime: board by browser session (own `MAC_COLLAB_TOKEN_INSTINCT`) and by GitHub issue, no Slack write until a Mac-side outbox bridge exists, no recall or seat-mcp.  PR #251 merged by the owner Thu, Sep 17, 2026 at 1:53 PM CT (squash `6f5d577`).  Next: a Mac seat installs the `/login` form and the bridge per the rollout note, then closes out board and Slack.
 
 Updated: 2026-09-14 (FX — THE BOARD remembers collab session)
 

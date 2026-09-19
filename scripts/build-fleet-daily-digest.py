@@ -57,6 +57,7 @@ DEFAULT_REPOS = [
     "BotFleet",
     "HogHunter",
     "fleet-ops",
+    "Harness",
 ]
 
 # Live machine boards (optional local override via EFFORT_LOG_DIR)
@@ -73,6 +74,7 @@ LIVE_EFFORT_FILES = {
     "BotFleet": "BOTFLEET-EFFORT-LOG.md",
     "HogHunter": "HOGHUNTER-EFFORT-LOG.md",
     "fleet-ops": "FLEET-OPS-EFFORT-LOG.md",
+    "Harness": "HARNESS-EFFORT-LOG.md",
 }
 
 DONE_SECTIONS = frozenset(
@@ -472,6 +474,7 @@ REPO_BADGE: dict[str, tuple[str, str]] = {
     "BotFleet": ("BF", "repo-bf"),
     "HogHunter": ("HH", "repo-hh"),
     "fleet-ops": ("OPS", "repo-ops"),
+    "Harness": ("HR", "repo-harness"),
 }
 
 # Latest product app icons (copied into site/agent-logos/ with agent marks)
@@ -484,6 +487,7 @@ REPO_APP_ICON: dict[str, str] = {
     "ContactLogo": "agent-logos/app-cl.png",     # ContactLogo crest mark
     "Personal-Site": "agent-logos/app-ps.png",   # Jay's headshot for jays.services
     "BotFleet": "agent-logos/app-bf.png",        # BotFleet app icon
+    "Harness": "agent-logos/app-harness.png",
 }
 
 # Aliases used only to strip *redundant leading* labels that duplicate the badge.
@@ -571,6 +575,11 @@ REPO_STRIP_ALIASES: dict[str, tuple[str, ...]] = {
         "Fleet Ops",
         "fleet-ops",
         "OPS",
+    ),
+    "Harness": (
+        "Harness",
+        "harness",
+        "HR",
     ),
 }
 
@@ -1119,6 +1128,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
       --bf: #0284c7;
       --hh: #92400e;
       --ops: #64748b;
+      --harness: #0ea5e9;
     }}
     * {{ box-sizing: border-box; }}
     body {{
@@ -1195,6 +1205,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
     .repo-bf {{ background: var(--bf); }}
     .repo-hh {{ background: var(--hh); }}
     .repo-ops {{ background: var(--ops); }}
+    .repo-harness {{ background: var(--harness); }}
     .repo.repo-with-icon {{
       gap: 0;
       padding: 0.1rem;
@@ -1301,6 +1312,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-bf" title="BotFleet.app"><img class="repo-app-icon" src="agent-logos/app-bf.png" alt="BotFleet.app" width="14" height="14" /></span><span class="legend-label">BotFleet.app</span></span>
         <span class="legend-item"><span class="repo repo-hh">HH</span><span class="legend-label">Hog Hunter</span></span>
         <span class="legend-item"><span class="repo repo-ops">OPS</span><span class="legend-label">Fleet Ops</span></span>
+        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-harness" title="Harness"><img class="repo-app-icon" src="agent-logos/app-harness.png" alt="Harness" width="14" height="14" /></span><span class="legend-label">Harness</span></span>
       </div>
     </div>
     <div class="legend-section" aria-label="Agents">

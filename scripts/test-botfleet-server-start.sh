@@ -31,6 +31,23 @@ if ! BOTFLEET_SERVER_ROOT="${tmp}/no-such" bash "${tmp}/wrap.sh" >"${tmp}/out" 2
 fi
 grep -q "already healthy" "${tmp}/out" || { echo "FAIL missing already-healthy log" >&2; exit 1; }
 
+# The probe must hit /api/health: BotFleet has no /health route (it 404s), so a
+# stub that only succeeds for /api/health proves the wrapper asks the real one.
+cat >"${tmp}/curl" <<'EOS'
+#!/bin/bash
+case "$*" in
+  *"/api/health"*) exit 0 ;;
+  *) exit 22 ;;
+esac
+EOS
+chmod +x "${tmp}/curl"
+if ! BOTFLEET_SERVER_ROOT="${tmp}/no-such" bash "${tmp}/wrap.sh" >"${tmp}/out3" 2>"${tmp}/err3"; then
+  echo "FAIL wrapper must probe /api/health, not /health" >&2
+  cat "${tmp}/err3" >&2
+  exit 1
+fi
+grep -q "already healthy" "${tmp}/out3" || { echo "FAIL /api/health probe: missing already-healthy log" >&2; exit 1; }
+
 # unhealthy + missing node_modules -> exit 1
 cat >"${tmp}/curl" <<'EOS'
 #!/bin/bash

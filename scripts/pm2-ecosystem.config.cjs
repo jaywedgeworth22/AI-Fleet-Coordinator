@@ -10,9 +10,9 @@
  * system cloudflared).  Do not start scheduled fire-and-exit jobs here
  * (watchdog, janitor, collector) — those stay launchd StartInterval.
  *
- * scout MUST have stdin /dev/null.  A raw `interpreter: bash` start hangs
- * in bash reader_loop because pm2's unix-socket stdin breaks the secrets
- * heredoc in run-scout.sh.
+ * Deprecated / removed from this ecosystem (do not resurrect): scout,
+ * residential-proxy, senate-relay, senate-tunnel.  Senate/residential stay
+ * off this Mac; Coolify/Texas paths own them.
  */
 const home = "/Users/jay";
 const logs = `${home}/.pm2/logs`;
@@ -27,7 +27,15 @@ function app(partial) {
     watch: false,
     merge_logs: true,
     time: true,
-    env: { PATH: path, HOME: home, ...(partial.env || {}) },
+    env: {
+      PATH: path,
+      HOME: home,
+      DD_AGENT_HOST: "127.0.0.1",
+      DD_TRACE_AGENT_PORT: "8126",
+      DD_ENV: "prod",
+      DD_SITE: "us5.datadoghq.com",
+      ...(partial.env || {})
+    },
     ...partial,
   };
 }
@@ -42,30 +50,6 @@ module.exports = {
       interpreter: "node",
       out_file: `${logs}/shellular-out.log`,
       error_file: `${logs}/shellular-error.log`,
-    }),
-    app({
-      name: "scout",
-      script: "/bin/bash",
-      args: ["-lc", "exec /Users/jay/apps/scout-runtime/run-scout.sh </dev/null"],
-      cwd: `${home}/Code/Congress.Trade`,
-      out_file: `${logs}/scout-out.log`,
-      error_file: `${logs}/scout-error.log`,
-    }),
-    app({
-      name: "senate-relay",
-      script: `${home}/apps/senate-relay-runtime/run.sh`,
-      interpreter: "bash",
-      cwd: `${home}/apps/senate-relay-runtime`,
-      out_file: `${logs}/senate-relay-out.log`,
-      error_file: `${logs}/senate-relay-error.log`,
-    }),
-    app({
-      name: "senate-tunnel",
-      script: `${home}/Code/Congress.Trade/scout/run-senate-tunnel.sh`,
-      interpreter: "bash",
-      cwd: `${home}/Code/Congress.Trade`,
-      out_file: `${logs}/senate-tunnel-out.log`,
-      error_file: `${logs}/senate-tunnel-error.log`,
     }),
     app({
       name: "agent-sync-push",
@@ -165,15 +149,39 @@ module.exports = {
       error_file: `${logs}/grok-acp-error.log`,
     }),
     app({
-      name: "dsh-web",
-      script: `${home}/apps/dsh-runtime/start-web.sh`,
+      // Harness web UI on :3080.  Renamed from dsh-web 2026-09-19.
+      // Canonical scripts live in jaywedgeworth22/Harness; this Mac runs
+      // them via ~/apps/harness-runtime (symlink to ~/Code/Harness).
+      name: "harness-web",
+      script: `${home}/apps/harness-runtime/scripts/start-web.sh`,
       interpreter: "bash",
-      cwd: `${home}/apps/dsh-runtime`,
-      // 3 = :3080 held by a non-dsh process (start-web.sh).  Do not storm.
+      cwd: `${home}/apps/harness-runtime`,
+      // 3 = :3080 held by a non-harness process.  Do not storm.
       stop_exit_codes: [3],
-      env: { DSH_HOME: `${home}/.dsh`, DSH_WEB_HOST: "127.0.0.1", DSH_WEB_PORT: "3080" },
-      out_file: `${logs}/dsh-web-out.log`,
-      error_file: `${logs}/dsh-web-error.log`,
+      env: {
+        HARNESS_RUNTIME_ROOT: `${home}/apps/harness-runtime`,
+        DSH_HOME: `${home}/.dsh`,
+        DSH_WEB_HOST: "127.0.0.1",
+        DSH_WEB_PORT: "3080",
+      },
+      out_file: `${logs}/harness-web-out.log`,
+      error_file: `${logs}/harness-web-error.log`,
+    }),
+    app({
+      name: "seat-mcp",
+      script: `${home}/apps/seat-mcp/start.sh`,
+      interpreter: "bash",
+      cwd: `${home}/apps/seat-mcp`,
+      out_file: `${logs}/seat-mcp-out.log`,
+      error_file: `${logs}/seat-mcp-error.log`,
+    }),
+    app({
+      name: "mac-collab-litestream",
+      script: `${home}/apps/mac-collab/start_litestream.sh`,
+      interpreter: "bash",
+      cwd: `${home}/apps/mac-collab`,
+      out_file: `${logs}/mac-collab-litestream-out.log`,
+      error_file: `${logs}/mac-collab-litestream-error.log`,
     }),
   ],
 };
