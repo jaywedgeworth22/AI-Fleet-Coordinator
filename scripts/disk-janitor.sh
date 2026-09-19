@@ -183,10 +183,7 @@ wt_blocking_dirt() {
 free_k=$(freek); free=$(gib "$free_k")
 prev_free=$(sed -n 's/^free=//p' "$STATE" 2>/dev/null); prev_free=${prev_free:-$free}
 delta=$(( free - prev_free ))
-# Under 80G free, retire merged/clean worktrees after 2 days instead of 7.
-if [ "$free" -lt "$LOW_FREE" ] && [ "${STALE_DAYS}" = "7" ]; then
-  STALE_DAYS=2
-fi
+# STALE_DAYS floor is 7 days even under low disk pressure.  See docs/HOUSEKEEPER.md.
 
 # cheap bucket sizes (bounded dirs only — keeps the run brief)
 npm_k=$(duk "$HOME_DIR/.npm"); uv_k=$(duk "$HOME_DIR/.cache/uv")
@@ -311,7 +308,9 @@ if [ "$free" -lt "$LOW_FREE" ]; then
     cleanmymac clean dev --force 2>/dev/null || true
     cleanmymac clean ai --force 2>/dev/null || true
     cleanmymac clean trash --force 2>/dev/null || true
-    cleanmymac optimize ram 2>/dev/null || true
+    # No `cleanmymac optimize ram` here — it writes dirty memory pages to
+    # swap on disk, which makes the very disk pressure we are trying to
+    # relieve strictly worse.  See docs/HOUSEKEEPER.md.
     actions="${actions}cleanmymac "
   fi
   rm -rf "$HOME_DIR/.npm/_cacache" 2>/dev/null
