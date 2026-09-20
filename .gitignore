@@ -20,3 +20,6 @@ docs/fleet-skills/by-seat/**/*.zip
 # Local fleet health recover env files
 scripts/host/fleet-health-recover.d/*.env
 *.db
+
+# Wrangler local dev cache (start.jays.services Worker)
+scripts/safari-start/.wrangler/
