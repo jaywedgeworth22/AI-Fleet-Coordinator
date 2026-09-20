@@ -82,6 +82,35 @@
   .search::placeholder { color: var(--faint); }
   .search:focus { border-color: var(--ring); box-shadow: 0 0 0 4px rgba(10, 132, 255, .18), var(--shadow); }
   .mag { position: absolute; left: 18px; top: 50%; width: 20px; height: 20px; margin-top: -10px; color: var(--faint); pointer-events: none; }
+
+  /* URL-bar style suggestions dropdown */
+  .suggest {
+    position: absolute; left: 0; right: 0; top: calc(100% + 8px); z-index: 60;
+    margin: 0; padding: 6px; list-style: none;
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    box-shadow: var(--shadow); max-height: min(62vh, 440px); overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .suggest[hidden] { display: none; }
+  .suggest li { display: flex; align-items: center; gap: 12px; padding: 9px 10px; border-radius: 10px; cursor: pointer; color: var(--text); }
+  .suggest li[aria-selected="true"], .suggest li:hover { background: var(--hover); }
+  .suggest .badge {
+    flex: none; width: 26px; height: 26px; border-radius: 7px; display: grid; place-items: center;
+    color: #fff; font: 600 10.5px/1 "SF Mono", Menlo, monospace; overflow: hidden;
+  }
+  .suggest .badge img { display: block; width: 15px; height: 15px; }
+  .suggest .badge svg { width: 15px; height: 15px; }
+  .suggest .badge.app { background: none !important; }
+  .suggest .badge.app img { width: 26px; height: 26px; border-radius: 7px; outline: 1px solid var(--line); outline-offset: -1px; }
+  .suggest .stx { min-width: 0; flex: 1 1 auto; }
+  .suggest .stx b { font-weight: 500; font-size: 15px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .suggest .stx span { color: var(--muted); font-size: 12.5px; display: block; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .suggest .kind { flex: none; color: var(--faint); font-size: 11.5px; text-transform: lowercase; }
+  @media (max-width: 560px) {
+    .suggest { top: calc(100% + 6px); }
+    .suggest li { padding: 12px 10px; }
+    .suggest .stx b { font-size: 16px; }
+  }
   .hint { color: var(--faint); font-size: 12.5px; margin: 0 0 32px 4px; }
   .hint kbd {
     font: 500 11.5px/1 "SF Mono", Menlo, monospace; color: var(--muted);
@@ -248,7 +277,9 @@
     <svg class="mag" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
       <circle cx="8.5" cy="8.5" r="5.5"></circle><path d="M13 13l4.5 4.5"></path>
     </svg>
-    <input class="search" id="q" name="q" type="text" placeholder="Search or type a URL" spellcheck="false" aria-label="Search">
+    <input class="search" id="q" name="q" type="text" placeholder="Search or type a URL" spellcheck="false" aria-label="Search"
+      role="combobox" aria-expanded="false" aria-controls="suggest" aria-autocomplete="list">
+    <ul class="suggest" id="suggest" role="listbox" aria-label="Suggestions" hidden></ul>
   </form>
   <p class="hint">
     <span><kbd>gh</kbd> GitHub</span>
@@ -346,6 +377,8 @@
       { name: "Fleet Activity",       sub: "jaywedgeworth22.github.io",      url: "https://jaywedgeworth22.github.io/ai-fleet-coordinator/",  mono: "FA", color: "#2563EB", glyph: ICONS["oc-pulse-16"] },
       { name: "AI Fleet Coordinator", sub: "GitHub repo",                    url: "https://github.com/jaywedgeworth22/ai-fleet-coordinator",  mono: "AF", color: "#111827", glyph: ICONS["oc-repo-16"] },
       { name: "Fleet Ops",            sub: "GitHub repo",                    url: "https://github.com/jaywedgeworth22/fleet-ops",             mono: "OP", color: "#374151", glyph: ICONS["oc-repo-16"] },
+      { name: "Harness",              sub: "GitHub repo",                    url: "https://github.com/jaywedgeworth22/Harness",               mono: "HR", color: "#0EA5E9", glyph: ICONS["oc-repo-16"] },
+      { name: "congress-trading-shared", sub: "GitHub repo",                 url: "https://github.com/jaywedgeworth22/congress-trading-shared", mono: "CS", color: "#0D9488", glyph: ICONS["oc-repo-16"] },
     ]},
     { title: "Apps", links: [
       { name: "Socratic.Trade",       sub: "socratictrade.com",              url: "https://socratictrade.com",                                mono: "ST", color: "#0F766E", icon: ICONS["app-st"] },
@@ -395,7 +428,7 @@
     try { return JSON.parse(localStorage.getItem(STORE) || "null") || {}; } catch (e) { return {}; }
   };
   const saveSettings = s => { try { localStorage.setItem(STORE, JSON.stringify(s)); } catch (e) {} };
-  let settings = Object.assign({ theme: "light", hidden: {}, extras: [] }, loadSettings());
+  let settings = Object.assign({ theme: "system", hidden: {}, extras: [] }, loadSettings());
 
   function applyTheme() {
     const t = settings.theme || "light";
@@ -563,18 +596,185 @@
   }
 
   const input = document.getElementById("q");
+  const sugBox = document.getElementById("suggest");
+
+  // ---- URL-bar style suggestions: this page's links AND live web autocomplete ----
+  const GOOGLE = q => "https://www.google.com/search?q=" + enc(q);
+  // Same-origin /suggest is served by the Worker on start.jays.services and by a local
+  // dev server.  The file:// install and the apex jays.services/start/ copy call the
+  // deployed Worker directly (it returns permissive CORS).  ?suggest= overrides for tests.
+  const SUGGEST_ENDPOINT =
+    new URLSearchParams(location.search).get("suggest") ||
+    (((location.protocol === "http:" || location.protocol === "https:") &&
+      location.hostname && location.hostname !== "jays.services")
+      ? "/suggest"
+      : "https://start.jays.services/suggest");
+
+  const flatLinks = () => {
+    const out = [];
+    for (const sec of visibleSections()) for (const l of sec.links)
+      out.push({ name: l.name, sub: l.sub || hostOf(l.url), url: l.url, mono: l.mono, color: l.color, icon: l.icon, glyph: l.glyph });
+    return out;
+  };
+  const scoreLink = (l, q) => {
+    const n = l.name.toLowerCase(), s = (l.sub || "").toLowerCase(), u = l.url.toLowerCase(), mo = (l.mono || "").toLowerCase();
+    if (mo === q) return 6;
+    if (n.startsWith(q)) return 5;
+    if (n.split(/\s+/).some(w => w.startsWith(q))) return 4;
+    if (s.startsWith(q)) return 3;
+    if (u.includes("//" + q) || u.includes("/" + q) || u.includes("." + q)) return 2;
+    if (n.includes(q) || s.includes(q) || u.includes(q)) return 1;
+    return 0;
+  };
+  const linkMatches = (q, max) => flatLinks()
+    .map(l => ({ l, sc: scoreLink(l, q) })).filter(x => x.sc > 0)
+    .sort((a, b) => b.sc - a.sc || a.l.name.length - b.l.name.length)
+    .slice(0, max).map(x => x.l);
+
+  const NS = "http://www.w3.org/2000/svg";
+  const svgIcon = paths => {
+    const s = document.createElementNS(NS, "svg");
+    s.setAttribute("viewBox", "0 0 20 20"); s.setAttribute("fill", "none");
+    s.setAttribute("stroke", "currentColor"); s.setAttribute("stroke-width", "2"); s.setAttribute("stroke-linecap", "round");
+    for (const d of paths) { const p = document.createElementNS(NS, "path"); p.setAttribute("d", d); s.appendChild(p); }
+    return s;
+  };
+  const magSvg = () => { const s = svgIcon(["M13 13l4.5 4.5"]); const c = document.createElementNS(NS, "circle"); c.setAttribute("cx", "8.5"); c.setAttribute("cy", "8.5"); c.setAttribute("r", "5.5"); s.insertBefore(c, s.firstChild); return s; };
+  const arrowSvg = () => svgIcon(["M4 10h11", "M11 5l5 5-5 5"]);
+
+  let items = [], active = -1, webSeq = 0, webCtrl = null, lastQ = "";
+
+  function makeBadge(it) {
+    const b = el("span", "badge");
+    if (it.type === "link" && it.icon) { b.classList.add("app"); const i = el("img"); i.src = it.icon; i.alt = ""; b.appendChild(i); return b; }
+    if (it.type === "link") { b.style.background = it.color || "#333"; if (it.glyph) { const i = el("img"); i.src = it.glyph; i.alt = ""; b.appendChild(i); } else b.textContent = it.mono || initials(it.label); return b; }
+    if (it.type === "url") { b.style.background = "#0a84ff"; b.appendChild(arrowSvg()); return b; }
+    b.style.background = "#6e6e73"; b.appendChild(magSvg()); return b; // search
+  }
+
+  function renderSuggest() {
+    sugBox.textContent = "";
+    if (!items.length) { closeSuggest(); return; }
+    items.forEach((it, i) => {
+      const li = el("li"); li.id = "sug-" + i; li.setAttribute("role", "option");
+      if (i === active) li.setAttribute("aria-selected", "true");
+      li.appendChild(makeBadge(it));
+      const tx = el("span", "stx"); tx.appendChild(el("b", null, it.label));
+      if (it.sub) tx.appendChild(el("span", null, it.sub));
+      li.appendChild(tx);
+      if (it.kind) li.appendChild(el("span", "kind", it.kind));
+      li.addEventListener("mousedown", ev => ev.preventDefault());
+      li.addEventListener("click", () => activate(i));
+      sugBox.appendChild(li);
+    });
+    sugBox.hidden = false; input.setAttribute("aria-expanded", "true");
+    if (active >= 0) input.setAttribute("aria-activedescendant", "sug-" + active);
+    else input.removeAttribute("aria-activedescendant");
+  }
+  function closeSuggest() {
+    sugBox.hidden = true; sugBox.textContent = ""; active = -1;
+    input.setAttribute("aria-expanded", "false"); input.removeAttribute("aria-activedescendant");
+  }
+
+  function buildLocal(q) {
+    const list = [], lc = q.toLowerCase();
+    if (looksLikeUrl(q)) {
+      const href = /^[a-z][a-z0-9+.-]*:\/\//i.test(q) ? q : "https://" + q;
+      list.push({ type: "url", label: q, sub: "Open link", url: href, kind: "go" });
+    }
+    const m = q.match(/^(\S+)(?:\s+(.*))?$/);
+    const p = m && PREFIX[m[1].toLowerCase()];
+    if (p) {
+      const has = m[2] && p.q;
+      list.push({ type: "url", label: has ? m[2] : hostOf(p.home), sub: has ? ("Search " + hostOf(p.home)) : p.home, url: has ? p.q(m[2]) : p.home, kind: m[1].toLowerCase() });
+    }
+    for (const l of linkMatches(lc, 6))
+      list.push({ type: "link", label: l.name, sub: l.sub, url: l.url, mono: l.mono, color: l.color, icon: l.icon, glyph: l.glyph, kind: "open" });
+    return list;
+  }
+  function withDefaultSearch(list, q) {
+    if (!list.some(it => it.type === "search" && it.query === q))
+      list.push({ type: "search", label: q, sub: "Search Google", url: GOOGLE(q), query: q, kind: "search" });
+    return list;
+  }
+  function dedupeCap(list) {
+    const seen = new Set(), out = [];
+    for (const it of list) { const k = it.type + "|" + (it.url || it.label); if (seen.has(k)) continue; seen.add(k); out.push(it); if (out.length >= 12) break; }
+    return out;
+  }
+  function rebuild(q, webPhrases) {
+    let list = buildLocal(q);
+    for (const ph of (webPhrases || [])) {
+      if (ph.toLowerCase() === q.toLowerCase()) continue;
+      list.push({ type: "search", label: ph, sub: "Search Google", url: GOOGLE(ph), query: ph, kind: "search" });
+    }
+    list = withDefaultSearch(list, q);
+    items = dedupeCap(list);
+    if (active >= items.length) active = -1;
+    renderSuggest();
+  }
+
+  async function fetchWeb(q) {
+    const seq = ++webSeq;
+    try {
+      if (webCtrl) webCtrl.abort();
+      webCtrl = new AbortController();
+      const url = SUGGEST_ENDPOINT + (SUGGEST_ENDPOINT.includes("?") ? "&" : "?") + "q=" + enc(q);
+      const r = await fetch(url, { signal: webCtrl.signal });
+      if (!r.ok) return;
+      const data = await r.json();
+      const phrases = Array.isArray(data) ? (data[1] || []) : (data.suggestions || []);
+      if (seq === webSeq && input.value.trim() === q) rebuild(q, phrases.slice(0, 8));
+    } catch (e) { /* offline or blocked: local suggestions still work */ }
+  }
+
+  let webTimer = 0;
+  input.addEventListener("input", () => {
+    const q = input.value.trim();
+    lastQ = q;
+    clearTimeout(webTimer);
+    if (!q) { items = []; closeSuggest(); return; }
+    rebuild(q);
+    const isUrl = looksLikeUrl(q);
+    webTimer = setTimeout(() => { if (input.value.trim() === q && !isUrl) fetchWeb(q); }, 130);
+  });
+  input.addEventListener("focus", () => { const q = input.value.trim(); if (q) rebuild(q); });
+  input.addEventListener("blur", () => setTimeout(closeSuggest, 120));
+
+  function activate(i) { const it = items[i]; if (!it) return; closeSuggest(); go(it.url); }
+
   document.getElementById("search").addEventListener("submit", e => {
+    e.preventDefault();
+    if (active >= 0 && items[active]) { activate(active); return; }
     const raw = input.value.trim();
-    if (!raw) { e.preventDefault(); return; }
+    if (!raw) return;
     const m = raw.match(/^(\S+)(?:\s+(.*))?$/);
     const p = PREFIX[m[1].toLowerCase()];
-    if (p) { e.preventDefault(); go((m[2] && p.q) ? p.q(m[2]) : p.home); return; }
-    if (looksLikeUrl(raw)) { e.preventDefault(); go(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : "https://" + raw); return; }
-    // Otherwise the form submits to Google on its own.
+    closeSuggest();
+    if (p) { go((m[2] && p.q) ? p.q(m[2]) : p.home); return; }
+    if (looksLikeUrl(raw)) { go(/^[a-z][a-z0-9+.-]*:\/\//i.test(raw) ? raw : "https://" + raw); return; }
+    go(GOOGLE(raw));
   });
 
+  input.addEventListener("keydown", e => {
+    if (e.key === "ArrowDown") {
+      if (sugBox.hidden && input.value.trim()) rebuild(input.value.trim());
+      if (items.length) { active = (active + 1) % items.length; renderSuggest(); e.preventDefault(); }
+    } else if (e.key === "ArrowUp") {
+      if (items.length) { active = (active <= 0 ? items.length : active) - 1; renderSuggest(); e.preventDefault(); }
+    } else if (e.key === "Escape") {
+      if (!sugBox.hidden) { closeSuggest(); e.preventDefault(); }
+      else { input.value = ""; items = []; input.blur(); }
+    } else if (e.key === "Tab" && !e.shiftKey && !sugBox.hidden && items.length) {
+      const it = items[active >= 0 ? active : 0];
+      const fill = it.query || (it.type === "link" ? it.label : null);
+      if (fill) { input.value = fill; lastQ = fill; rebuild(fill); e.preventDefault(); }
+    }
+  });
+
+  // Type-to-focus from anywhere else on the page.
   document.addEventListener("keydown", e => {
-    if (e.target === input) { if (e.key === "Escape") { input.value = ""; input.blur(); } return; }
+    if (e.target === input) return;
     if (e.metaKey || e.ctrlKey || e.altKey) return;
     if (e.key === "/") { e.preventDefault(); input.focus(); return; }
     if (e.key.length === 1) input.focus();
@@ -591,7 +791,7 @@
     applyTheme();
   });
   document.getElementById("reset-settings").addEventListener("click", () => {
-    settings = { theme: "light", hidden: {}, extras: [] };
+    settings = { theme: "system", hidden: {}, extras: [] };
     saveSettings(settings);
     applyTheme();
     paintSettings();
