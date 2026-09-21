@@ -151,6 +151,12 @@ class LeaderExtractTests(unittest.TestCase):
         self.assertIn("_resume", prompt_block)
         self.assertNotIn("session/load", prompt_block.split("return", 1)[0])
 
+    def test_prompt_defaults_to_queued_not_wait(self) -> None:
+        src = LEADER.read_text(encoding="utf-8")
+        self.assertIn("def prompt_live", src)
+        self.assertIn("wait=False", src)
+        self.assertIn("--wait", src)
+
 
 if __name__ == "__main__":
     unittest.main()
