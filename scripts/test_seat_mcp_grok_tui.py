@@ -136,6 +136,21 @@ class LeaderExtractTests(unittest.TestCase):
         self.assertEqual(mod.extract_agent_text(msg), "hi")
         self.assertEqual(mod.extract_agent_text({"method": "ping"}), "")
 
+    def test_peek_from_disk_live_session(self) -> None:
+        mod = _load_leader()
+        out = mod.peek_from_disk("01a04521-e2e0-7403-9c44-cb8ee340330b")
+        self.assertTrue(out.get("ok"), out)
+        self.assertEqual(out.get("source"), "disk")
+        self.assertEqual(out.get("cwd"), "/Users/jay/Code")
+
+    def test_prompt_uses_resume_not_load(self) -> None:
+        src = LEADER.read_text(encoding="utf-8")
+        self.assertIn("session/resume", src)
+        self.assertIn('if args.cmd == "prompt":', src)
+        prompt_block = src.split('if args.cmd == "prompt":', 1)[1]
+        self.assertIn("_resume", prompt_block)
+        self.assertNotIn("session/load", prompt_block.split("return", 1)[0])
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -18,9 +18,11 @@ import select
 import subprocess
 import sys
 import time
+from pathlib import Path
 
 GROK = "/Users/jay/.grok/bin/grok"
 CMD = [GROK, "agent", "--always-approve", "--leader", "stdio"]
+SESSIONS_ROOT = Path.home() / ".grok" / "sessions"
 
 
 class LeaderStdio:
@@ -137,17 +139,45 @@ def _initialize(client, timeout=25.0):
     )
 
 
-def _load(client, session_id, cwd, timeout=45.0):
-    # Do not set yoloMode on an existing TUI — keep the owner's permission mode.
+def find_session_dir(session_id: str):
+    if not SESSIONS_ROOT.is_dir() or "/" in session_id or "\\" in session_id:
+        return None
+    matches = list(SESSIONS_ROOT.glob("*/" + session_id))
+    dirs = [p for p in matches if p.is_dir()]
+    return dirs[0] if dirs else None
+
+
+def peek_from_disk(session_id: str) -> dict:
+    """Read summary.json.  Does not session/load a live TUI (that hangs ~45s)."""
+    path = find_session_dir(session_id)
+    if path is None:
+        return {"ok": False, "error": "session dir not found", "sessionId": session_id}
+    summary_path = path / "summary.json"
+    if not summary_path.is_file():
+        return {"ok": False, "error": "summary.json missing", "sessionId": session_id, "dir": str(path)}
+    try:
+        data = json.loads(summary_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError as exc:
+        return {"ok": False, "error": "summary.json parse failed: %s" % exc, "sessionId": session_id}
+    info = data.get("info") if isinstance(data.get("info"), dict) else {}
+    return {
+        "ok": True,
+        "sessionId": session_id,
+        "cwd": info.get("cwd"),
+        "title": data.get("generated_title") or data.get("session_summary"),
+        "text": data.get("last_turn_summary") or "",
+        "recap": data.get("last_recap") or "",
+        "updatedAt": data.get("updated_at") or data.get("last_active_at"),
+        "source": "disk",
+    }
+
+
+def _resume(client, session_id, cwd, timeout=20.0):
+    """Attach to a session the TUI already has open.  session/load hangs on live chats."""
     return client.request(
-        "session/load",
-        {
-            "sessionId": session_id,
-            "cwd": cwd,
-            "mcpServers": [],
-        },
+        "session/resume",
+        {"sessionId": session_id, "cwd": cwd},
         timeout=timeout,
-        collect_text=True,
     )
 
 
@@ -170,6 +200,10 @@ def main():
     pr.add_argument("--timeout", type=float, default=180.0)
     args = p.parse_args()
 
+    if args.cmd == "peek":
+        print(json.dumps(peek_from_disk(args.session_id), indent=2))
+        return
+
     client = LeaderStdio()
     try:
         init = _initialize(client)
@@ -191,27 +225,27 @@ def main():
             print(json.dumps({"ok": True, "count": len(sessions), "sessions": sessions}, indent=2))
             return
         if args.cmd == "load":
-            loaded, text = _load(client, args.session_id, args.cwd)
+            # Idle / disk sessions only.  Live TUI chats hang on session/load — use prompt.
+            loaded, text = client.request(
+                "session/load",
+                {
+                    "sessionId": args.session_id,
+                    "cwd": args.cwd,
+                    "mcpServers": [],
+                },
+                timeout=45.0,
+                collect_text=True,
+            )
             print(json.dumps({
                 "ok": True,
                 "sessionId": args.session_id,
                 "cwd": args.cwd,
                 "keys": sorted(loaded.keys()),
                 "text": text,
-            }, indent=2))
-            return
-        if args.cmd == "peek":
-            loaded, text = _load(client, args.session_id, args.cwd)
-            print(json.dumps({
-                "ok": True,
-                "sessionId": args.session_id,
-                "cwd": args.cwd,
-                "text": text,
-                "keys": sorted(loaded.keys()),
             }, indent=2))
             return
         if args.cmd == "prompt":
-            _load(client, args.session_id, args.cwd)
+            _resume(client, args.session_id, args.cwd)
             result, text = client.request(
                 "session/prompt",
                 {
