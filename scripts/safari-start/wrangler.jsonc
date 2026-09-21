@@ -1,8 +1,10 @@
 {
-  // start.jays.services: the Safari start page served as a public static asset.
+  // start.jays.services: the Safari start page served as static assets, plus a
+  // /suggest search-autocomplete proxy (see worker.js).
   // Deploy from this directory with `wrangler deploy` (account Usage.Jays.Services, zone jays.services).
   "name": "start-jays-services",
   "compatibility_date": "2026-09-01",
-  "assets": { "directory": "./public" },
+  "main": "worker.js",
+  "assets": { "directory": "./public", "binding": "ASSETS" },
   "routes": [{ "pattern": "start.jays.services", "custom_domain": true }]
 }
