@@ -10,13 +10,6 @@ Load `<YOUR_SKILLS_DIR>/secret-safety/SKILL.md` as well when that file exists.  
 
 **Redact in the same command that touches the secret.**  If you are deciding whether output is safe to show, you are already too late — it is in the transcript.
 
-## BotFleet Secret Request Card (2026-09-01)
-If you are operating within a BotFleet environment and need an API key or custom token (e.g. `GITHUB_TOKEN`, `AWS_ACCESS_KEY_ID`), you MUST use the `request_credential` MCP tool. 
-- The tool accepts `credential_id` or `custom_secret_name` and an optional `reason`.
-- This triggers an interactive UI card (`SecretRequestCard`) where the user can securely type the key.
-- The key is securely saved to `~/.botfleet/vault.json` and automatically injected into your tool environment variables.
-- NEVER ask the user to paste a secret directly into the chat transcript.
-
 ## One canonical handoff file
 
 `/Users/jay/.secrets/global-api-keys` (no extension).  There is no `global-api-keys.env` to use.  The superseded sibling is a recovery net, not a source.

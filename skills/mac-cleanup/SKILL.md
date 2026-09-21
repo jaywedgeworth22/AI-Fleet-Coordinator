@@ -3,6 +3,11 @@ name: mac-cleanup
 description: Optimize Mac workstation and Hetzner Coolify disk space, prune merged git worktrees across all apps, clean Xcode symbols/simulators, and flush package caches. Use when checking disk health or optimizing local storage.
 ---
 
+> **Read the `housekeeper` skill first when you are acting on live resource pressure.**  It carries the decide-whether-to-act gate, the shared re-entrant lock, the Mac/Hetzner ownership split, and the never-delete list.  Two rules that override anything below:
+> - **Never run `cleanmymac optimize ram`.**  It purges resident pages into swapfiles on the same APFS container as user data, converting RAM pressure into disk consumption (measured +3.6-7.3G swap per run, 2026-09-01).
+> - **Free disk > 80G means it is not a disk problem.**  Deleting caches cannot reduce swap.  Report and stop.
+
+
 # Mac & Hetzner Disk Cleanup Skill (ALL AGENTS)
 
 Optimize local workstation storage and remote Coolify server disk usage by running the unified automated maintenance sweep.
@@ -36,7 +41,7 @@ mac-auto-cleanup
    - `brew cleanup -s`
 4. **CleanMyMac CLI Cleanup & RAM Optimization**:
    - `cleanmymac clean --force` (automatically cleans system junk, dev junk, AI tool caches, and trash bins).
-   - `cleanmymac optimize ram` (frees up inactive system memory and optimizes RAM).
+   - ~~`cleanmymac optimize ram`~~ — **removed 2026-09-01.**  It purges resident pages, which on a 16G host pushes them into swapfiles on the same APFS container as user data: it converts RAM pressure into disk consumption.  Measured +3.6-7.3G swap per run, with 2 of 3 runs ending with *less* free disk.  Gated off in both scripts behind `RESOURCE_ALLOW_RAM_OPTIMIZE=1`; do not set it.
 5. **Spotlight PipelineStorage Journals**:
    - Truncates oversized Apple Intelligence / CoreSpotlight `PipelineStorage` journals.
 6. **Agent Session Transcripts**:
