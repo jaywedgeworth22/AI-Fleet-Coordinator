@@ -303,6 +303,14 @@
       "branchPrefixes": [
         "minimax/"
       ]
+    },
+    {
+      "tag": "MUSE",
+      "notesName": "Muse",
+      "worktreeSuffix": "muse",
+      "branchPrefixes": [
+        "muse/"
+      ]
     }
   ]
 }
