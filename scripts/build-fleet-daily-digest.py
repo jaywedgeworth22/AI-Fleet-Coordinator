@@ -58,6 +58,8 @@ DEFAULT_REPOS = [
     "HogHunter",
     "fleet-ops",
     "Harness",
+    "codecaps",
+    "MiniMax-ios",
 ]
 
 # Live machine boards (optional local override via EFFORT_LOG_DIR)
@@ -75,6 +77,8 @@ LIVE_EFFORT_FILES = {
     "HogHunter": "HOGHUNTER-EFFORT-LOG.md",
     "fleet-ops": "FLEET-OPS-EFFORT-LOG.md",
     "Harness": "HARNESS-EFFORT-LOG.md",
+    "codecaps": "CODECAPS-EFFORT-LOG.md",
+    "MiniMax-ios": "MiniMax-ios-EFFORT-LOG.md",
 }
 
 DONE_SECTIONS = frozenset(
@@ -475,6 +479,8 @@ REPO_BADGE: dict[str, tuple[str, str]] = {
     "HogHunter": ("HH", "repo-hh"),
     "fleet-ops": ("OPS", "repo-ops"),
     "Harness": ("HR", "repo-harness"),
+    "codecaps": ("CC", "repo-cc"),
+    "MiniMax-ios": ("MM", "repo-mm"),
 }
 
 # Latest product app icons (copied into site/agent-logos/ with agent marks)
@@ -487,7 +493,10 @@ REPO_APP_ICON: dict[str, str] = {
     "ContactLogo": "agent-logos/app-cl.png",     # ContactLogo crest mark
     "Personal-Site": "agent-logos/app-ps.png",   # Jay's headshot for jays.services
     "BotFleet": "agent-logos/app-bf.png",        # BotFleet app icon
+    "HogHunter": "agent-logos/app-hh.png",
     "Harness": "agent-logos/app-harness.png",
+    "codecaps": "agent-logos/app-cc.png",
+    "MiniMax-ios": "agent-logos/app-mm.png",
 }
 
 # Aliases used only to strip *redundant leading* labels that duplicate the badge.
@@ -581,6 +590,17 @@ REPO_STRIP_ALIASES: dict[str, tuple[str, ...]] = {
         "harness",
         "HR",
     ),
+    "codecaps": (
+        "CodeCaps",
+        "codecaps",
+        "CC",
+    ),
+    "MiniMax-ios": (
+        "MiniMax Remote",
+        "MiniMax-ios",
+        "minimax-ios",
+        "MM",
+    ),
 }
 
 
@@ -663,6 +683,7 @@ def strip_redundant_repo_label(text: str, repo: str) -> str:
 # Agent seat tags → logo slug + human label (logo files in agent-logos/<slug>.svg)
 AGENT_LOGO: dict[str, tuple[str, str]] = {
     "grok": ("grok", "Grok"),
+    "grok-bot": ("grok-bot", "Grok Bot"),
     "codex": ("codex", "Codex"),
     "claude": ("claude", "Claude"),
     "cursor": ("cursor", "Cursor"),
@@ -671,6 +692,10 @@ AGENT_LOGO: dict[str, tuple[str, str]] = {
     "gemini": ("gemini", "Gemini"),
     "minimax": ("minimax", "MiniMax"),
     "mm": ("minimax", "MiniMax"),
+    "deepseek": ("deepseek", "DeepSeek"),
+    "dsh": ("deepseek", "DeepSeek"),
+    "kimi": ("kimi", "Kimi"),
+    "muse": ("muse", "Muse"),
     "sentry": ("sentry", "Sentry"),
     # Monet / Renoir / Fable seats collapse to Claude logo + label
     "monet": ("claude", "Claude"),
@@ -684,11 +709,14 @@ AGENT_LOGO: dict[str, tuple[str, str]] = {
 # Core seat names; optional version/wave suffixes: GROK4, GROK3-B7, CODEX-REVIEW
 # OWNER is deliberately omitted — keep "OWNER ACTION" text, no person/Jay chip.
 _AGENT_ALT = (
-    r"GROK\d*(?:-[A-Za-z0-9]+)?"
+    r"GROK\s+BOT|GROK-BOT"
+    r"|GROK\d*(?:-[A-Za-z0-9]+)?"
     r"|CODEX(?:-[A-Za-z0-9]+)?"
     r"|CLAUDE(?:\s+CODE)?"
     r"|CURSOR"
     r"|MINIMAX|MM"
+    r"|DEEPSEEK|DSH"
+    r"|KIMI|MUSE"
     r"|SENTRY"
     r"|AG|ANTIGRAVITY|GEMINI|MONET|RENOIR|FABLE"
 )
@@ -728,6 +756,8 @@ _AGENT_STANDALONE = re.compile(
 def _normalize_agent_token(raw: str) -> str:
     t = re.sub(r"\s+", " ", raw.strip().lower())
     # strip wave/version suffixes: grok4, grok3-b7, codex-review → base seat
+    if t.startswith("grok-bot") or t == "grok bot":
+        return "grok-bot"
     if t.startswith("grok"):
         return "grok"
     if t.startswith("codex"):
@@ -749,6 +779,12 @@ def _normalize_agent_token(raw: str) -> str:
         return "claude"
     if t.startswith("minimax") or t == "mm":
         return "minimax"
+    if t.startswith("deepseek") or t == "dsh":
+        return "deepseek"
+    if t.startswith("kimi"):
+        return "kimi"
+    if t.startswith("muse"):
+        return "muse"
     if t.startswith("sentry"):
         return "sentry"
     return t
@@ -1129,6 +1165,8 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
       --hh: #92400e;
       --ops: #64748b;
       --harness: #0ea5e9;
+      --cc: #0d9488;
+      --mm: #e11d48;
     }}
     * {{ box-sizing: border-box; }}
     body {{
@@ -1206,6 +1244,8 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
     .repo-hh {{ background: var(--hh); }}
     .repo-ops {{ background: var(--ops); }}
     .repo-harness {{ background: var(--harness); }}
+    .repo-cc {{ background: var(--cc); }}
+    .repo-mm {{ background: var(--mm); }}
     .repo.repo-with-icon {{
       gap: 0;
       padding: 0.1rem;
@@ -1310,16 +1350,18 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
         <span class="legend-item"><span class="repo repo-shared">CTS</span><span class="legend-label">congress-trading-shared</span></span>
         <span class="legend-item"><span class="repo repo-fleet">AFC</span><span class="legend-label">AI Fleet Coordinator</span></span>
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-bf" title="BotFleet.app"><img class="repo-app-icon" src="agent-logos/app-bf.png" alt="BotFleet.app" width="14" height="14" /></span><span class="legend-label">BotFleet.app</span></span>
-        <span class="legend-item"><span class="repo repo-hh">HH</span><span class="legend-label">Hog Hunter</span></span>
+        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-hh" title="Hog Hunter"><img class="repo-app-icon" src="agent-logos/app-hh.png" alt="Hog Hunter" width="14" height="14" /></span><span class="legend-label">Hog Hunter</span></span>
         <span class="legend-item"><span class="repo repo-ops">OPS</span><span class="legend-label">Fleet Ops</span></span>
         <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-harness" title="Harness"><img class="repo-app-icon" src="agent-logos/app-harness.png" alt="Harness" width="14" height="14" /></span><span class="legend-label">Harness</span></span>
+        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-cc" title="CodeCaps"><img class="repo-app-icon" src="agent-logos/app-cc.png" alt="CodeCaps" width="14" height="14" /></span><span class="legend-label">CodeCaps</span></span>
+        <span class="legend-item"><span class="repo repo-with-icon repo-icon-only repo-mm" title="MiniMax Remote"><img class="repo-app-icon" src="agent-logos/app-mm.png" alt="MiniMax Remote" width="14" height="14" /></span><span class="legend-label">MiniMax Remote</span></span>
       </div>
     </div>
     <div class="legend-section" aria-label="Agents">
       <span class="legend-heading">Agents</span>
       <div class="legend-items">
         <span class="legend-item"><span class="agent" title="Grok"><img src="agent-logos/grok.svg" alt="" width="12" height="12" /></span><span class="legend-label">Grok</span></span>
-        <span class="legend-item"><span class="agent" title="Grok Bot"><img src="agent-logos/grok-bot.png" alt="" width="12" height="12" /></span><span class="legend-label">Grok Bot</span></span>
+        <span class="legend-item"><span class="agent" title="Grok Bot"><img src="agent-logos/grok-bot.svg" alt="" width="12" height="12" /></span><span class="legend-label">Grok Bot</span></span>
         <span class="legend-item"><span class="agent" title="Codex"><img src="agent-logos/codex.svg" alt="" width="12" height="12" /></span><span class="legend-label">Codex</span></span>
         <span class="legend-item"><span class="agent" title="Claude"><img src="agent-logos/claude.svg" alt="" width="12" height="12" /></span><span class="legend-label">Claude</span></span>
         <span class="legend-item"><span class="agent" title="Cursor"><img src="agent-logos/cursor.png" alt="" width="12" height="12" /></span><span class="legend-label">Cursor</span></span>
@@ -1328,6 +1370,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
         <span class="legend-item"><span class="agent" title="Kimi"><img src="agent-logos/kimi.svg" alt="" width="12" height="12" /></span><span class="legend-label">Kimi</span></span>
         <span class="legend-item"><span class="agent" title="DeepSeek"><img src="agent-logos/deepseek.svg" alt="" width="12" height="12" /></span><span class="legend-label">DeepSeek</span></span>
         <span class="legend-item"><span class="agent" title="MiniMax"><img src="agent-logos/minimax.png" alt="" width="12" height="12" /></span><span class="legend-label">MiniMax</span></span>
+        <span class="legend-item"><span class="agent" title="Muse"><img src="agent-logos/muse.svg" alt="" width="12" height="12" /></span><span class="legend-label">Muse</span></span>
         <span class="legend-item"><span class="agent" title="Sentry"><img src="agent-logos/sentry.svg" alt="" width="12" height="12" /></span><span class="legend-label">Sentry</span></span>
       </div>
     </div>
