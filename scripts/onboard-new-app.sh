@@ -79,8 +79,9 @@ echo "== fleet onboard: $OWNER/$REPO  acronym=$ACRONYM  code=$CODE_PATH"
 # --- GitHub repo ---
 if ! gh repo view "$OWNER/$REPO" >/dev/null 2>&1; then
   if [ "$CREATE_REPO" -eq 1 ]; then
-    echo "creating GitHub repo $OWNER/$REPO ($VISIBILITY)"
+    echo "creating GitHub repo $OWNER/$REPO ($VISIBILITY) with default Apache-2.0 license"
     run gh repo create "$OWNER/$REPO" "--$VISIBILITY" \
+      --license "apache-2.0" \
       ${DESCRIPTION:+--description "$DESCRIPTION"}
   else
     echo "GitHub repo $OWNER/$REPO not found. Pass --create-repo or create it first." >&2
@@ -107,6 +108,12 @@ else
   echo "cloning into $CODE_PATH"
   run mkdir -p "$CODE_ROOT"
   run git clone "https://github.com/$OWNER/$REPO.git" "$CODE_PATH"
+fi
+
+# Ensure default Apache-2.0 LICENSE exists (except Fleet-OPS)
+if [ ! -f "$CODE_PATH/LICENSE" ] && [ "$REPO" != "Fleet-OPS" ]; then
+  echo "copying canonical Apache-2.0 LICENSE to $CODE_PATH"
+  run cp "$here/LICENSE" "$CODE_PATH/LICENSE"
 fi
 
 run mkdir -p "$CODE_ROOT/copilot-worktrees/$CODE_DIR"

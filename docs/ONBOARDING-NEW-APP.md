@@ -70,6 +70,9 @@ the integration tree. This procedure is the self-propagation rule from
    records on `usage.jays.services` or `jays.services`.  Do not mint a
    Cloudflare account, buy a domain, or enable paid Cloudflare products
    without Jay.  Playbook: [DNS-AND-REGISTRARS.md](DNS-AND-REGISTRARS.md).
+9. **Default License is Apache 2.0.**  All repositories in this fleet use the
+   Apache License 2.0 by default (`Copyright 2026 Jay Wedgeworth`), except
+   `Fleet-OPS` which is private and proprietary (`Private.  All rights reserved.`).
 
 ---
 
