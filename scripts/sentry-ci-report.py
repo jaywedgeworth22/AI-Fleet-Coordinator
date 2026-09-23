@@ -87,6 +87,12 @@ from pathlib import Path
 # participates in the fingerprint so cross-repo CI failures never collapse into
 # one Sentry issue.
 APP = "AI-Fleet-Coordinator"
+# Stable identity for Sentry-keyed identifiers, kept at the pre-rename
+# lowercase repo name on purpose: monitor slugs, issue fingerprints and
+# check-in UUIDs were all minted under it, so adopting the renamed casing
+# there would orphan every existing Crons monitor and split every open
+# Sentry issue. Display strings (messages, tags) use APP above.
+APP_IDENTITY = "ai-fleet-coordinator"
 
 CRON_SCHEDULES = {
     "Backup fleet GitHub repositories": "0 7 * * *",
@@ -184,7 +190,7 @@ def checkin_id_for_run(run_id: str, run_attempt: str) -> str:
     id, so its terminal check-in stands alone instead of trying to close
     attempt 1's check-in, which Sentry already closed.
     """
-    return uuid.uuid5(uuid.NAMESPACE_URL, f"sentry-ci-report/{APP}/run/{run_id}/attempt/{run_attempt}").hex
+    return uuid.uuid5(uuid.NAMESPACE_URL, f"sentry-ci-report/{APP_IDENTITY}/run/{run_id}/attempt/{run_attempt}").hex
 
 
 def build_monitor_config(workflow_name: str, cron_expr: str) -> dict:
@@ -256,7 +262,7 @@ def resolve_cron_expr(
         "unmapped-schedule",
         f"sentry-ci-report has no CRON_SCHEDULES entry for scheduled workflow "
         f"'{workflow_name}' [{APP}]",
-        ["ci-report-config-drift", APP, "unmapped-schedule", workflow_name],
+        ["ci-report-config-drift", APP_IDENTITY, "unmapped-schedule", workflow_name],
         {"workflow": workflow_name, "run_url": run_url, "run_id": run_id},
     )
     return None
@@ -442,7 +448,7 @@ def main() -> int:
             auth_header,
             "stale-cron-key",
             f"sentry-ci-report CRON_SCHEDULES has stale workflow name(s): {joined} [{APP}]",
-            ["ci-report-config-drift", APP, "stale-cron-key"],
+            ["ci-report-config-drift", APP_IDENTITY, "stale-cron-key"],
             {"stale_keys": stale_keys, "run_url": run_url},
         )
 
@@ -488,7 +494,7 @@ def main() -> int:
             )
             return 0
 
-        monitor_slug = f"ci-{APP}-{slugify(workflow_name)}"
+        monitor_slug = f"ci-{APP_IDENTITY}-{slugify(workflow_name)}"
         check_in_id = checkin_id_for_run(run_id, run_attempt)
         send_envelope(
             envelope_url,
@@ -521,7 +527,7 @@ def main() -> int:
             # enter the fingerprint — see the module docstring.
             "tags": {"app": APP, "workflow": workflow_name, "branch": branch, "actor": actor},
             "extra": {"run_url": run_url, "run_id": run_id, "branch": branch},
-            "fingerprint": ["ci-failure", APP, workflow_name],
+            "fingerprint": ["ci-failure", APP_IDENTITY, workflow_name],
         }
         send_envelope(envelope_url, auth_header, "event", event_payload)
         print(f"Sent Sentry {conclusion} event for workflow '{workflow_name}' on branch '{branch}'.")
@@ -549,7 +555,7 @@ def main() -> int:
             # check-in open until max_runtime and turn a benign cancellation
             # into a false TIMEOUT.
             checkin_status = "error" if conclusion in ALERT_CONCLUSIONS else "ok"
-            monitor_slug = f"ci-{APP}-{slugify(workflow_name)}"
+            monitor_slug = f"ci-{APP_IDENTITY}-{slugify(workflow_name)}"
             # Same deterministic id the requested phase used, which is what
             # CLOSES that in_progress check-in.  The uuid4 fallback is legacy:
             # with no run id the two phases cannot correlate, so this becomes a
