@@ -104,6 +104,7 @@ APP_ALIASES: dict[str, str] = {
     "AFL": "fleet-infra",
     "AI Fleet Coordinator": "fleet-infra",
     "AI-Fleet-Coordinator": "fleet-infra",
+    "ai-fleet-coordinator": "fleet-infra",
     "fleet": "fleet-infra",
     "BF": "botfleet",
     "BotFleet.app": "botfleet",
