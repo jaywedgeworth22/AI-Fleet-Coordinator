@@ -104,7 +104,8 @@ APP_CANONICAL: dict[str, str] = {
     "contactlogo.com": "contactlogo",
     "cl": "contactlogo",
     "fleet-infra": "fleet-infra",
-    "AI-Fleet-Coordinator": "fleet-infra",
+    # Keyed lowercase: normalize_app() lowercases input before lookup.
+    "ai-fleet-coordinator": "fleet-infra",
     "ai fleet coordinator": "fleet-infra",
     "fleet": "fleet-infra",
     "afc": "fleet-infra",
