@@ -23,7 +23,7 @@ bash -n "$CLAIM" || fail "mac-seat-claim.sh syntax"
 "$CLAIM" --help >/dev/null || fail "mac-seat-claim --help"
 
 "$REQUEST" --dry-run \
-  --repo ai-fleet-coordinator \
+  --repo AI-Fleet-Coordinator \
   --title "contract test" \
   --prompt "noop" \
   --by AFC \

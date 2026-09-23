@@ -64,7 +64,7 @@ class GoldenFile(unittest.TestCase):
 class ExpectSourceTests(unittest.TestCase):
     def test_expected_source_from_field_prefix_or_any(self):
         self.assertEqual(ev.expected_source({"expect_source": "board", "expect_doc_id_prefix": "doc/x"}), "board")
-        self.assertEqual(ev.expected_source({"expect_doc_id_prefix": "doc/ai-fleet-coordinator/x.md"}), "doc")
+        self.assertEqual(ev.expected_source({"expect_doc_id_prefix": "doc/AI-Fleet-Coordinator/x.md"}), "doc")
         self.assertEqual(ev.expected_source({"expect_doc_id_prefix": "board/abc"}), "board")
         self.assertEqual(ev.expected_source({"expect_doc_id_prefix": "note/ACC/ICNote/p1"}), "apple-note")
         self.assertEqual(ev.expected_source({"expect_doc_id_prefix": "contrib/GROK/2026-09-02/x"}), "agent-contribution")

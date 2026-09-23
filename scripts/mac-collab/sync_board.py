@@ -54,7 +54,7 @@ APP_REGISTRY = {
     "personal-site": (APPS / "PERSONAL-SITE-EFFORT-LOG.md", "jaywedgeworth22/Personal-Site"),
     "autorotate": (APPS / "AUTOROTATE-EFFORT-LOG.md", "jaywedgeworth22/Autorotate"),
     "contactlogo": (APPS / "CONTACTLOGO-EFFORT-LOG.md", "jaywedgeworth22/ContactLogo"),
-    "fleet-infra": (APPS / "FLEET-INFRA-EFFORT-LOG.md", "jaywedgeworth22/ai-fleet-coordinator"),
+    "fleet-infra": (APPS / "FLEET-INFRA-EFFORT-LOG.md", "jaywedgeworth22/AI-Fleet-Coordinator"),
     "botfleet": (APPS / "BOTFLEET-EFFORT-LOG.md", "jaywedgeworth22/BotFleet"),
     "fleet-ops": (APPS / "FLEET-OPS-EFFORT-LOG.md", "jaywedgeworth22/fleet-ops"),
 }

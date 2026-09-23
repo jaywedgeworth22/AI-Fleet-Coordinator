@@ -11,7 +11,7 @@ description: >-
 > **Inactive seat.** Renoir is not yet active.  Do not install to `~/.renoir/skills`.  Do not take fleet work until the owner opens the seat.
 
 
-Source of truth: `/Users/jay/Code/ai-fleet-coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md`
+Source of truth: `/Users/jay/Code/AI-Fleet-Coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md`
 
 The block below is Monet's protocol, pasted verbatim. Follow it exactly. Do not weaken it. Cloud agents without the Mac filesystem still have the full protocol in this file.
 

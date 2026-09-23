@@ -104,7 +104,7 @@ APP_CANONICAL: dict[str, str] = {
     "contactlogo.com": "contactlogo",
     "cl": "contactlogo",
     "fleet-infra": "fleet-infra",
-    "ai-fleet-coordinator": "fleet-infra",
+    "AI-Fleet-Coordinator": "fleet-infra",
     "ai fleet coordinator": "fleet-infra",
     "fleet": "fleet-infra",
     "afc": "fleet-infra",
@@ -151,7 +151,7 @@ FINDING_COMMENTS_ROUTE = r"^/findings/([a-f0-9]{8,32})/comments$"
 # URIs so /board stays a single self-contained response (no extra auth-gated
 # subresource fetches). Seat -> logo slug mirrors the digest's AGENT_LOGO map;
 # Monet/Renoir/Fable collapse onto the Claude mark.
-LOGO_DIR = HOME / "Code" / "ai-fleet-coordinator" / "agent-logos"
+LOGO_DIR = HOME / "Code" / "AI-Fleet-Coordinator" / "agent-logos"
 
 # Seat -> how it should be shown. "slug" picks the logo file; "label" is the
 # name the seat goes BY (which is not always the underlying model); "note"
@@ -1662,7 +1662,7 @@ const APP_DISPLAY_NAMES = {
   'autorotate': 'Autorotate.Codes',
   'contactlogo': 'ContactLogo',
   'fleet-infra': 'AI Fleet Coordinator',
-  'ai-fleet-coordinator': 'AI Fleet Coordinator',
+  'AI-Fleet-Coordinator': 'AI Fleet Coordinator',
   'botfleet': 'BotFleet.app',
   'fleet-ops': 'Fleet Ops',
 };

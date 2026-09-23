@@ -18,8 +18,8 @@ import cursor_chat_surfaces as ccs  # noqa: E402
 class GithubUrlTests(unittest.TestCase):
     def test_ssh(self) -> None:
         self.assertEqual(
-            ccs.github_https_url("git@github.com:jaywedgeworth22/ai-fleet-coordinator.git"),
-            "https://github.com/jaywedgeworth22/ai-fleet-coordinator",
+            ccs.github_https_url("git@github.com:jaywedgeworth22/AI-Fleet-Coordinator.git"),
+            "https://github.com/jaywedgeworth22/AI-Fleet-Coordinator",
         )
 
     def test_https(self) -> None:

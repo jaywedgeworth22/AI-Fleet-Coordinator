@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Always-on DeepSeek Harness web UI.  Loopback only; Tailscale Serve
 # publishes https://macbook.boa-roygbiv.ts.net:3080
-# Tracked copy: ai-fleet-coordinator/scripts/dsh-runtime/start-web.sh
+# Tracked copy: AI-Fleet-Coordinator/scripts/dsh-runtime/start-web.sh
 # Live install: ~/apps/dsh-runtime/start-web.sh
 set -euo pipefail
 

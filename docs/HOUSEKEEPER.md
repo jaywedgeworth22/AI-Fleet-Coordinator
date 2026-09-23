@@ -50,7 +50,7 @@ Ask-first reclaim (explicit Jay OK required before any delete/clear):
 - Google DriveFS local cache (~7 GiB under Application Support/Google/DriveFS)
 - Also ask before: Documents/photos, secrets, live dirty worktrees, CoreSimulator/Devices, in-session ~/.grok/worktrees, paths with .janitor-keep, FileProvider bulk deletes if destructive
 
-HOLD MiniMax kills unless Jay says otherwise.  Playbook: /Users/jay/Code/ai-fleet-coordinator/docs/HOUSEKEEPER.md
+HOLD MiniMax kills unless Jay says otherwise.  Playbook: /Users/jay/Code/AI-Fleet-Coordinator/docs/HOUSEKEEPER.md
 
 Report in this Housekeeper chat: disk free before/after, swap, load 1/5/15, what you deleted, and the largest remaining dirs.  Do not extra-ship.  Do not Slack unless kicking grok at a repo or after a completed app update.
 

@@ -140,11 +140,11 @@ updates, and claim/close numbered issues you execute so nothing looks abandoned.
 
 ## Bootstrapping a new app (future apps — do this in your FIRST commit there)
 
-Full procedure: `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-APP.md` +
+Full procedure: `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-APP.md` +
 `scripts/onboard-new-app.sh`
-(https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md).
-New seats: `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md`
-(https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md).
+(https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-APP.md).
+New seats: `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-AGENT.md`
+(https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md).
 Minimum first-commit set:
 
 1. Create `/Users/jay/apps/<APP>-EFFORT-LOG.md` (if you have Mac filesystem access) from the
@@ -154,7 +154,7 @@ Minimum first-commit set:
    onboarding section) — it covers both the channel and this protocol.
 4. Copy `scripts/sync-effort-issues.py` and `.github/workflows/effort-issues-sync.yml` from any
    already-bootstrapped app (verbatim, no edits) — see "Issues mirror (standard)" above.
-5. Run `python3 scripts/check-fleet-registry.py` from an ai-fleet-coordinator worktree.
+5. Run `python3 scripts/check-fleet-registry.py` from an AI-Fleet-Coordinator worktree.
 
 ### Template
 

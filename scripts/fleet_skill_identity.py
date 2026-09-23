@@ -45,7 +45,7 @@ def _banner(tag: str, notes: str, prefix: str, suffix: str) -> str:
     )
 
 
-# Coordinator / ops self-id for this repo (jaywedgeworth22/ai-fleet-coordinator).
+# Coordinator / ops self-id for this repo (jaywedgeworth22/AI-Fleet-Coordinator).
 # FLEET is a Slack wake (every listening seat on every platform), not this system's name.
 COORDINATOR_SELF_ID = "AFC"
 OPS_SELF_ID = "OPS"

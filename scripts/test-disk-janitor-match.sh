@@ -82,7 +82,7 @@ assert_origin() {
   [ "$got" = "$want" ] || fail "origin $remote -> '$got' want '$want'"
 }
 assert_origin "git@github.com:jaywedgeworth22/Socratic.Trade.git" "jaywedgeworth22/Socratic.Trade"
-assert_origin "https://github.com/jaywedgeworth22/ai-fleet-coordinator.git" "jaywedgeworth22/ai-fleet-coordinator"
+assert_origin "https://github.com/jaywedgeworth22/AI-Fleet-Coordinator.git" "jaywedgeworth22/AI-Fleet-Coordinator"
 assert_origin "ssh://git@github.com/jaywedgeworth22/BotFleet.git" "jaywedgeworth22/BotFleet"
 
 echo OK

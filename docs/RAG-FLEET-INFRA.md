@@ -68,7 +68,7 @@ and re-ingesting unchanged content is a no-op.  One extra point, `doc_id = meta/
 |---|---|---|
 | `board` | `~/apps/mac-collab/findings.db` (title, body, resolution, status, severity, comments) | category `lesson` when resolved, else `finding`; url is the board |
 | `apple-note` | every note in the iCloud folder **Coding**, exported by AppleScript without stealing focus, cached by modification date | app and seat parsed from the `[APP, Agent]` title convention |
-| `doc` | markdown in fleet app repos under `~/Code` (`README.md`, `AGENTS.md`, `STATUS.md`, `CLAUDE.md`, `docs/**/*.md`), plus the broader walk of ai-fleet-coordinator and fleet-ops, top-level `~/apps/*.md` except effort logs, `~/.claude/CLAUDE.md`, `~/.grok/docs/**/*.md`, and `~/.grok/skills/**/SKILL.md` | GitHub blob URL when the file is in a repo.  Skip `node_modules`, `.git`, backups, dist, build, vendor, and `reviews/raw`.  Deduped by resolved path. |
+| `doc` | markdown in fleet app repos under `~/Code` (`README.md`, `AGENTS.md`, `STATUS.md`, `CLAUDE.md`, `docs/**/*.md`), plus the broader walk of AI-Fleet-Coordinator and fleet-ops, top-level `~/apps/*.md` except effort logs, `~/.claude/CLAUDE.md`, `~/.grok/docs/**/*.md`, and `~/.grok/skills/**/SKILL.md` | GitHub blob URL when the file is in a repo.  Skip `node_modules`, `.git`, backups, dist, build, vendor, and `reviews/raw`.  Deduped by resolved path. |
 | `effort-log` | `~/apps/*-EFFORT-LOG.md` and the protocol | one doc per file, app from the filename |
 | `skill` | `~/.claude/skills/*/SKILL.md`, `~/.cursor/skills/*/SKILL.md` | deduped by content |
 | `memory` | `~/.claude/projects/*/memory/*.md`, `~/.codex/memories/*.md` | the per-seat silos, so their lessons are shared |

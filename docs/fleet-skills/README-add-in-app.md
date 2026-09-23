@@ -19,7 +19,7 @@ Updated **2026-08-25**: the installer **specializes identity per seat** and **om
 | MiniMax Code / Mavis | `[MM]` | `~/.minimax/skills` | `minimax/` | Former Slack tag `MINIMAX` is retired.  Loaded on demand from `<available_skills>`, never auto-applied; the always-on fleet pointer is `~/.minimax/memory/user.md` |
 | Kimi | `[KIMI]` | `~/.kimi/skills` | `kimi/` | Retired — do not take work |
 
-These skills govern fleet operations across all apps (Socratic.Trade, Congress.Trade, Usage-Monitor, congress-trading-shared, DealDex, Personal-Site, Autorotate, ContactLogo, and ai-fleet-coordinator).
+These skills govern fleet operations across all apps (Socratic.Trade, Congress.Trade, Usage-Monitor, congress-trading-shared, DealDex, Personal-Site, Autorotate, ContactLogo, and AI-Fleet-Coordinator).
 
 Having explicit fleet skills installed significantly improves agent compliance with procedures across all chats and tools, reinforcing the protocols defined in `AGENT-SYNC.md` and `AGENTS.md`.
 
@@ -59,7 +59,7 @@ Having explicit fleet skills installed significantly improves agent compliance w
 Folders with `SKILL.md`.  Run:
 
 ```bash
-python3 /Users/jay/Code/ai-fleet-coordinator/scripts/install-fleet-skills.py
+python3 /Users/jay/Code/AI-Fleet-Coordinator/scripts/install-fleet-skills.py
 ```
 
 Never rsync the Monet pack into another seat without that script.

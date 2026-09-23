@@ -86,7 +86,7 @@ from pathlib import Path
 # This repo's identity in the shared fleet-infra project. Tags every event and
 # participates in the fingerprint so cross-repo CI failures never collapse into
 # one Sentry issue.
-APP = "ai-fleet-coordinator"
+APP = "AI-Fleet-Coordinator"
 
 CRON_SCHEDULES = {
     "Backup fleet GitHub repositories": "0 7 * * *",

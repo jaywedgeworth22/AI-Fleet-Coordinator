@@ -14,7 +14,7 @@ Layout under My Drive/fleet-agent-config/:
   claude/skills/        <- ~/.claude/skills
   grok/skills/          <- ~/.grok/skills
 
-Also refreshes My Drive/fleet-skills/ from ai-fleet-coordinator docs/fleet-skills
+Also refreshes My Drive/fleet-skills/ from AI-Fleet-Coordinator docs/fleet-skills
 (canonical git catalog + .zip packages for Claude app upload).
 
 Usage:
@@ -42,8 +42,8 @@ SCRIPT_DIR = Path(__file__).resolve().parent
 
 FLEET_COORDINATOR_CANDIDATES = [
     SCRIPT_DIR.parent,
-    Path("/Users/jay/Code/ai-fleet-coordinator"),
-    HOME / "Code" / "ai-fleet-coordinator",
+    Path("/Users/jay/Code/AI-Fleet-Coordinator"),
+    HOME / "Code" / "AI-Fleet-Coordinator",
 ]
 
 
@@ -209,7 +209,7 @@ def mirror_agent_config(gdrive: Path) -> list[str]:
             "- `grok/skills` — Grok",
             "",
             "Canonical fleet skill source in git:",
-            "`ai-fleet-coordinator/docs/fleet-skills/`.",
+            "`AI-Fleet-Coordinator/docs/fleet-skills/`.",
             "Upload packs for Claude.app also land in sibling `fleet-skills/`.",
             "",
         ]
@@ -224,7 +224,7 @@ def mirror_agent_config(gdrive: Path) -> list[str]:
 def mirror_fleet_skills_catalog(gdrive: Path) -> None:
     docs_fleet_skills = docs_fleet_skills_path()
     if docs_fleet_skills is None:
-        print(f"skip {FLEET_SKILLS_ROOT} (ai-fleet-coordinator docs/fleet-skills not found)")
+        print(f"skip {FLEET_SKILLS_ROOT} (AI-Fleet-Coordinator docs/fleet-skills not found)")
         return
     dest = gdrive / FLEET_SKILLS_ROOT
     print(f"mirror {docs_fleet_skills} -> {dest}")

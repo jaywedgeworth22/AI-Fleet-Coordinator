@@ -9,7 +9,7 @@ to Google Drive" but the Drive upload step was a comment.  Artifacts never
 landed.  New apps (ContactLogo, Autorotate, fleet-ops) were easy to miss in a
 hardcoded list.
 
-ai-fleet-coordinator already had `scripts/backup-fleet-to-gdrive.py` as an
+AI-Fleet-Coordinator already had `scripts/backup-fleet-to-gdrive.py` as an
 on-demand helper.  Today's Drive folder
 `Website & App Source Backups - 2026-08-22` is from that script.  Owner asked
 to keep Drive backups working for new apps unless this repo takes over.

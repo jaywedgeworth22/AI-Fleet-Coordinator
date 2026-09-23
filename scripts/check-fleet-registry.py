@@ -2,7 +2,7 @@
 """Verify every fleet-apps.json app is mentioned in the known registries.
 
 Exits 1 if any required file is missing a repo, acronym, live board, or
-DEFAULT_REPOS entry. Run from the ai-fleet-coordinator worktree:
+DEFAULT_REPOS entry. Run from the AI-Fleet-Coordinator worktree:
 
     python3 scripts/check-fleet-registry.py
 """

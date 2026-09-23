@@ -2,7 +2,7 @@
 # ios-debug.sh - Capture the Xcode-console equivalent without opening Xcode.
 #
 # Live copy:  /Users/jay/apps/ios-fleet/ios-debug.sh
-# Tracked:    ai-fleet-coordinator/scripts/ios-debug.sh
+# Tracked:    AI-Fleet-Coordinator/scripts/ios-debug.sh
 #
 # Usage:
 #   bash /Users/jay/apps/ios-fleet/ios-debug.sh <socratic|congress|usage|usage-local|dealdex|autorotate> [options]
