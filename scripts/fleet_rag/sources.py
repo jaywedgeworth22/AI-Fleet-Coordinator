@@ -115,7 +115,7 @@ APP_ALIASES = {
     "congress-trade": "congress-trade", "ct": "congress-trade",
     "congress-shared": "congress-trading-shared", "congress-trading-shared": "congress-trading-shared",
     "cts": "congress-trading-shared",
-    "fleet": "fleet", "fleet-infra": "fleet", "AI-Fleet-Coordinator": "fleet", "afl": "fleet",
+    "fleet": "fleet", "fleet-infra": "fleet", "ai-fleet-coordinator": "fleet", "afl": "fleet",
     "fleet-ops": "fleet-ops",
     "botfleet": "botfleet", "bf": "botfleet", "openmausbot": "botfleet",
     "dealdex": "dealdex", "dd": "dealdex",
@@ -771,7 +771,7 @@ def project_slug(dirname: str) -> str:
 def app_from_project(slug: str) -> str:
     for key in ("congress-trading-shared", "socratic-trade", "congress-trade", "usage-monitor",
                 "api-usage-monitor", "botfleet", "openmausbot", "dealdex", "autorotate", "contactlogo",
-                "personal-site", "agentic-trading", "trading-live", "trading", "AI-Fleet-Coordinator",
+                "personal-site", "agentic-trading", "trading-live", "trading", "ai-fleet-coordinator",
                 "fleet-ops"):
         if key in slug:
             return app_slug(key)
