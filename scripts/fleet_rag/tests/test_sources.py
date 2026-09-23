@@ -352,7 +352,7 @@ class HelperTests(unittest.TestCase):
         self.assertEqual(sources.seat_tag("monet"), "MONET")
         self.assertEqual(sources.seat_tag("GB-CONDUCTOR"), "GB-CONDUCTOR")
         self.assertEqual(sources.seat_tag(None), "FLEET")
-        self.assertEqual(sources.project_slug("-Users-jay-Code-AI-Fleet-Coordinator"), "code-AI-Fleet-Coordinator")
+        self.assertEqual(sources.project_slug("-Users-jay-Code-AI-Fleet-Coordinator"), "code-ai-fleet-coordinator")
         self.assertEqual(sources.app_from_project("code-congress-trading-shared"), "congress-trading-shared")
         self.assertEqual(sources.app_from_project("code-congress-trade-app"), "congress-trade")
         self.assertEqual(sources.app_from_path(pathlib.Path("/Users/jay/Code/Socratic.Trade/README.md")),
