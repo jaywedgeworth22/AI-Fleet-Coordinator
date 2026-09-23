@@ -702,7 +702,7 @@ This section provides the master reference for all processes used to coordinate 
 ### Process 3: Isolation, Branching, Local Verification, PR & Deployment Discipline
 - **Worktree Isolation:** Work in dedicated feature branches (`<agent>/<short-desc>`) inside isolated worktrees. Never commit directly to `main` or production branches.
 - **Mandatory Local Build & Test Verification:** Always run local compilation and test suite checks (`npm run build`, `pytest`, `cargo test`, `dart analyze`, etc.) before opening a PR or requesting review. Never push or request review for code in a build-breaking state.
-- **Auto-Merging PRs:** Open PRs with clear titles and descriptions (`gh pr create`). Enable auto-merge (`gh pr merge --squash --auto`) so PRs land automatically once CI checks pass and review threads are resolved.
+- **Auto-Merging PRs:** Open PRs with clear titles and descriptions (`gh pr create`). Enable auto-merge (`gh pr merge --squash --auto`) once Codex has reviewed the current head, so PRs land automatically once CI checks pass and review threads are resolved.  Never arm it on a head still awaiting Codex review (see "No merge while Codex review is pending").
 - **Production Deployment by Default:** Once a PR merges to `main`, run the project's standard production deployment script immediately unless explicitly instructed to wait. "Completed" means merged to `main` AND deployed.
 
 ### Process 4: Owner Review Surface via Apple Notes
@@ -897,8 +897,19 @@ When a substitute agent picks up another agent's in-flight or handoff work (via 
 
 **What this means for you:**
 - The `chatgpt-codex-connector` review bot comments on every PR. An UNRESOLVED thread blocks the merge forever, even with green checks. **Resolve your threads** — for each comment, ADDRESS the finding (fix it, or reply with a concrete reason it's a non-issue) THEN resolve. **Do NOT blind-resolve to force a merge** — some findings are real (e.g. commit-author compliance, missing licenses, money-path bugs). The gate exists to catch these.
-- Arm auto-merge (`gh pr merge <n> --squash --auto`) so it lands the instant checks are green + threads resolved.
+- Arm auto-merge (`gh pr merge <n> --squash --auto`) once Codex has reviewed the current head, so it lands the instant checks are green + threads resolved.  Never arm it while Codex review is pending (next section).
 - "DONE" / "Completed" on a board means **merged to `main`** — not "PR opened" and not "green but blocked". Don't mark Completed until it's actually on `main`.
+
+### No merge while Codex review is pending (owner ruling 2026-09-23 - ALL seats, ALL repos)
+
+**A PR must not be merged while Codex review of its current head commit is pending, or while any of its review threads are unresolved.**  Green checks alone are not enough.  This applies to every merge path: a hand merge in the GitHub UI, `gh pr merge`, admin merges, and auto-merge.
+
+- "Pending" means the `chatgpt-codex-connector` bot has not yet posted its review for the PR's current head SHA.  Every new push to the branch starts a new review, so the wait restarts with each new head.
+- **Branch protection does not enforce this.**  It only blocks on review threads that already exist, so a merge (hand, admin, or auto) can land on green checks before Codex has posted anything.  The gate is yours to hold.
+- **Auto-merge:** do not arm it on a head that is still awaiting Codex review.  Arm it only after Codex has reviewed the current head and its threads are triaged.  If you push a new head while auto-merge is armed, disable it (`gh pr merge <n> --disable-auto`) until Codex has reviewed the new head.
+- **Waiting is not polling.**  Codex review pending is a valid stopping point: do not sleep-wait or poll for it (see "Never idle-watch a PR" below).  End the turn with the PR noted as awaiting Codex, and resume on your next wake or round.  To check once, compare `gh api repos/<owner>/<repo>/pulls/<n>/reviews --jq '.[] | select(.user.login=="chatgpt-codex-connector[bot]") | .commit_id'` against the head SHA from `gh pr view <n> --json headRefOid`.
+- When Codex finishes, triage its threads per the rules above (fix the finding or reply with a concrete reason, then resolve) before merging.
+- Why: Congress.Trade #2549 and #2552 were both hand-merged on 2026-09-23 before Codex finished reviewing.  Codex then found a real bug in #2552 after it was already live in production.
 
 ### Squash-merge vs abandoned-branch detection (2026-09-17)
 
@@ -937,12 +948,12 @@ you fix yourself:
 | Merge conflict (`mergeable: CONFLICTING`) | `gh pr view <n> --json mergeable,mergeStateStatus` | Merge `origin/main` into the branch, resolve, push |
 | Required check failing | `gh pr checks <n>` | Read the failing log, fix the cause, push |
 | Required check never dispatched | `gh run list --branch <branch>` | Re-run the workflow or push to re-trigger it |
-| Auto-merge never armed | `gh pr view <n> --json autoMergeRequest` | `gh pr merge <n> --squash --auto` |
+| Auto-merge never armed | `gh pr view <n> --json autoMergeRequest` | Once Codex has reviewed the current head: `gh pr merge <n> --squash --auto` |
 | Branch behind `main` on a strict repo | `gh pr view <n> --json mergeStateStatus` (`BEHIND`) | Update the branch from `main` |
 
 **The loop you actually run:**
 
-1. Open the PR, then **arm auto-merge immediately**: `gh pr merge <n> --squash --auto`.
+1. Open the PR, then **arm auto-merge as soon as Codex has reviewed the current head** (never while that review is pending): `gh pr merge <n> --squash --auto`.
 2. Go do the next useful thing — the work the PR unblocks, the next lane, the closeout.
    If you genuinely need the result before you can continue, take ONE **bounded** wait:
    `gh pr checks <n> --watch`.
