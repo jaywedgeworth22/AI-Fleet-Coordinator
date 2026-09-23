@@ -5,9 +5,9 @@ _Generated 2026-09-21 18:29 CDT · timezone America/Chicago_
 Sources: merged PRs, issues opened/closed, effort-board bullets (`docs/EFFORT-LOG.md`).
 Agent names are stripped from titles; HTML site shows logos instead.
 
-- **HTML:** https://jaywedgeworth22.github.io/ai-fleet-coordinator/
-- **ICS (daily outline):** https://jaywedgeworth22.github.io/ai-fleet-coordinator/calendar/daily-digest.ics
-- **ICS (per-commit activity):** https://jaywedgeworth22.github.io/ai-fleet-coordinator/calendar/agent-activity.ics
+- **HTML:** https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/
+- **ICS (daily outline):** https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/calendar/daily-digest.ics
+- **ICS (per-commit activity):** https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/calendar/agent-activity.ics
 
 ## 2026-09-21
 
@@ -57,8 +57,8 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **ST** [#3447](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3447): build(deps): bump anthropics/claude-code-action from 1.0.226 to 1.0.230 _(by dependabot[bot])_
 - **UM** `MiniMax` [#1512](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1512): error.tsx: captureException + DD_RUM.addError (F11, board 307e2d24) _(by jaywedgeworth22)_
 - **UM** [#1520](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1520): chore(deps): bump the npm-minor-and-patch group with 14 updates _(by dependabot[bot])_
-- **AFC** `MiniMax` [#273](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/273): pm2-orphan-cleanup.sh — kill non-pm2 duplicates holding pm2-owned ports/locks, then reset+restart _(by jaywedgeworth22)_
-- **AFC** [#277](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/277): Enforce Apache 2.0 default license in onboarding automation and docs _(by jaywedgeworth22)_
+- **AFC** `MiniMax` [#273](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/273): pm2-orphan-cleanup.sh — kill non-pm2 duplicates holding pm2-owned ports/locks, then reset+restart _(by jaywedgeworth22)_
+- **AFC** [#277](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/277): Enforce Apache 2.0 default license in onboarding automation and docs _(by jaywedgeworth22)_
 - **CC** `Grok Bot` [#26](https://github.com/jaywedgeworth22/codecaps/pull/26): feat: update — logo and configure iOS companion for TestFlight _(by jaywedgeworth22)_
 - **CC** [#27](https://github.com/jaywedgeworth22/codecaps/pull/27): Add iPad interface orientations to iOS companion _(by jaywedgeworth22)_
 - **CC** [#28](https://github.com/jaywedgeworth22/codecaps/pull/28): feat(companion): add App Group, macOS target, and restore 3D teal sync branding _(by jaywedgeworth22)_
@@ -369,7 +369,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** `Sentry` [#1513](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1513): test(scripts): add untracked session-token-collectors test file + — beforeSend scrubber _(by jaywedgeworth22)_
 - **UM** `Claude` [#1514](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1514): chore(scripts): rename — usage-collector.mjs to .disabled.mjs to remove dead-code matrix-drift risk _(by jaywedgeworth22)_
 - **UM** `MiniMax` [#1516](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1516): docs(effort-log): log 2026-09-20 — comprehensive top-to-bottom review (2 of N) _(by jaywedgeworth22)_
-- **AFC** [#272](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/272): Safari start page: URL-bar suggestions, all fleet repos, System theme (+ Cloud env) _(by jaywedgeworth22)_
+- **AFC** [#272](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/272): Safari start page: URL-bar suggestions, all fleet repos, System theme (+ Cloud env) _(by jaywedgeworth22)_
 - **CC** [#20](https://github.com/jaywedgeworth22/codecaps/pull/20): audit-9: comprehensive review — 22 findings, tier-1 safe fixes _(by jaywedgeworth22)_
 - **CC** [#21](https://github.com/jaywedgeworth22/codecaps/pull/21): feat: add quota reset alarms and iOS companion app _(by jaywedgeworth22)_
 - **CC** [#22](https://github.com/jaywedgeworth22/codecaps/pull/22): audit-10: producer rename agent-bar → codecaps + tier-2 fixes + tests _(by jaywedgeworth22)_
@@ -461,9 +461,9 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **ST** `MiniMax` [#3422](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3422): docs(effort-log): mirror — closeout for sqlite-retry followup (#3418) _(by jaywedgeworth22)_
 - **UM** [#1502](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1502): fix(scheduler): skip unconfigured Namecheap polling and reconcile effort log _(by jaywedgeworth22)_
 - **UM** [#1506](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1506): fix(scheduler): surface failedProviders in runtime health (#1478) _(by jaywedgeworth22)_
-- **AFC** [#257](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/257): docs(housekeeper): ask-first Monet/DriveFS Mac reclaim (DRAFT — do not merge) _(by jaywedgeworth22)_
-- **AFC** `Antigravity` [#269](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/269): docs(effort-log): mirror Fleet-Infra + — pickup closeouts (boards d10f0806, 571ecb63) _(by jaywedgeworth22)_
-- **AFC** `MiniMax` `Claude` [#270](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/270): docs(housekeeper): ask-first — / DriveFS Mac reclaim _(by jaywedgeworth22)_
+- **AFC** [#257](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/257): docs(housekeeper): ask-first Monet/DriveFS Mac reclaim (DRAFT — do not merge) _(by jaywedgeworth22)_
+- **AFC** `Antigravity` [#269](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/269): docs(effort-log): mirror Fleet-Infra + — pickup closeouts (boards d10f0806, 571ecb63) _(by jaywedgeworth22)_
+- **AFC** `MiniMax` `Claude` [#270](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/270): docs(housekeeper): ask-first — / DriveFS Mac reclaim _(by jaywedgeworth22)_
 - **CC** `MiniMax` [#15](https://github.com/jaywedgeworth22/codecaps/pull/15): [CodeCaps, ] Blue/white — mark and per-provider Logo Style picker _(by jaywedgeworth22)_
 - **CC** `Grok Bot` `MiniMax` [#16](https://github.com/jaywedgeworth22/codecaps/pull/16): [CodeCaps, ] UI fix: — mark, title truncation, card subtitle wrap, Glance footer width _(by jaywedgeworth22)_
 - **CC** `MiniMax` [#17](https://github.com/jaywedgeworth22/codecaps/pull/17): [CodeCaps, ] Per-provider source enable + rank with auto-discovery _(by jaywedgeworth22)_
@@ -497,7 +497,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **DD** 2026-09-19 — BF-FIXER — IN PR — iOS listings lost their photos (on-device parser dropped the image; branch `fixer/ios-listing-images`, worktree `~/apps/dealdex-fixer`). `121ea10` flipped iOS to on-device-first, but `Market.swift` `parseEbay`/`parseMercari` hard-coded `image: nil`; the site parser (`src/lib/marketplaces/jina.ts`) and the Android parser (`data/Market.kt`) have always read
 - **AR** `Claude` 2026-09-16 — IN_PROGRESS - Establish real release process: keystore + GitHub Releases workflow (audit follow-up AR-33/13). PR #213 (`claude/android-release-process`, merged) lands the android-release workflow job (signed APK on `v` tag, skips cleanly with no secrets configured) + `android/RELEASE.md`. Seer flagged a CRITICAL bug in review (`storeFile` resolved with `file()` ins
 - **AFC** `Grok` `Sentry` `MiniMax` `DeepSeek` 2026-09-19 — IN PR — Register Harness (HR) as a fleet app and point pm2 at harness-web (`grok/harness-package`, worktree `~/apps/fleet — package`, board `0127d787`). 's local `harness/rollout-2026-09-19` sat on a stale — ci base and was not PR'd. This unit replays the registry onto current main: fleet-apps.json HR + HARNESS seat ( retired), digest/calendar/FL
-- **AFC** `MiniMax` `Claude` 2026-09-19 — IN PR — a-f-c: housekeeper ask-first — / DriveFS Mac reclaim (`mm/housekeeper-ask-first`, worktree `~/apps/ai-fleet-coordinator- `). BotFleet Housekeeper and the canonical BotFleet playbook already say "ask before any non-regenerable delete"; PR #257 (Jay-opened draft) tried to spell out exactly which targets need Jay OK on a single Mac, but bundled 91 files of unrelate
+- **AFC** `MiniMax` `Claude` 2026-09-19 — IN PR — a-f-c: housekeeper ask-first — / DriveFS Mac reclaim (`mm/housekeeper-ask-first`, worktree `~/apps/AI-Fleet-Coordinator- `). BotFleet Housekeeper and the canonical BotFleet playbook already say "ask before any non-regenerable delete"; PR #257 (Jay-opened draft) tried to spell out exactly which targets need Jay OK on a single Mac, but bundled 91 files of unrelate
 - **AFC** `Cursor` `Claude` 2026-09-19 — WONTFIX - Small-Repos + Closeout lane takeover: Fleet-Infra landing campaign (board `d10f0806`, lane `~/apps/fleet — landing @ ag/seer-literal-claim`). Re-verified state at 00:35 CT. Of the 6 original campaign PRs, #264-#268 are all MERGED (per `gh pr list — state closed`). Lane branch `ag/seer-literal-claim` has no unique commits (HEAD equals main, ahead 0
 - **AFC** `Cursor` `Antigravity` `Claude` 2026-09-19 — WONTFIX - Small-Repos + Closeout lane takeover: — pickup ops leftovers (board `571ecb63`, lane `~/apps/fleet — landing @ ag/seer-literal-claim`). Re-verified each — pickup item per prior — summary on 2026-09-18 18:08Z. gdrive last-exit DONE; HogHunter code DONE (Mac install is owner op); BotFleet roll-forward DONE (AFC #268 landed, installed wrapper r
 - **BF** `MiniMax` `Codex` `DeepSeek` 2026-09-19 — IN PR — [BotFleet] engines polish: collapsible — callout, drop — M2.7 from , — default → Luna (board `b5953d96`, branch `mm/engine-polish`, worktree `~/apps/botfleet — engine-polish`). — callout text duplicates across EnginesSettings.tsx and ModelPicker.tsx, pushing model names off-screen; extracted to a shared collapsible `src/components/MiniMaxCallo
@@ -622,21 +622,21 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1499](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1499): fix(platform-status): Slack wrong-token-type diagnostic + Coolify deploy-gate doc _(by jaywedgeworth22)_
 - **UM** [#1500](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1500): docs(deploy): retire Oracle/Render/Garage stacks, add canonical deploy index _(by jaywedgeworth22)_
 - **UM** [#1501](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1501): ci(security): run gitleaks directly so a failing scan names its findings _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#228](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/228): docs: Do Not Dismiss — Seer Findings On Their Literal Claim _(by jaywedgeworth22)_
-- **AFC** [#229](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/229): docs(fleet-infra): reconcile CI runner ban + atomic deploy-lock convention _(by jaywedgeworth22)_
-- **AFC** `Claude` [#256](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/256): chore(effort-log): #251 merged; Instinct row to Completed, Mac install still pending _(by jaywedgeworth22)_
-- **AFC** [#258](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/258): fix(notes): keep snake_case identifiers out of Markdown italic _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#259](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/259): fix( -crons): widen Backup fleet GitHub repositories margin for GitHub schedule delay _(by jaywedgeworth22)_
-- **AFC** [#260](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/260): docs(mac): install subscription quota collector LaunchAgent _(by jaywedgeworth22)_
-- **AFC** [#261](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/261): fix(secrets): deny od/hexdump/xxd of loaded key env vars _(by jaywedgeworth22)_
-- **AFC** [#262](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/262): fix(secrets): deny path-prefixed od/cat/ps in secret-guard _(by jaywedgeworth22)_
-- **AFC** [#263](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/263): feat(start): host the Safari start page at start.jays.services _(by jaywedgeworth22)_
-- **AFC** [#264](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/264): feat(admin): fleet status panel worker for admin.jays.services _(by jaywedgeworth22)_
-- **AFC** [#265](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/265): feat(start-page): current ST app icon, BotFleet artwork, AgentBar and Hog Hunter rows _(by jaywedgeworth22)_
-- **AFC** [#266](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/266): fix(admin-panel): retire stale Public Endpoints probes _(by jaywedgeworth22)_
-- **AFC** [#267](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/267): docs(fleet): add mac-collab-litestream to the Mac process inventory _(by jaywedgeworth22)_
-- **AFC** [#268](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/268): fix(botfleet): start wrapper probes /api/health, the only route BotFleet serves _(by jaywedgeworth22)_
-- **AFC** [#271](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/271): feat: register Harness (HR) and point pm2 at harness-web _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#228](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/228): docs: Do Not Dismiss — Seer Findings On Their Literal Claim _(by jaywedgeworth22)_
+- **AFC** [#229](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/229): docs(fleet-infra): reconcile CI runner ban + atomic deploy-lock convention _(by jaywedgeworth22)_
+- **AFC** `Claude` [#256](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/256): chore(effort-log): #251 merged; Instinct row to Completed, Mac install still pending _(by jaywedgeworth22)_
+- **AFC** [#258](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/258): fix(notes): keep snake_case identifiers out of Markdown italic _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#259](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/259): fix( -crons): widen Backup fleet GitHub repositories margin for GitHub schedule delay _(by jaywedgeworth22)_
+- **AFC** [#260](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/260): docs(mac): install subscription quota collector LaunchAgent _(by jaywedgeworth22)_
+- **AFC** [#261](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/261): fix(secrets): deny od/hexdump/xxd of loaded key env vars _(by jaywedgeworth22)_
+- **AFC** [#262](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/262): fix(secrets): deny path-prefixed od/cat/ps in secret-guard _(by jaywedgeworth22)_
+- **AFC** [#263](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/263): feat(start): host the Safari start page at start.jays.services _(by jaywedgeworth22)_
+- **AFC** [#264](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/264): feat(admin): fleet status panel worker for admin.jays.services _(by jaywedgeworth22)_
+- **AFC** [#265](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/265): feat(start-page): current ST app icon, BotFleet artwork, AgentBar and Hog Hunter rows _(by jaywedgeworth22)_
+- **AFC** [#266](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/266): fix(admin-panel): retire stale Public Endpoints probes _(by jaywedgeworth22)_
+- **AFC** [#267](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/267): docs(fleet): add mac-collab-litestream to the Mac process inventory _(by jaywedgeworth22)_
+- **AFC** [#268](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/268): fix(botfleet): start wrapper probes /api/health, the only route BotFleet serves _(by jaywedgeworth22)_
+- **AFC** [#271](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/271): feat: register Harness (HR) and point pm2 at harness-web _(by jaywedgeworth22)_
 - **CC** [#14](https://github.com/jaywedgeworth22/codecaps/pull/14): fix(quota): keep what a source reported, and write the handoff private from the first byte _(by jaywedgeworth22)_
 - **CTS** `Cursor` [#305](https://github.com/jaywedgeworth22/congress-trading-shared/pull/305): hygiene: CHANGELOG v2.7.0 + ST lockfile resync _(by jaywedgeworth22)_
 - **CTS** `Cursor` [#307](https://github.com/jaywedgeworth22/congress-trading-shared/pull/307): close out EFFORT-LOG row for PR #305 _(by jaywedgeworth22)_
@@ -742,30 +742,30 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **ST** `Sentry` [#3387](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3387): fix( -crons): widen RTH Deploy Latch margin for GitHub schedule delay _(by jaywedgeworth22)_
 - **ST** `Sentry` [#3389](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3389): fix( -crons): widen Cleanup Actions Caches margin for GitHub schedule delay _(by jaywedgeworth22)_
 - **UM** [#1490](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1490): Add a subtle Report a Problem trigger on Support and errors _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#227](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/227): Port — Crons in_progress check-in and ALERT_CONCLUSIONS _(by jaywedgeworth22)_
-- **AFC** [#233](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/233): RAG: BM25 measurement (offline half) — dense-leg parts blocked by infra _(by jaywedgeworth22)_
-- **AFC** [#234](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/234): fix(rag): fast-fail the private Qdrant path when Tailscale is gone on macOS _(by jaywedgeworth22)_
-- **AFC** [#235](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/235): fix(rag): doctor's tei:rerank row skips instead of false-FAILs when Tailscale is down _(by jaywedgeworth22)_
-- **AFC** `Claude` [#236](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/236): docs(rag): ExecRetrieval review — what arXiv 2609.01865 teaches fleet recall _(by jaywedgeworth22)_
-- **AFC** `Claude` [#237](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/237): docs(recall): rank-1-is-resemblance skill bullet + FLEET-UI-COPY desktop sentence-gap correction _(by jaywedgeworth22)_
-- **AFC** [#238](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/238): test(rag): make fleet_rag tests hermetic against real ~/.secrets and Infisical _(by jaywedgeworth22)_
-- **AFC** `Claude` [#239](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/239): docs(skills): sentence-gap + owner-copy follow the 2026-09-04 desktop ruling — two literal spaces, entity advice withdrawn _(by jaywedgeworth22)_
-- **AFC** [#240](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/240): docs(mac-procs): drop retired UptimeRobot relay rows _(by jaywedgeworth22)_
-- **AFC** [#241](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/241): fix(notes): non-ASCII Apple Note titles no longer duplicate on — update _(by jaywedgeworth22)_
-- **AFC** [#242](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/242): test(fleet-rag): pay first-exec cost of fake recall before timed hook calls _(by jaywedgeworth22)_
-- **AFC** [#243](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/243): test(rag): add a 24-question multi-hop and corpus-wide golden set _(by jaywedgeworth22)_
-- **AFC** [#244](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/244): Include HogHunter in digest and calendar workflow repo lists _(by jaywedgeworth22)_
-- **AFC** `Codex` [#245](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/245): fix : skip invalid config.toml in fleet-recall installer _(by jaywedgeworth22)_
-- **AFC** `DeepSeek` [#246](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/246): fix : stop Load failed by refusing .sh self-exec _(by jaywedgeworth22)_
-- **AFC** [#247](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/247): Show HogHunter on the activity digest legend _(by jaywedgeworth22)_
-- **AFC** [#248](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/248): Fix launchd gdrive File Provider mirror and BotFleet crash loop _(by jaywedgeworth22)_
-- **AFC** [#249](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/249): fix(fleet): squash-safe landed check, mac-collab reclaim tests, token staleness _(by jaywedgeworth22)_
-- **AFC** [#250](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/250): docs: name needs-mac label in AGENT-SYNC.md mirror _(by jaywedgeworth22)_
-- **AFC** `Claude` [#251](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/251): feat(fleet): Instinct onboarding prompt, board /login form, GitHub outbox Slack bridge _(by jaywedgeworth22)_
-- **AFC** [#252](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/252): fix(rag): wire per_doc/rerank/prefer_lessons through the public recall path _(by jaywedgeworth22)_
-- **AFC** [#253](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/253): docs(rag): record Sep 17 reranker bake-off results _(by jaywedgeworth22)_
-- **AFC** [#254](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/254): fix(rag): close recall-tunnel supervisor pid-file race, bound HTTP retry/backoff env vars _(by jaywedgeworth22)_
-- **AFC** [#255](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/255): docs: sync AGENT-SYNC.md mirror to live (Mac app builds, Fleet mode/delegation) _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#227](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/227): Port — Crons in_progress check-in and ALERT_CONCLUSIONS _(by jaywedgeworth22)_
+- **AFC** [#233](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/233): RAG: BM25 measurement (offline half) — dense-leg parts blocked by infra _(by jaywedgeworth22)_
+- **AFC** [#234](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/234): fix(rag): fast-fail the private Qdrant path when Tailscale is gone on macOS _(by jaywedgeworth22)_
+- **AFC** [#235](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/235): fix(rag): doctor's tei:rerank row skips instead of false-FAILs when Tailscale is down _(by jaywedgeworth22)_
+- **AFC** `Claude` [#236](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/236): docs(rag): ExecRetrieval review — what arXiv 2609.01865 teaches fleet recall _(by jaywedgeworth22)_
+- **AFC** `Claude` [#237](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/237): docs(recall): rank-1-is-resemblance skill bullet + FLEET-UI-COPY desktop sentence-gap correction _(by jaywedgeworth22)_
+- **AFC** [#238](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/238): test(rag): make fleet_rag tests hermetic against real ~/.secrets and Infisical _(by jaywedgeworth22)_
+- **AFC** `Claude` [#239](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/239): docs(skills): sentence-gap + owner-copy follow the 2026-09-04 desktop ruling — two literal spaces, entity advice withdrawn _(by jaywedgeworth22)_
+- **AFC** [#240](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/240): docs(mac-procs): drop retired UptimeRobot relay rows _(by jaywedgeworth22)_
+- **AFC** [#241](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/241): fix(notes): non-ASCII Apple Note titles no longer duplicate on — update _(by jaywedgeworth22)_
+- **AFC** [#242](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/242): test(fleet-rag): pay first-exec cost of fake recall before timed hook calls _(by jaywedgeworth22)_
+- **AFC** [#243](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/243): test(rag): add a 24-question multi-hop and corpus-wide golden set _(by jaywedgeworth22)_
+- **AFC** [#244](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/244): Include HogHunter in digest and calendar workflow repo lists _(by jaywedgeworth22)_
+- **AFC** `Codex` [#245](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/245): fix : skip invalid config.toml in fleet-recall installer _(by jaywedgeworth22)_
+- **AFC** `DeepSeek` [#246](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/246): fix : stop Load failed by refusing .sh self-exec _(by jaywedgeworth22)_
+- **AFC** [#247](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/247): Show HogHunter on the activity digest legend _(by jaywedgeworth22)_
+- **AFC** [#248](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/248): Fix launchd gdrive File Provider mirror and BotFleet crash loop _(by jaywedgeworth22)_
+- **AFC** [#249](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/249): fix(fleet): squash-safe landed check, mac-collab reclaim tests, token staleness _(by jaywedgeworth22)_
+- **AFC** [#250](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/250): docs: name needs-mac label in AGENT-SYNC.md mirror _(by jaywedgeworth22)_
+- **AFC** `Claude` [#251](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/251): feat(fleet): Instinct onboarding prompt, board /login form, GitHub outbox Slack bridge _(by jaywedgeworth22)_
+- **AFC** [#252](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/252): fix(rag): wire per_doc/rerank/prefer_lessons through the public recall path _(by jaywedgeworth22)_
+- **AFC** [#253](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/253): docs(rag): record Sep 17 reranker bake-off results _(by jaywedgeworth22)_
+- **AFC** [#254](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/254): fix(rag): close recall-tunnel supervisor pid-file race, bound HTTP retry/backoff env vars _(by jaywedgeworth22)_
+- **AFC** [#255](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/255): docs: sync AGENT-SYNC.md mirror to live (Mac app builds, Fleet mode/delegation) _(by jaywedgeworth22)_
 - **CC** [#4](https://github.com/jaywedgeworth22/codecaps/pull/4): feat: one Glance and one Console, stable signing, and a shippable build _(by jaywedgeworth22)_
 - **CC** [#5](https://github.com/jaywedgeworth22/codecaps/pull/5): build: universal notarized release pipeline and a macOS-shaped icon _(by jaywedgeworth22)_
 - **CC** [#6](https://github.com/jaywedgeworth22/codecaps/pull/6): fix: drop the legacy endpoint migration and cut 1.0.1 _(by jaywedgeworth22)_
@@ -861,9 +861,9 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** `Sentry` [#1485](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1485): fix( -ci-report): widen the iOS ship Crons margin to 480 for GitHub's degraded cron dispatch _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1487](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1487): docs( -ci-report): correct the FLEET-INFRA-CB wording and close out the #1485 row _(by jaywedgeworth22)_
 - **UM** [#1489](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1489): fix(ci): add bounded retry to ghRaw in check-shared-package-pin _(by jaywedgeworth22)_
-- **AFC** [#230](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/230): docs(rag): BotFleet reaches recall through its own MCP proxy, not the CLIs' global configs _(by jaywedgeworth22)_
-- **AFC** `Antigravity` [#231](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/231): ci: add CI workflow with test check and fix fix_seeds _(by jaywedgeworth22)_
-- **AFC** `DeepSeek` [#232](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/232): rebrand : surface label 'Harness' on the macOS Dock app _(by jaywedgeworth22)_
+- **AFC** [#230](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/230): docs(rag): BotFleet reaches recall through its own MCP proxy, not the CLIs' global configs _(by jaywedgeworth22)_
+- **AFC** `Antigravity` [#231](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/231): ci: add CI workflow with test check and fix fix_seeds _(by jaywedgeworth22)_
+- **AFC** `DeepSeek` [#232](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/232): rebrand : surface label 'Harness' on the macOS Dock app _(by jaywedgeworth22)_
 - **CC** [#2](https://github.com/jaywedgeworth22/codecaps/pull/2): feat(handoff): publish provider issues, producer, derived status and model family _(by jaywedgeworth22)_
 - **CC** [#3](https://github.com/jaywedgeworth22/codecaps/pull/3): chore: untrack committed build products and add an MIT license _(by jaywedgeworth22)_
 
@@ -1022,8 +1022,8 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1468](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1468): ci: ship Usage Local Monitor TestFlight _(by jaywedgeworth22)_
 - **UM** [#1482](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1482): fix(ops): surface tokens for agent cards, R2 archive workdir off /tmp, catalog estimates labeled _(by jaywedgeworth22)_
 - **UM** [#1483](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1483): feat(health): Add GET /api/health/fleet aggregator endpoint _(by jaywedgeworth22)_
-- **AFC** `MiniMax` `Sentry` [#224](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/224): feat: add — and — agents to fleet, update ST and BotFleet app icons _(by jaywedgeworth22)_
-- **AFC** [#225](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/225): Fail-fast recall stats on Tailscale CLIError 3 _(by jaywedgeworth22)_
+- **AFC** `MiniMax` `Sentry` [#224](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/224): feat: add — and — agents to fleet, update ST and BotFleet app icons _(by jaywedgeworth22)_
+- **AFC** [#225](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/225): Fail-fast recall stats on Tailscale CLIError 3 _(by jaywedgeworth22)_
 - **CC** [#1](https://github.com/jaywedgeworth22/codecaps/pull/1): feat: customizable menu bar style and quota selection _(by jaywedgeworth22)_
 - **CTS** [#298](https://github.com/jaywedgeworth22/congress-trading-shared/pull/298): chore(deps): bump anthropics/claude-code-action from 1.0.216 to 1.0.222 _(by dependabot[bot])_
 - **CTS** [#299](https://github.com/jaywedgeworth22/congress-trading-shared/pull/299): chore(deps-dev): bump @types/node from 22.20.1 to 22.20.2 _(by dependabot[bot])_
@@ -1049,7 +1049,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **AR** [#205](https://github.com/jaywedgeworth22/Autorotate/issues/205): Rebrand (Autorotate.codes), Native Android Companion App & Apple
 - **AR** [#206](https://github.com/jaywedgeworth22/Autorotate/issues/206): Web and iOS utility and power enhancements — · PR #48
 - **AR** [#207](https://github.com/jaywedgeworth22/Autorotate/issues/207): iOS first-launch update prompt (fleet) — · COMPLETED/MERGED #36 squash
-- **AR** [#208](https://github.com/jaywedgeworth22/Autorotate/issues/208): Fleet onboarding — join ai-fleet-coordinator as app Autorotate (TS)
+- **AR** [#208](https://github.com/jaywedgeworth22/Autorotate/issues/208): Fleet onboarding — join AI-Fleet-Coordinator as app Autorotate (TS)
 - **AR** [#209](https://github.com/jaywedgeworth22/Autorotate/issues/209): Merge — App Builder PWA with this monorepo — · merged as PR #38
 - **AR** [#210](https://github.com/jaywedgeworth22/Autorotate/issues/210): Apache-2.0 + — dump backup + catalog fold-in — · PR #42
 - **BF** [#188](https://github.com/jaywedgeworth22/BotFleet/issues/188): first-class ACP backend: — acp, model-set, resume, mcpServers, usage
@@ -1333,7 +1333,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **AR** [#205](https://github.com/jaywedgeworth22/Autorotate/issues/205): Rebrand (Autorotate.codes), Native Android Companion App & Apple
 - **AR** [#206](https://github.com/jaywedgeworth22/Autorotate/issues/206): Web and iOS utility and power enhancements — · PR #48
 - **AR** [#207](https://github.com/jaywedgeworth22/Autorotate/issues/207): iOS first-launch update prompt (fleet) — · COMPLETED/MERGED #36 squash
-- **AR** [#208](https://github.com/jaywedgeworth22/Autorotate/issues/208): Fleet onboarding — join ai-fleet-coordinator as app Autorotate (TS)
+- **AR** [#208](https://github.com/jaywedgeworth22/Autorotate/issues/208): Fleet onboarding — join AI-Fleet-Coordinator as app Autorotate (TS)
 - **AR** [#209](https://github.com/jaywedgeworth22/Autorotate/issues/209): Merge — App Builder PWA with this monorepo — · merged as PR #38
 - **AR** [#210](https://github.com/jaywedgeworth22/Autorotate/issues/210): Apache-2.0 + — dump backup + catalog fold-in — · PR #42
 - **BF** [#426](https://github.com/jaywedgeworth22/BotFleet/issues/426): Unstick and land all open PRs to main (2026-09-15 — sweep)
@@ -1535,8 +1535,8 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1462](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1462): docs(effort-log): close out the #1460 row with the post-merge gate result _(by jaywedgeworth22)_
 - **UM** `Claude` [#1463](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1463): Fix — macOS keychain reading and add All-at-Once quota view _(by jaywedgeworth22)_
 - **UM** [#1465](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1465): docs: Note that macos app was extracted to AgentBar _(by jaywedgeworth22)_
-- **AFC** [#222](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/222): Safari start page Settings and real new-tab default _(by jaywedgeworth22)_
-- **AFC** [#223](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/223): THE BOARD remembers collab login for 30 days _(by jaywedgeworth22)_
+- **AFC** [#222](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/222): Safari start page Settings and real new-tab default _(by jaywedgeworth22)_
+- **AFC** [#223](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/223): THE BOARD remembers collab login for 30 days _(by jaywedgeworth22)_
 
 ### Issues opened
 
@@ -1606,17 +1606,17 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1458](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1458): USAGE_READ_TOKEN cannot mutate alert routing _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1459](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1459): Make — bug reporter subtle (autoInject false + nav trigger) _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1460](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1460): ci( -ci-report): open a — Crons in_progress check-in when a scheduled run is requested _(by jaywedgeworth22)_
-- **AFC** [#211](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/211): docs(fx): paste-ready onboarding prompt for the FX seat _(by jaywedgeworth22)_
-- **AFC** `Grok Bot` [#212](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/212): docs(fx): FLEET is a — wake; fleet-apps.json is the seat inventory of record _(by jaywedgeworth22)_
-- **AFC** [#213](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/213): Register FX seat and HogHunter in fleet-apps.json _(by jaywedgeworth22)_
-- **AFC** [#214](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/214): feat(mac-collab): atomic claims, monitoring, backups (fixes #48, #49, #51) _(by jaywedgeworth22)_
-- **AFC** `Grok Bot` [#215](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/215): docs(protocol): FLEET and PEER wake every listener on every platform; — superseded by BotFleet _(by jaywedgeworth22)_
-- **AFC** [#216](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/216): docs: merge to main is Vercel production _(by jaywedgeworth22)_
-- **AFC** [#217](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/217): docs: Vercel production only on real site changes, 1/hour _(by jaywedgeworth22)_
-- **AFC** [#218](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/218): feat(mac-collab): Enforce per-seat tokens (Fixes #47) _(by jaywedgeworth22)_
-- **AFC** [#219](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/219): fix(mac-collab): Prevent wedge on lsof failure under high load (Fixes #5602a987) _(by jaywedgeworth22)_
-- **AFC** [#220](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/220): docs(fx): first unit also lands or discards FX's nine dirty lanes _(by jaywedgeworth22)_
-- **AFC** [#221](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/221): feat(mac): Safari start page with installer _(by jaywedgeworth22)_
+- **AFC** [#211](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/211): docs(fx): paste-ready onboarding prompt for the FX seat _(by jaywedgeworth22)_
+- **AFC** `Grok Bot` [#212](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/212): docs(fx): FLEET is a — wake; fleet-apps.json is the seat inventory of record _(by jaywedgeworth22)_
+- **AFC** [#213](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/213): Register FX seat and HogHunter in fleet-apps.json _(by jaywedgeworth22)_
+- **AFC** [#214](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/214): feat(mac-collab): atomic claims, monitoring, backups (fixes #48, #49, #51) _(by jaywedgeworth22)_
+- **AFC** `Grok Bot` [#215](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/215): docs(protocol): FLEET and PEER wake every listener on every platform; — superseded by BotFleet _(by jaywedgeworth22)_
+- **AFC** [#216](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/216): docs: merge to main is Vercel production _(by jaywedgeworth22)_
+- **AFC** [#217](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/217): docs: Vercel production only on real site changes, 1/hour _(by jaywedgeworth22)_
+- **AFC** [#218](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/218): feat(mac-collab): Enforce per-seat tokens (Fixes #47) _(by jaywedgeworth22)_
+- **AFC** [#219](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/219): fix(mac-collab): Prevent wedge on lsof failure under high load (Fixes #5602a987) _(by jaywedgeworth22)_
+- **AFC** [#220](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/220): docs(fx): first unit also lands or discards FX's nine dirty lanes _(by jaywedgeworth22)_
+- **AFC** [#221](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/221): feat(mac): Safari start page with installer _(by jaywedgeworth22)_
 - **CTS** [#296](https://github.com/jaywedgeworth22/congress-trading-shared/pull/296): Never auto-merge public-fork PRs _(by jaywedgeworth22)_
 - **OPS** [#14](https://github.com/jaywedgeworth22/Fleet-OPS/pull/14): Do not crash when security_and_analysis is null _(by jaywedgeworth22)_
 
@@ -1641,11 +1641,11 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1449](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1449): Native macOS menu bar and Dock subscription quota monitor
 - **UM** [#1451](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1451): 2026-09-13 — IN PROGRESS - Native macOS Usage Monitor quota app. PR
 - **UM** [#1454](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1454): 2026-09-13 — COMPLETED - Native macOS Usage Monitor quota app (#1450
-- **AFC** [#43](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/43): mac.jays.services collab read (LIVE)
-- **AFC** [#47](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/47): [P0] MAC_COLLAB_TOKEN is root-of-everything — replace with per-seat scoped tokens
-- **AFC** [#48](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/48): [P0] Board server + findings.db (3,703 rows) are unversioned, Mac-only, no automated backup
-- **AFC** [#49](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/49): [P1] Coordination hub flapped 502 during audit and is neither watched nor monitored
-- **AFC** [#51](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/51): [P1] Triple-claim not atomic; mirrored statuses overwritten; deploys de-conflicted by a ~10-min Slack window
+- **AFC** [#43](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/43): mac.jays.services collab read (LIVE)
+- **AFC** [#47](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/47): [P0] MAC_COLLAB_TOKEN is root-of-everything — replace with per-seat scoped tokens
+- **AFC** [#48](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/48): [P0] Board server + findings.db (3,703 rows) are unversioned, Mac-only, no automated backup
+- **AFC** [#49](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/49): [P1] Coordination hub flapped 502 during audit and is neither watched nor monitored
+- **AFC** [#51](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/51): [P1] Triple-claim not atomic; mirrored statuses overwritten; deploys de-conflicted by a ~10-min Slack window
 - **CTS** [#279](https://github.com/jaywedgeworth22/congress-trading-shared/issues/279): Cross-app coordination follow-ups
 - **CTS** [#286](https://github.com/jaywedgeworth22/congress-trading-shared/issues/286): tickerLogoPolicy A/B/C/D seed (v2.6.0)
 
@@ -1800,11 +1800,11 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1443](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1443): Fix Chart Range Control Not Affecting the Overview Chart _(by jaywedgeworth22)_
 - **UM** [#1445](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1445): Make The Chart Range Picker Actually Drive The Dashboard Charts _(by jaywedgeworth22)_
 - **UM** `Claude` [#1446](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1446): Add Subscription Quotas Card _(by jaywedgeworth22)_
-- **AFC** [#206](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/206): Keep the always-on BotFleet harness checkout off the janitor's dependency reap _(by jaywedgeworth22)_
-- **AFC** [#207](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/207): fix(janitor): scope the low-free CleanMyMac sweep off ~/Library/Logs _(by jaywedgeworth22)_
-- **AFC** [#208](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/208): fix(mac-cleanup): scope the unconditional CleanMyMac sweep off ~/Library/Logs _(by jaywedgeworth22)_
-- **AFC** [#209](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/209): docs(mac-processes): the transactional Mac updater is installed at ~/apps/update-botfleet.sh _(by jaywedgeworth22)_
-- **AFC** [#210](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/210): Sync the Mac process inventory mirror (harness checkout note) _(by jaywedgeworth22)_
+- **AFC** [#206](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/206): Keep the always-on BotFleet harness checkout off the janitor's dependency reap _(by jaywedgeworth22)_
+- **AFC** [#207](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/207): fix(janitor): scope the low-free CleanMyMac sweep off ~/Library/Logs _(by jaywedgeworth22)_
+- **AFC** [#208](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/208): fix(mac-cleanup): scope the unconditional CleanMyMac sweep off ~/Library/Logs _(by jaywedgeworth22)_
+- **AFC** [#209](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/209): docs(mac-processes): the transactional Mac updater is installed at ~/apps/update-botfleet.sh _(by jaywedgeworth22)_
+- **AFC** [#210](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/210): Sync the Mac process inventory mirror (harness checkout note) _(by jaywedgeworth22)_
 - **CTS** `Antigravity` [#295](https://github.com/jaywedgeworth22/congress-trading-shared/pull/295): docs(effort-log): board hygiene — move completed/deployed items _(by jaywedgeworth22)_
 
 ### Issues closed
@@ -1914,7 +1914,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1439](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1439): 2026-08-21 — PLANNED — [P1] Restore deploy gating on the Coolify path
 - **UM** [#1440](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1440): 2026-08-21 — PLANNED — [P2] Consolidate 3 generations of deploy/backup
 - **UM** [#1441](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1441): Local Invalid Binary fix (App Groups profiles +
-- **AFC** [#50](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/50): [P1] 'Mac runners PERMANENTLY BANNED' policy contradicted by 3 always-on Mac runners the watchdog bootstraps
+- **AFC** [#50](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/50): [P1] 'Mac runners PERMANENTLY BANNED' policy contradicted by 3 always-on Mac runners the watchdog bootstraps
 
 ### Issues opened
 
@@ -2151,7 +2151,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **ST** [#3208](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3208): fix(ops): tini PID1 reaps Docker HEALTHCHECK curls _(by jaywedgeworth22)_
 - **UM** [#1434](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1434): iOS local app: add Learn More tab (server + client overview, features, links) _(by jaywedgeworth22)_
 - **UM** [#1436](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1436): fix(ios): product copy on the local Learn More tab _(by jaywedgeworth22)_
-- **AFC** [#205](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/205): rag: close two silent observability gaps in fleet-agents recall _(by jaywedgeworth22)_
+- **AFC** [#205](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/205): rag: close two silent observability gaps in fleet-agents recall _(by jaywedgeworth22)_
 
 ### Issues opened
 
@@ -2201,8 +2201,8 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **ST** [#3203](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3203): Attribute safety-lane deadline expiry to event-loop stall, not the broker _(by jaywedgeworth22)_
 - **ST** [#3204](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3204): fix(backup): backup policy, cold-archive depth 4, whole-attempt bounds, proven restore _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1435](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1435): feat(observability): full token/model telemetry + — fleet-infra mirror _(by jaywedgeworth22)_
-- **AFC** `Codex` [#203](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/203): docs: paste-ready prompt that explains fleet RAG to — and proves it is used _(by jaywedgeworth22)_
-- **AFC** [#204](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/204): docs: Oracle RAG routines open recall-tunnel when Tailscale is down _(by jaywedgeworth22)_
+- **AFC** `Codex` [#203](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/203): docs: paste-ready prompt that explains fleet RAG to — and proves it is used _(by jaywedgeworth22)_
+- **AFC** [#204](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/204): docs: Oracle RAG routines open recall-tunnel when Tailscale is down _(by jaywedgeworth22)_
 
 ### Issues closed
 
@@ -2301,10 +2301,10 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** `Sentry` [#1429](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1429): fix(observability): correct ci-usage-monitor-ci — checkin margin for real GitHub schedule cadence _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1430](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1430): fix( -ci-report): add per-workflow checkin margin for ios-ship, debounce flapping _(by jaywedgeworth22)_
 - **UM** [#1433](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1433): docs(effort-log): close out FLEET-INFRA-CB row after #1430 _(by jaywedgeworth22)_
-- **AFC** [#199](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/199): docs: Jay 2026-09-08 TestFlight What to Test binding _(by jaywedgeworth22)_
-- **AFC** [#200](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/200): fix(disk-janitor): stop rm -rf'ing ~/.cache/uv and tracked worktree deps _(by jaywedgeworth22)_
-- **AFC** [#201](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/201): recall client falls back to recall.jays.services when Tailscale is down _(by jaywedgeworth22)_
-- **AFC** [#202](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/202): fix(fleet-rag): survive a Tailscale-down Mac for ingest, eval, and doctor _(by jaywedgeworth22)_
+- **AFC** [#199](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/199): docs: Jay 2026-09-08 TestFlight What to Test binding _(by jaywedgeworth22)_
+- **AFC** [#200](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/200): fix(disk-janitor): stop rm -rf'ing ~/.cache/uv and tracked worktree deps _(by jaywedgeworth22)_
+- **AFC** [#201](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/201): recall client falls back to recall.jays.services when Tailscale is down _(by jaywedgeworth22)_
+- **AFC** [#202](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/202): fix(fleet-rag): survive a Tailscale-down Mac for ingest, eval, and doctor _(by jaywedgeworth22)_
 
 ### Issues closed
 
@@ -2427,8 +2427,8 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1421](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1421): fix(ios): AuthKey path + Distribution signing for Client TF _(by jaywedgeworth22)_
 - **UM** [#1422](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1422): fix(ios): drop Apple Distribution identity override on Client archive _(by jaywedgeworth22)_
 - **UM** [#1423](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1423): fix(ios): clear CODE_SIGN_IDENTITY for usage Client archive _(by jaywedgeworth22)_
-- **AFC** [#197](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/197): docs(secret-handoff): drop outdated BotFleet Secret Request Card section _(by jaywedgeworth22)_
-- **AFC** `DeepSeek` `Cursor` [#198](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/198): Add — icon to Shellular — chat surfaces entry _(by jaywedgeworth22)_
+- **AFC** [#197](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/197): docs(secret-handoff): drop outdated BotFleet Secret Request Card section _(by jaywedgeworth22)_
+- **AFC** `DeepSeek` `Cursor` [#198](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/198): Add — icon to Shellular — chat surfaces entry _(by jaywedgeworth22)_
 
 ### Issues opened
 
@@ -2474,13 +2474,13 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **CT** `Grok` [#2321](https://github.com/jaywedgeworth22/Congress.Trade/pull/2321): docs: close remaining — ranked items _(by jaywedgeworth22)_
 - **ST** [#3167](https://github.com/jaywedgeworth22/Socratic.Trade/pull/3167): fix(strategy): gather internal time budget + health-gate skip row _(by jaywedgeworth22)_
 - **UM** [#1414](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1414): iOS time-period progress + Local Import button + ST Infrastructure cleanup _(by jaywedgeworth22)_
-- **AFC** `MiniMax` `DeepSeek` [#194](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/194): docs(seats): — Slack tag is ; — Harness is _(by jaywedgeworth22)_
+- **AFC** `MiniMax` `DeepSeek` [#194](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/194): docs(seats): — Slack tag is ; — Harness is _(by jaywedgeworth22)_
 
 ### Issues opened
 
 - **ST** [#3170](https://github.com/jaywedgeworth22/Socratic.Trade/issues/3170): Merge shepherd status
 - **ST** [#3171](https://github.com/jaywedgeworth22/Socratic.Trade/issues/3171): Merge shepherd status
-- **AFC** [#195](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/195): Later: Google Analytics on all sites (no meaningful perf hit)
+- **AFC** [#195](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/195): Later: Google Analytics on all sites (no meaningful perf hit)
 
 ### Effort board
 
@@ -2548,15 +2548,15 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** `Sentry` [#1415](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1415): Max Features: Feedback Widget and Server Profiling _(by jaywedgeworth22)_
 - **UM** [#1417](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1417): Bake Litestream L1-Only Compaction So Next Image Keeps L2/L3 Off _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1418](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1418): feat : stats_v2 usage by category, no invented balance _(by jaywedgeworth22)_
-- **AFC** `MiniMax` [#185](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/185): feat(fleet): onboard — as the twelfth seat _(by jaywedgeworth22)_
-- **AFC** [#186](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/186): fix(fleet-skills): port drifted owner rules back into canonical docs/fleet-skills _(by jaywedgeworth22)_
-- **AFC** `MiniMax` [#187](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/187): docs(fleet): coordinator is AFC everywhere; fix onboarding phases and — recall slot _(by jaywedgeworth22)_
-- **AFC** [#188](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/188): docs(fleet): close out AFC rename effort row (#187) _(by jaywedgeworth22)_
-- **AFC** [#189](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/189): docs(ui): nothing is truncated without recourse — full value on hover, every app _(by jaywedgeworth22)_
-- **AFC** [#190](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/190): docs(fleet): close out the truncation-standard effort row _(by jaywedgeworth22)_
-- **AFC** [#191](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/191): docs(fleet-skills): truncation rule into owner-copy; refresh stale AFL zip packs _(by jaywedgeworth22)_
-- **AFC** [#192](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/192): feat(fleet): hook-enforce delegation economics, and the 30% sister-model rule _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#193](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/193): Max-Features Fleet Matrix (Designer Rulings Update) _(by jaywedgeworth22)_
+- **AFC** `MiniMax` [#185](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/185): feat(fleet): onboard — as the twelfth seat _(by jaywedgeworth22)_
+- **AFC** [#186](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/186): fix(fleet-skills): port drifted owner rules back into canonical docs/fleet-skills _(by jaywedgeworth22)_
+- **AFC** `MiniMax` [#187](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/187): docs(fleet): coordinator is AFC everywhere; fix onboarding phases and — recall slot _(by jaywedgeworth22)_
+- **AFC** [#188](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/188): docs(fleet): close out AFC rename effort row (#187) _(by jaywedgeworth22)_
+- **AFC** [#189](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/189): docs(ui): nothing is truncated without recourse — full value on hover, every app _(by jaywedgeworth22)_
+- **AFC** [#190](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/190): docs(fleet): close out the truncation-standard effort row _(by jaywedgeworth22)_
+- **AFC** [#191](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/191): docs(fleet-skills): truncation rule into owner-copy; refresh stale AFL zip packs _(by jaywedgeworth22)_
+- **AFC** [#192](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/192): feat(fleet): hook-enforce delegation economics, and the 30% sister-model rule _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#193](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/193): Max-Features Fleet Matrix (Designer Rulings Update) _(by jaywedgeworth22)_
 - **OPS** [#13](https://github.com/jaywedgeworth22/Fleet-OPS/pull/13): docs(inventory): refresh Infisical project ids and slugs _(by jaywedgeworth22)_
 
 ### Issues closed
@@ -2652,13 +2652,13 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** `Antigravity` [#1408](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1408): feat(agents): $70 net — seat and honest missing telemetry _(by jaywedgeworth22)_
 - **UM** `Claude` `Codex` [#1409](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1409): fix(agents): — Max $200 / SuperGrok Heavy $300 and — history _(by jaywedgeworth22)_
 - **UM** [#1412](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1412): Quota windows API for remaining % and BotFleet skip _(by jaywedgeworth22)_
-- **AFC** [#178](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/178): docs: sync live MAC-LOCAL-PROCESSES.md to repo _(by jaywedgeworth22)_
-- **AFC** [#179](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/179): docs(rag): access-check page every agent platform can be pointed at _(by jaywedgeworth22)_
-- **AFC** `Cursor` [#180](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/180): docs(rag): recall prompt block for every platform slot, plus a — always-apply rule _(by jaywedgeworth22)_
-- **AFC** [#181](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/181): feat(rag): make the recall CLI runnable by anyone with their own Qdrant _(by jaywedgeworth22)_
-- **AFC** [#182](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/182): feat(rag): provision cloud sandboxes with recall credentials _(by jaywedgeworth22)_
-- **AFC** [#183](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/183): docs(copy): never display nbsp entity in cloud text; Title Case chrome _(by jaywedgeworth22)_
-- **AFC** [#184](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/184): Move iOS version manifest off ios-app-versions _(by jaywedgeworth22)_
+- **AFC** [#178](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/178): docs: sync live MAC-LOCAL-PROCESSES.md to repo _(by jaywedgeworth22)_
+- **AFC** [#179](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/179): docs(rag): access-check page every agent platform can be pointed at _(by jaywedgeworth22)_
+- **AFC** `Cursor` [#180](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/180): docs(rag): recall prompt block for every platform slot, plus a — always-apply rule _(by jaywedgeworth22)_
+- **AFC** [#181](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/181): feat(rag): make the recall CLI runnable by anyone with their own Qdrant _(by jaywedgeworth22)_
+- **AFC** [#182](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/182): feat(rag): provision cloud sandboxes with recall credentials _(by jaywedgeworth22)_
+- **AFC** [#183](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/183): docs(copy): never display nbsp entity in cloud text; Title Case chrome _(by jaywedgeworth22)_
+- **AFC** [#184](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/184): Move iOS version manifest off ios-app-versions _(by jaywedgeworth22)_
 - **OPS** [#12](https://github.com/jaywedgeworth22/Fleet-OPS/pull/12): Drop ios-app-versions from GitHub fleet audit list _(by jaywedgeworth22)_
 
 ### Issues closed
@@ -2696,17 +2696,17 @@ Agent names are stripped from titles; HTML site shows logos instead.
 
 ### Effort board
 
-- **CT** `Grok` 2026-09-03 — COMPLETED/DEPLOYED #2305 (`b4973ce3`) — Retarget AppUpdatePrompt off ios-app-versions (board `ca104839`, branch `grok/ios-versions-home`, worktree `~/apps/congress — versions`). Manifest URL is now ai-fleet-coordinator `site/ios-versions.json`
+- **CT** `Grok` 2026-09-03 — COMPLETED/DEPLOYED #2305 (`b4973ce3`) — Retarget AppUpdatePrompt off ios-app-versions (board `ca104839`, branch `grok/ios-versions-home`, worktree `~/apps/congress — versions`). Manifest URL is now AI-Fleet-Coordinator `site/ios-versions.json`
 - **CT** `Grok` 2026-09-03 — COMPLETED/DEPLOYED #2304 (`297226b1`) — iOS Manage Subscription for website/Stripe Premium (board `589b9fe3`, branch `grok/ios-stripe-manage-sub`). Account sheet 401 told web subscribers to sign out. Root cause: `POST /billing/portal` was cookie-only; iOS already sends Bearer. Server accepts Bearer; Stripe/`nil` portal failure opens `/?billing=manage` instead of sign-out
 - **CT** `Grok` 2026-09-03 — / BF-Publisher — COMPLETED/DEPLOYED #2301 (`04116d27`) — Drain 4 Senate paper PTRs parked on IBM/MSFT form samples (board `2d6f4302`, branch `grok/publisher-senate-paper-samples`, worktree `~/apps/congress — senate-samples`). Live: confirmed Blumenthal `S-a3722489` 38 spouse lots and `S-16afdd38` 21 spouse lots; confirmed Boozman `S-7dfcd5fd` 8 IRA lots and `S-5
 - **CT** `Grok` 2026-09-03 — IN_PROGRESS - iOS Manage Subscription dead-ends website/Stripe Premium on a sign-out-and-refresh 401. <! — wb-agent-report:589b9fe384684b73a0568ed5b163a8c7 — >
 - **CT** `Grok` 2026-09-03 — IN_PROGRESS - Publisher drain: 4 Senate paper PTRs parked on IBM/MSFT form samples. <! — wb-agent-report:2d6f430265c4484a9d65e9d66902d86d — >
 - **CT** `Grok` 2026-09-03 — COMPLETED — Stop CT twice-hourly TestFlight spam. PR #2303 merged `bdb373b3`. Board `f9d5c319`. Issue #2302. Scheduled ticks with no last-ship skip. Workflow re-enabled after merge. <! — wb-agent-report:f9d5c3197d03494181a50c663fd8a5b6 — >
-- **UM** `Grok` 2026-09-03 — IN PROGRESS — Retarget AppUpdatePrompt off ios-app-versions (board `ca104839`, branch `grok/ios-versions-home`, worktree `~/apps/usage — versions`). Public manifest is `ai-fleet-coordinator` `site/ios-versions.json`. Client + Local copies stay byte-identical to the pin. Rollout: `docs/rollouts/2026-09-03-ios-versions-home.md`
+- **UM** `Grok` 2026-09-03 — IN PROGRESS — Retarget AppUpdatePrompt off ios-app-versions (board `ca104839`, branch `grok/ios-versions-home`, worktree `~/apps/usage — versions`). Public manifest is `AI-Fleet-Coordinator` `site/ios-versions.json`. Client + Local copies stay byte-identical to the pin. Rollout: `docs/rollouts/2026-09-03-ios-versions-home.md`
 - **UM** `Grok` `Gemini` `Antigravity` 2026-09-03 — IN PROGRESS — Quota windows + ` -usage quota — json` collector (board `109294fe`, issue #1411, branch `grok/quota-routing`, worktree `~/apps/usage — routing`). Per-model remaining, honest — N/A, `GET /api/quota-windows` skipModelTypes for BotFleet
 - **UM** `Grok` `Codex` `Cursor` 2026-09-03 — IN PR #1409 — Agents seats from receipts + observed — Plus, window chips (branch `grok/seat-plans`, worktree `~/apps/usage — plans`, board `b866649c`, issue #1407). Window chips are 5h/24h/7d/30d/All Time with gap-4. — plan is observed from local login JWT (plus), not guessed Pro $200. Copilot not billed. — Ultra included with SuperGrok Heavy. Mini
 - **UM** `Grok` `Antigravity` 2026-09-03 — IN PROGRESS — $70 net seat + honest missing telemetry (branch ` -seat-telemetry-honesty`, worktree `~/apps/usage — telemetry`, board `7fd199f9`, claimed: Wed, Sep 3, 2026). Owner: $100 Google AI Ultra plan of which $30 was already Google One, so $70 net for the AI. Agents tab must say not reported instead of pretending little/no usage when
-- **DD** `Grok` 2026-09-03 — MERGED #273 — Retarget AppUpdatePrompt off ios-app-versions (board `ca104839`, branch `grok/ios-versions-home`, worktree `~/apps/dealdex — versions`). Public manifest is `ai-fleet-coordinator` `site/ios-versions.json`. Pin and iOS target stay byte-identical. Rollout: `docs/rollouts/2026-09-03-ios-versions-home.md`
+- **DD** `Grok` 2026-09-03 — MERGED #273 — Retarget AppUpdatePrompt off ios-app-versions (board `ca104839`, branch `grok/ios-versions-home`, worktree `~/apps/dealdex — versions`). Public manifest is `AI-Fleet-Coordinator` `site/ios-versions.json`. Pin and iOS target stay byte-identical. Rollout: `docs/rollouts/2026-09-03-ios-versions-home.md`
 - **DD** `Grok` `Antigravity` 2026-09-03 — MERGED #271 — Pickup — cap: native Apple Sign In via ASAuthorizationAppleIDProvider (branch `ag/fix-apple-native-form-post`, worktree `~/apps/dealdex — apple-fix`). — hit usage cap mid-PR. Adopted uncommitted firstName/lastName payload, registered the route in `routeTree.gen.ts`. Squash-merged. ios-ship then failed on NativeAuth isolation (row above). Board `
 - **CL** `Grok` 2026-09-03 — BF-DIRECTOR / — IN PROGRESS — iOS TestFlight background crash: Swift 6 MainActor trap in BGTask handler (issue #59, board 35559745, worktree `~/apps/contactlogo — crash` @ `grok/bgtask-mainactor-crash`). `MatchBackgroundTask.register()` is nonisolated so iOS can launch overnight matching without `_dispatch_assert_queue_fail`
 - **AFC** `Grok` 2026-09-03 — IN PROGRESS — Move iOS version manifest off ios-app-versions into this repo (`grok/ios-versions-home`, worktree `~/apps/fleet — versions`, board `ca104839`). Owner deleting the one-file public repo. Personal-Site does not list or fetch it. Canonical file `site/ios-versions.json`. Sibling PRs retarget AppUpdatePrompt + publish-ios-versions.sh. Rollout: `docs/roll
@@ -2793,12 +2793,12 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1404](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1404): feat: add timeframe selection to top of overview on web and iOS _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1405](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1405): feat(observability): integrate per-app — & Datadog dashboards into health cards _(by jaywedgeworth22)_
 - **UM** [#1406](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1406): chore(deps): bump fast-uri from 3.1.5 to 3.1.7 _(by dependabot[bot])_
-- **AFC** [#156](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/156): feat(ops): 5-minute disk/RAM/CPU watch that wakes Housekeeper _(by jaywedgeworth22)_
-- **AFC** `Grok` [#172](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/172): feat : idle MCP unload after 12h _(by jaywedgeworth22)_
-- **AFC** [#173](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/173): feat(rag): contribute lessons; chat scan is policy-only _(by jaywedgeworth22)_
-- **AFC** [#174](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/174): feat(rag): adopt recall on every seat (search + contribute) _(by jaywedgeworth22)_
-- **AFC** [#175](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/175): docs(agent-sync): Plan B slice 2 doc diet — four per-topic protocols move to docs/protocols _(by jaywedgeworth22)_
-- **AFC** [#177](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/177): feat(rag): memory platform — grouped+reranked recall, mirror dedupe, lesson-commit hooks, Hetzner recall service _(by jaywedgeworth22)_
+- **AFC** [#156](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/156): feat(ops): 5-minute disk/RAM/CPU watch that wakes Housekeeper _(by jaywedgeworth22)_
+- **AFC** `Grok` [#172](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/172): feat : idle MCP unload after 12h _(by jaywedgeworth22)_
+- **AFC** [#173](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/173): feat(rag): contribute lessons; chat scan is policy-only _(by jaywedgeworth22)_
+- **AFC** [#174](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/174): feat(rag): adopt recall on every seat (search + contribute) _(by jaywedgeworth22)_
+- **AFC** [#175](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/175): docs(agent-sync): Plan B slice 2 doc diet — four per-topic protocols move to docs/protocols _(by jaywedgeworth22)_
+- **AFC** [#177](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/177): feat(rag): memory platform — grouped+reranked recall, mirror dedupe, lesson-commit hooks, Hetzner recall service _(by jaywedgeworth22)_
 - **CTS** [#290](https://github.com/jaywedgeworth22/congress-trading-shared/pull/290): docs(agents): add fleet-recall pointer _(by jaywedgeworth22)_
 - **OPS** [#9](https://github.com/jaywedgeworth22/Fleet-OPS/pull/9): docs(datadog): stay on Infrastructure Free _(by jaywedgeworth22)_
 - **OPS** [#10](https://github.com/jaywedgeworth22/Fleet-OPS/pull/10): docs(agents): add fleet-recall pointer _(by jaywedgeworth22)_
@@ -3023,29 +3023,29 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1398](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1398): ios(fleet): ship-testflight header fix (dealdex + UTC build docs) _(by jaywedgeworth22)_
 - **UM** [#1400](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1400): ios(fleet): restore me.grok.dealdex upload refuse guard _(by jaywedgeworth22)_
 - **UM** `Sentry` [#1401](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1401): ci(observability): observe — Deploy in fleet reporter _(by jaywedgeworth22)_
-- **AFC** [#154](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/154): fix(pr-conflict-watch): repo copy was double-base64-encoded _(by jaywedgeworth22)_
-- **AFC** [#155](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/155): docs(agent-sync): add canonical "Never idle-watch a PR" section _(by jaywedgeworth22)_
-- **AFC** [#157](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/157): fix(housekeeping): break the cleanup/swap feedback loop, add the missing lock _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#158](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/158): docs : sponsored-account fleet integration plan _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#159](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/159): docs : standing Datadog/Sentry split and adoption rollout _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#160](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/160): docs(effort): close out — fleet adoption #159 _(by jaywedgeworth22)_
-- **AFC** [#161](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/161): docs: DealDex deploy-verify health is dealdex.net _(by jaywedgeworth22)_
-- **AFC** `DeepSeek` [#162](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/162): fix(shellular): — Thinking hang + expose harness web on Tailscale :3080 _(by jaywedgeworth22)_
-- **AFC** `DeepSeek` [#163](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/163): feat : Dock launcher for local Harness web UI, no Terminal _(by jaywedgeworth22)_
-- **AFC** `DeepSeek` [#164](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/164): fix : Dock Harness app focuses one WKWebView window _(by jaywedgeworth22)_
-- **AFC** [#165](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/165): feat(rag): recall CLI, ingest pipeline, and fleet-recall MCP _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#166](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/166): docs : org extras — detector-scoped PD, uptime, dashboard, metrics _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#167](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/167): feat(ci): add fleet — CI reporter (APP=ai-fleet-coordinator) _(by jaywedgeworth22)_
-- **AFC** [#168](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/168): feat(rag): REST /recall/ so any device can hit fleet-agents _(by jaywedgeworth22)_
-- **AFC** [#170](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/170): feat(rag): chat-log source plus extra-doc walker _(by jaywedgeworth22)_
-- **AFC** `Grok` [#171](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/171): feat : close idle TUI chats after 36h; 16GiB Hetzner swap _(by jaywedgeworth22)_
+- **AFC** [#154](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/154): fix(pr-conflict-watch): repo copy was double-base64-encoded _(by jaywedgeworth22)_
+- **AFC** [#155](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/155): docs(agent-sync): add canonical "Never idle-watch a PR" section _(by jaywedgeworth22)_
+- **AFC** [#157](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/157): fix(housekeeping): break the cleanup/swap feedback loop, add the missing lock _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#158](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/158): docs : sponsored-account fleet integration plan _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#159](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/159): docs : standing Datadog/Sentry split and adoption rollout _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#160](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/160): docs(effort): close out — fleet adoption #159 _(by jaywedgeworth22)_
+- **AFC** [#161](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/161): docs: DealDex deploy-verify health is dealdex.net _(by jaywedgeworth22)_
+- **AFC** `DeepSeek` [#162](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/162): fix(shellular): — Thinking hang + expose harness web on Tailscale :3080 _(by jaywedgeworth22)_
+- **AFC** `DeepSeek` [#163](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/163): feat : Dock launcher for local Harness web UI, no Terminal _(by jaywedgeworth22)_
+- **AFC** `DeepSeek` [#164](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/164): fix : Dock Harness app focuses one WKWebView window _(by jaywedgeworth22)_
+- **AFC** [#165](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/165): feat(rag): recall CLI, ingest pipeline, and fleet-recall MCP _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#166](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/166): docs : org extras — detector-scoped PD, uptime, dashboard, metrics _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#167](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/167): feat(ci): add fleet — CI reporter (APP=AI-Fleet-Coordinator) _(by jaywedgeworth22)_
+- **AFC** [#168](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/168): feat(rag): REST /recall/ so any device can hit fleet-agents _(by jaywedgeworth22)_
+- **AFC** [#170](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/170): feat(rag): chat-log source plus extra-doc walker _(by jaywedgeworth22)_
+- **AFC** `Grok` [#171](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/171): feat : close idle TUI chats after 36h; 16GiB Hetzner swap _(by jaywedgeworth22)_
 - **OPS** [#8](https://github.com/jaywedgeworth22/Fleet-OPS/pull/8): docs(inventory): Qdrant backup cron + health rows, read-only key, fleet-agents corpus, cx53 spec _(by jaywedgeworth22)_
 
 ### Issues closed
 
 - **AR** [#59](https://github.com/jaywedgeworth22/Autorotate/issues/59): Full internal rename TopSpin → Autorotate
 - **AR** [#130](https://github.com/jaywedgeworth22/Autorotate/issues/130): 2026-08-27 — COMPLETED — Full-field security & quality audit
-- **AR** [#132](https://github.com/jaywedgeworth22/Autorotate/issues/132): Fleet onboarding — join ai-fleet-coordinator as app TopSpin (TS)
+- **AR** [#132](https://github.com/jaywedgeworth22/Autorotate/issues/132): Fleet onboarding — join AI-Fleet-Coordinator as app TopSpin (TS)
 - **AR** [#133](https://github.com/jaywedgeworth22/Autorotate/issues/133): Apache-2.0 + — dump backup + catalog fold-in — · PR
 - **BF** [#107](https://github.com/jaywedgeworth22/BotFleet/issues/107): iOS product-reach: iPad split view, chat attachments, APNs registration
 - **CT** [#2180](https://github.com/jaywedgeworth22/Congress.Trade/issues/2180): P0: GET /api/transactions?order=desc is ingest — not trade date (2024 Khanna is page 1)
@@ -3061,13 +3061,13 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **PS** [#50](https://github.com/jaywedgeworth22/Personal-Site/issues/50): 2026-09-01 — IN PROGRESS — Personal-Site stays Datadog-only; no
 - **PS** [#52](https://github.com/jaywedgeworth22/Personal-Site/issues/52): 2026-09-01 — COMPLETED/MERGED #49 — Personal-Site stays Datadog-only; no
 - **PS** [#54](https://github.com/jaywedgeworth22/Personal-Site/issues/54): 2026-09-01 — INPROGRESS - Cap automatic Vercel deploys to one production
-- **AFC** [#169](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/169): [P1] Mine Cursor/Codex/Gemini/Kimi/BotFleet chats into fleet-rag JSONL
+- **AFC** [#169](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/169): [P1] Mine Cursor/Codex/Gemini/Kimi/BotFleet chats into fleet-rag JSONL
 
 ### Issues opened
 
 - **AR** [#130](https://github.com/jaywedgeworth22/Autorotate/issues/130): 2026-08-27 — COMPLETED — Full-field security & quality audit
 - **AR** [#131](https://github.com/jaywedgeworth22/Autorotate/issues/131): 2026-08-25 — Pin AppUpdatePrompt.swift from ST fleet, drop
-- **AR** [#132](https://github.com/jaywedgeworth22/Autorotate/issues/132): Fleet onboarding — join ai-fleet-coordinator as app TopSpin (TS)
+- **AR** [#132](https://github.com/jaywedgeworth22/Autorotate/issues/132): Fleet onboarding — join AI-Fleet-Coordinator as app TopSpin (TS)
 - **AR** [#133](https://github.com/jaywedgeworth22/Autorotate/issues/133): Apache-2.0 + — dump backup + catalog fold-in — · PR
 - **AR** [#135](https://github.com/jaywedgeworth22/Autorotate/issues/135): 2026-09-01 — IN PROGRESS — Web — SDK + rotation cron/metrics (board
 - **AR** [#142](https://github.com/jaywedgeworth22/Autorotate/issues/142): 2026-09-01 — IN PROGRESS — Add fleet — ci-report.yml +
@@ -3105,7 +3105,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **ST** [#3154](https://github.com/jaywedgeworth22/Socratic.Trade/issues/3154): production deploy records ( -cli releases
 - **UM** [#1395](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1395): 2026-09-01 — IN PR #1394 (auto-merge armed) — Add — ci-report.yml
 - **UM** [#1399](https://github.com/jaywedgeworth22/Usage-Monitor/issues/1399): production deploy records ( -cli releases
-- **AFC** [#169](https://github.com/jaywedgeworth22/ai-fleet-coordinator/issues/169): [P1] Mine Cursor/Codex/Gemini/Kimi/BotFleet chats into fleet-rag JSONL
+- **AFC** [#169](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/issues/169): [P1] Mine Cursor/Codex/Gemini/Kimi/BotFleet chats into fleet-rag JSONL
 
 ### Effort board
 
@@ -3158,7 +3158,7 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **AFC** `Claude` 2026-09-01 — IN PR — Canonical `## Never idle-watch a PR` section in `AGENT-SYNC.md` (branch `claude/never-idle-watch-rule`). Owner ruling 2026-09-01: agents "should never just wait and watch for things to merge since that wastes tokens/time and they inevitably almost invariably end up slowly wasting money/quota while the PR sits there with conflicts or comments/issues unresolved."
 - **AFC** `Grok` `Claude` `Cursor` `Codex` `Gemini` `Kimi` 2026-09-01 — IN PROGRESS — Mine chat logs + extra markdown into fleet-agents RAG. Board `ef4df7cb`. Claimed Tue, Sep 1, 2026. Worktree `~/apps/fleet — mine` @ `grok/rag-mine-chats-docs`. AFC #170. Staging `~/apps/fleet-rag/mined/`: — 7224, — 36783, — 1164, — 555, — 4446, — 18, BotFleet 148, extra markdown 2158, distilled lessons 4012 (75k JSONL
 - **AFC** `Grok` 2026-09-01 — IN PROGRESS — Fleet RAG on every device (`grok/fleet-rag-everywhere`). Board `c03d33a2`. REST `/recall/stats|search|contribute` on seat-mcp + public hop `agents.jays.services`. MCP tools already live. Owner: all agents all platforms
-- **AFC** `Grok` `Sentry` 2026-09-01 — IN PROGRESS — Add fleet — ci-report.yml + scripts/sentry-ci-report.py (branch ` -ci-report`, worktree `~/apps/fleet — ci`, board `6758a621`). Gold copy UM PR #1394. APP=`ai-fleet-coordinator`. Fingerprint `[ci-failure, ai-fleet-coordinator, workflow]`. <! — wb-agent-report:6758a621 — >
+- **AFC** `Grok` `Sentry` 2026-09-01 — IN PROGRESS — Add fleet — ci-report.yml + scripts/sentry-ci-report.py (branch ` -ci-report`, worktree `~/apps/fleet — ci`, board `6758a621`). Gold copy UM PR #1394. APP=`AI-Fleet-Coordinator`. Fingerprint `[ci-failure, AI-Fleet-Coordinator, workflow]`. <! — wb-agent-report:6758a621 — >
 - **AFC** `Grok` `Sentry` 2026-09-01 — IN PROGRESS — org extras: detector-scoped PD, uptime, dashboard, metric alerts (` -org-rollout`). Board `31bd2e3a`. Worktree `~/apps/fleet — org`. PD test page #86 resolved. Workflow `3930764` uses `detector_ids`. Dashboard `9917821`. Rollout `docs/rollouts/2026-09-01 — org-rollout.md`
 
 ## 2026-08-31
@@ -3251,9 +3251,9 @@ Agent names are stripped from titles; HTML site shows logos instead.
 - **UM** [#1385](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1385): docs(ci): correct five workflows that documented a deleted runner-offload gate _(by jaywedgeworth22)_
 - **UM** [#1386](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1386): fix(collectors): main guard silently no-ops on any path containing a space _(by jaywedgeworth22)_
 - **UM** [#1387](https://github.com/jaywedgeworth22/Usage-Monitor/pull/1387): docs(effort-log): flip UM_CI_RUNNER (#1385) and main-guard (#1386) rows to COMPLETED/MERGED _(by jaywedgeworth22)_
-- **AFC** [#151](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/151): feat(rag): self-host bge-m3 embeddings and add fleet-agents Qdrant collection _(by jaywedgeworth22)_
-- **AFC** [#152](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/152): docs(processes): register scripts/fleet-rag.py as an on-demand helper _(by jaywedgeworth22)_
-- **AFC** `Sentry` [#153](https://github.com/jaywedgeworth22/ai-fleet-coordinator/pull/153): Expand fleet — monitor: add DealDex & BotFleet endpoints and PM2 tags _(by jaywedgeworth22)_
+- **AFC** [#151](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/151): feat(rag): self-host bge-m3 embeddings and add fleet-agents Qdrant collection _(by jaywedgeworth22)_
+- **AFC** [#152](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/152): docs(processes): register scripts/fleet-rag.py as an on-demand helper _(by jaywedgeworth22)_
+- **AFC** `Sentry` [#153](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/pull/153): Expand fleet — monitor: add DealDex & BotFleet endpoints and PM2 tags _(by jaywedgeworth22)_
 - **CTS** [#289](https://github.com/jaywedgeworth22/congress-trading-shared/pull/289): chore(deps): bump anthropics/claude-code-action from 1.0.199 to 1.0.210 _(by dependabot[bot])_
 - **OPS** [#6](https://github.com/jaywedgeworth22/Fleet-OPS/pull/6): docs(inventory): add Namecheap registrar section _(by jaywedgeworth22)_
 - **OPS** [#7](https://github.com/jaywedgeworth22/Fleet-OPS/pull/7): docs(inventory): correct the shared Infisical project id, flag ST's as unverified _(by jaywedgeworth22)_

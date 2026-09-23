@@ -1,6 +1,6 @@
 # 2026-09-18 — Backup fleet GitHub repositories Sentry cron margin
 
-Sentry **FLEET-INFRA-CH** (`Cron failure: ci-ai-fleet-coordinator-backup-fleet-github-reposi`).
+Sentry **FLEET-INFRA-CH** (`Cron failure: ci-AI-Fleet-Coordinator-backup-fleet-github-reposi`).
 Branch `cursor/backup-repos-cron-margin`.
 
 ## What

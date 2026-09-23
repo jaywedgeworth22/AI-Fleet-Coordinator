@@ -760,9 +760,9 @@ class BootstrapTests(unittest.TestCase):
         cls.www = pathlib.Path(cls.tmp.name) / "www"
         cls.www.mkdir()
         _tgz(cls.www / "src.tgz", {
-            "ai-fleet-coordinator-main/scripts/fleet_rag/__init__.py": b"__version__ = 'test'\n",
-            "ai-fleet-coordinator-main/scripts/fleet-recall-service/server.py": b"# stub\n",
-            "ai-fleet-coordinator-main/README.md": b"not extracted\n",
+            "AI-Fleet-Coordinator-main/scripts/fleet_rag/__init__.py": b"__version__ = 'test'\n",
+            "AI-Fleet-Coordinator-main/scripts/fleet-recall-service/server.py": b"# stub\n",
+            "AI-Fleet-Coordinator-main/README.md": b"not extracted\n",
         })
         _tgz(cls.www / "gitleaks_8.30.1_linux_arm64.tar.gz",
              {"gitleaks": cls.FAKE_GITLEAKS, "LICENSE": b"MIT\n"}, executable=("gitleaks",))

@@ -99,7 +99,7 @@ Updated: 2026-09-03 (GROK — iOS version manifest home)
 
 Owner is deleting `jaywedgeworth22/ios-app-versions`.  Personal-Site does not
 link it.  Canonical public file is `site/ios-versions.json`.  iOS clients fetch
-https://raw.githubusercontent.com/jaywedgeworth22/ai-fleet-coordinator/main/site/ios-versions.json
+https://raw.githubusercontent.com/jaywedgeworth22/AI-Fleet-Coordinator/main/site/ios-versions.json
 Board `ca104839`.  Branch `grok/ios-versions-home`.  Rollout:
 `docs/rollouts/2026-09-03-ios-versions-home.md`.
 

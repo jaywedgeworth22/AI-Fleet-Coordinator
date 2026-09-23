@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Shellular ACP spawn for DeepSeek Harness. Stdout is JSON-RPC only.
-# Tracked copy: ai-fleet-coordinator/scripts/dsh-acp.sh
+# Tracked copy: AI-Fleet-Coordinator/scripts/dsh-acp.sh
 # Live install: ~/apps/dsh-runtime/dsh-acp.sh
 set -euo pipefail
 

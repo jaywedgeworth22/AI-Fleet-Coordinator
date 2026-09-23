@@ -45,7 +45,7 @@ const ownPrefixes = [`[${MY_TAG}`, `⟦${MY_TAG}`];
 const FILTER_PY = [
   path.join(os.homedir(), 'apps', 'slack_context_filter.py'),
   path.join(os.homedir(), '.claude', 'slack_context_filter.py'),
-  path.join(os.homedir(), 'Code', 'ai-fleet-coordinator', 'scripts', 'slack_context_filter.py'),
+  path.join(os.homedir(), 'Code', 'AI-Fleet-Coordinator', 'scripts', 'slack_context_filter.py'),
 ].find((p) => fs.existsSync(p));
 
 let printedUntrustedBanner = false;

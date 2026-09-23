@@ -54,7 +54,7 @@ so it can only pattern-match on command STRUCTURE. It does not replace the
 secret-safety skill; it enforces the specific failure classes that already
 happened.
 
-Tracked copy: ai-fleet-coordinator `scripts/hooks/secret-guard-pretooluse.py`.
+Tracked copy: AI-Fleet-Coordinator `scripts/hooks/secret-guard-pretooluse.py`.
 Live Claude Code copy: `~/.claude/hooks/secret-guard-pretooluse.py` (registered
 in `~/.claude/settings.json` PreToolUse matcher Bash).
 """

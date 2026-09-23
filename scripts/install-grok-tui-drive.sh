@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Copy tracked Grok TUI drive helpers from this repo into live ~/apps/.
 #
-# On-demand.  Run after merging ai-fleet-coordinator so agents do not keep
+# On-demand.  Run after merging AI-Fleet-Coordinator so agents do not keep
 # using a stale ~/apps/grok-acp-runtime or ~/apps/seat-mcp.  Does not bind
 # :2419.  Does not start a second seat-mcp unless --restart-seat-mcp and
 # pm2 already owns the job.
@@ -54,7 +54,7 @@ copy_file() {
 }
 
 if [[ ! -d "$ACP_SRC" || ! -d "$SEAT_SRC" ]]; then
-  echo "run this from an ai-fleet-coordinator checkout that has scripts/grok-acp-runtime" >&2
+  echo "run this from an AI-Fleet-Coordinator checkout that has scripts/grok-acp-runtime" >&2
   exit 1
 fi
 

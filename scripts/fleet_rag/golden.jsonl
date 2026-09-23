@@ -20,7 +20,7 @@
 {"query": "should session replay go to Datadog or Sentry", "expect_text_contains": ["Session Replay"], "note": "AGENT-SYNC: Datadog vs Sentry"}
 {"query": "my PR is sitting unmerged, should I wait and watch it", "expect_text_contains": ["idle-watch", "waiting on an"], "note": "AGENT-SYNC: never idle-watch a PR"}
 {"query": "can I point Socratic.Trade retrieval at the self-hosted bge-m3 endpoint", "expect_text_contains": ["not a drop-in", "re-embedding the full"], "note": "RAG-FLEET-INFRA: embedding space mismatch"}
-{"query": "TEI container was OOM killed during warmup", "expect_doc_id_prefix": "doc/ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md", "expect_text_contains": ["max-batch-tokens"], "note": "RAG-FLEET-INFRA: operational notes"}
+{"query": "TEI container was OOM killed during warmup", "expect_doc_id_prefix": "doc/AI-Fleet-Coordinator/docs/RAG-FLEET-INFRA.md", "expect_text_contains": ["max-batch-tokens"], "note": "RAG-FLEET-INFRA: operational notes"}
 {"query": "where are the Qdrant and TEI credentials stored", "expect_text_contains": ["Infisical shared", "QDRANT_FLEET_COLLECTION"], "note": "RAG-FLEET-INFRA: credentials"}
 {"query": "Coolify SERVICE_PASSWORD variable is empty inside the command flag", "expect_text_contains": ["SERVICE_PASSWORD"], "note": "RAG-FLEET-INFRA: compose interpolation trap"}
 {"query": "pm2 save wrote a one-job list over the dump, how do I get the fleet back", "expect_text_contains": ["dump.pm2"], "note": "MAC-LOCAL-PROCESSES: poisoned pm2 dump"}
@@ -72,4 +72,4 @@
 {"query": "can I delete the claudevm bundle under Parallels to free disk", "expect_text_contains": ["claudevm.bundle"], "note": "memory: protected claudevm bundle"}
 {"query": "what does an effort-key comment in a GitHub issue do", "expect_text_contains": ["effort-key"], "note": "effort board issues mirror"}
 {"query": "when I mark a board item completed what must the resolution say", "expect_text_contains": ["--resolution"], "note": "board: real resolution on close"}
-{"query": "which document describes the fleet-agents collection and the self-hosted embedder", "expect_doc_id_prefix": "doc/ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md", "note": "RAG-FLEET-INFRA (doc-targeted)"}
+{"query": "which document describes the fleet-agents collection and the self-hosted embedder", "expect_doc_id_prefix": "doc/AI-Fleet-Coordinator/docs/RAG-FLEET-INFRA.md", "note": "RAG-FLEET-INFRA (doc-targeted)"}

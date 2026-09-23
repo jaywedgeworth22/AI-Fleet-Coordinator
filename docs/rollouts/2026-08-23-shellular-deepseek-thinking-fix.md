@@ -27,8 +27,8 @@ Simple text-only prompts ("Say OK") can still work when the model skips tools.
 Deploy tracked copies to the live Mac:
 
 ```bash
-cp ai-fleet-coordinator/scripts/dsh-acp.py ~/apps/dsh-runtime/dsh-acp.py
-cp ai-fleet-coordinator/scripts/dsh-acp.sh ~/apps/dsh-runtime/dsh-acp.sh
+cp AI-Fleet-Coordinator/scripts/dsh-acp.py ~/apps/dsh-runtime/dsh-acp.py
+cp AI-Fleet-Coordinator/scripts/dsh-acp.sh ~/apps/dsh-runtime/dsh-acp.sh
 ```
 
 No pm2 restart required — Shellular spawns a fresh ACP child per agent session.

@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Pinned Harness CLI.  Never npx.  Never exec this file.
 #
-# Tracked copy: ai-fleet-coordinator/scripts/dsh-runtime/dsh.sh
+# Tracked copy: AI-Fleet-Coordinator/scripts/dsh-runtime/dsh.sh
 # Live install: ~/apps/dsh-runtime/dsh.sh
 #
 # 2026-09-16: a PATH wrapper that execs this script was copied *into* this

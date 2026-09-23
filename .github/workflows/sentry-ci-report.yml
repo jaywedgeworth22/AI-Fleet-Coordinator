@@ -23,7 +23,7 @@ name: Sentry CI Report
 #      run of a workflow that defines `schedule:`): a Sentry Crons check-in
 #      (ok on success, error on failure) with an upsert monitor_config whose
 #      schedule mirrors that workflow's own cron expression, slug
-#      `ci-ai-fleet-coordinator-<workflow-slug>`.  This means a nightly/weekly job that
+#      `ci-AI-Fleet-Coordinator-<workflow-slug>`.  This means a nightly/weekly job that
 #      silently STOPS firing (not "runs and fails" but "never runs again")
 #      raises a missed-check-in alert instead of going unnoticed.
 #
@@ -53,7 +53,7 @@ name: Sentry CI Report
 # a warning when the secret is absent, so CI itself is never red-X'd by a
 # missing DSN.
 #
-# Gold copy: Usage-Monitor origin/main (PR #1394).  Adapted for ai-fleet-coordinator.
+# Gold copy: Usage-Monitor origin/main (PR #1394).  Adapted for AI-Fleet-Coordinator.
 
 on:
   workflow_run:

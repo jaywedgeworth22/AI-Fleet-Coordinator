@@ -54,7 +54,7 @@ gh auth refresh -h github.com -s workflow
 bash scripts/land.sh
 ```
 
-**ai-fleet-coordinator also has a `land.sh` — do not run it.**  It is an ST clone (Node 24 + tsc/test/build) and this repo has no `package.json`.  Docs-only: commit, push, `gh pr create`.
+**AI-Fleet-Coordinator also has a `land.sh` — do not run it.**  It is an ST clone (Node 24 + tsc/test/build) and this repo has no `package.json`.  Docs-only: commit, push, `gh pr create`.
 
 ### Other apps — merge main, run *that* repo's verify, then PR
 

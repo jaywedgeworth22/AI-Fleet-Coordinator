@@ -50,7 +50,7 @@ Default is headless pin via the `Pin Coding Note` shortcut (no focus steal).  Do
 | CTS | congress-trading-shared |
 | DD | DealDex |
 | PS | Personal-Site |
-| AFC | ai-fleet-coordinator (this repo / Mac collab / skill pack) |
+| AFC | AI-Fleet-Coordinator (this repo / Mac collab / skill pack) |
 | OPS | fleet-ops (sibling identity; do not invent a checkout here) |
 
 ## Second body row

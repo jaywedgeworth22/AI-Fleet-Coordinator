@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Canonical setup for a fresh, isolated checkout of ai-fleet-coordinator
+# Canonical setup for a fresh, isolated checkout of AI-Fleet-Coordinator
 # (Claude Code cloud/remote sandbox, Codespaces, or any throwaway clone).
 # Idempotent — safe to re-run.
 #
 # Claude Code Cloud runs the Setup script from the PARENT of the clone
 # (`/home/user`). A bare `bash scripts/cloud-setup.sh` fails with exit 127.
 # Use the fleet locator in docs/CLAUDE-CODE-CLOUD-ENVIRONMENTS.md
-# or: cd ai-fleet-coordinator && bash scripts/cloud-setup.sh
+# or: cd AI-Fleet-Coordinator && bash scripts/cloud-setup.sh
 #
 # What it does beyond the registry check: a cloud seat has no ~/.secrets handoff file,
 # so without help it hits the Cloudflare Access login page on recall.jays.services and

@@ -8,7 +8,7 @@
 #   tail -f ~/Library/Logs/mac-process-watch.log
 #
 # launchd: com.jay.mac-process-watch every 120s.
-# Tracked copy: ai-fleet-coordinator/scripts/mac-process-watch.sh
+# Tracked copy: AI-Fleet-Coordinator/scripts/mac-process-watch.sh
 # Live copy launchd runs: ~/apps/mac-process-watch.sh
 #
 # Restarts (always-on only):

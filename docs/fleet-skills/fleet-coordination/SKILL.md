@@ -8,7 +8,7 @@ description: Comprehensive master skill for multi-agent fleet operations across 
 Canonical reference: `/Users/jay/apps/AGENT-SYNC.md` and `/Users/jay/apps/EFFORT-LOG-PROTOCOL.md`.  
 Slack Coordination Channel: `#agent-sync` (`C0BEZDJDNKV`).
 
-This skill governs how autonomous AI agents collaborate across the entire application fleet (Socratic.Trade, Congress.Trade, Usage-Monitor, congress-trading-shared, DealDex, Personal-Site, Autorotate, ContactLogo, and ai-fleet-coordinator).
+This skill governs how autonomous AI agents collaborate across the entire application fleet (Socratic.Trade, Congress.Trade, Usage-Monitor, congress-trading-shared, DealDex, Personal-Site, Autorotate, ContactLogo, and AI-Fleet-Coordinator).
 
 ---
 
@@ -24,7 +24,7 @@ Use these canonical acronyms in Apple Notes titles (`[APP, Agent] topic`), commi
 | **`DD`** | DealDex | `jaywedgeworth22/DealDex` |
 | **`CL`** | ContactLogo | `jaywedgeworth22/ContactLogo` |
 | **`AR`** | Autorotate | `jaywedgeworth22/Autorotate` |
-| **`AFC`** | ai-fleet-coordinator (this repo / Mac collab / skill pack) | `jaywedgeworth22/ai-fleet-coordinator` |
+| **`AFC`** | AI-Fleet-Coordinator (this repo / Mac collab / skill pack) | `jaywedgeworth22/AI-Fleet-Coordinator` |
 | **`OPS`** | fleet-ops (sibling identity; do not invent a checkout here) | `jaywedgeworth22/fleet-ops` |
 | **`PS`** | Personal-Site | `jaywedgeworth22/Personal-Site` |
 | **`CTS`** | congress-trading-shared | `jaywedgeworth22/congress-trading-shared` |

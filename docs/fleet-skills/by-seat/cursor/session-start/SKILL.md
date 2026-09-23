@@ -56,7 +56,7 @@ The shared checkout is the human/fleet review base.  Mid-task branch flips there
 | congress-trading-shared | `congress-trading-shared` | CTS | `~/apps/cts-cursor` | `~/apps/CONGRESS-SHARED-EFFORT-LOG.md` |
 | DealDex | `DealDex` | DD | `~/apps/dealdex-cursor` | `~/apps/DEALDEX-EFFORT-LOG.md` |
 | Personal-Site | `Personal-Site` | PS | `~/apps/personal-cursor` | `~/apps/PERSONAL-SITE-EFFORT-LOG.md` |
-| ai-fleet-coordinator / machine infra | `ai-fleet-coordinator` or `fleet-infra` | AFC | `~/apps/fleet-cursor` (or a `~/apps/fleet-cursor-<lane>` worktree) | `~/apps/FLEET-INFRA-EFFORT-LOG.md` |
+| AI-Fleet-Coordinator / machine infra | `AI-Fleet-Coordinator` or `fleet-infra` | AFC | `~/apps/fleet-cursor` (or a `~/apps/fleet-cursor-<lane>` worktree) | `~/apps/FLEET-INFRA-EFFORT-LOG.md` |
 
 As of 2026-08-20 only `~/apps/trading-cursor` is guaranteed to exist.  Create a missing standing lane before editing:
 
@@ -64,7 +64,7 @@ As of 2026-08-20 only `~/apps/trading-cursor` is guaranteed to exist.  Create a 
 git -C /Users/jay/Code/<Repo> worktree add -b cursor/<slug> ~/apps/<prefix>-cursor
 ```
 
-Per-lane isolation is also fine: `~/apps/<prefix>-cursor-<lane>`.  Inventory is `~/Code/ai-fleet-coordinator/fleet-apps.json`.  `scripts/setup-agent-lanes.sh` uses a different naming scheme (`Socratic.Trade-monet` / `agent/monet`) — do not run it for this seat.
+Per-lane isolation is also fine: `~/apps/<prefix>-cursor-<lane>`.  Inventory is `~/Code/AI-Fleet-Coordinator/fleet-apps.json`.  `scripts/setup-agent-lanes.sh` uses a different naming scheme (`Socratic.Trade-monet` / `agent/monet`) — do not run it for this seat.
 
 Then read that app's `AGENTS.md`, `STATUS.md`, latest `docs/rollouts/`, and `docs/EFFORT-LOG.md`.  Personal-Site `AGENTS.md` can lag `README.md` (the live source is `site/`); believe README + current tree over a stale "static snapshot" paragraph.
 
@@ -104,6 +104,6 @@ A new owner message **adds** work unless they explicitly cancel or replace the o
 
 - `/Users/jay/apps/AGENT-SYNC.md` — identity, THE BOARD, Slack, prior-messages, always-commit
 - `/Users/jay/apps/EFFORT-LOG-PROTOCOL.md`
-- `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md`
-- `/Users/jay/Code/ai-fleet-coordinator/fleet-apps.json`
+- `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-AGENT.md`
+- `/Users/jay/Code/AI-Fleet-Coordinator/fleet-apps.json`
 - Skills in this pack: `board-ops`, `closeout`, `secret-handoff`, `land-lane`

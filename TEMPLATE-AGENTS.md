@@ -518,7 +518,7 @@ canonical tags: `Socratic.Trade`, `Congress.Trade`, `API-Usage-Monitor`,
 | **`DD`** | DealDex | `jaywedgeworth22/DealDex` |
 | **`CL`** | ContactLogo | `jaywedgeworth22/ContactLogo` |
 | **`AR`** | Autorotate | `jaywedgeworth22/Autorotate` |
-| **`AFC`** | ai-fleet-coordinator (this repo / Mac collab / skill pack) | `jaywedgeworth22/ai-fleet-coordinator` |
+| **`AFC`** | AI-Fleet-Coordinator (this repo / Mac collab / skill pack) | `jaywedgeworth22/AI-Fleet-Coordinator` |
 | **`OPS`** | fleet-ops (sibling identity; do not invent a checkout here) | `jaywedgeworth22/fleet-ops` |
 | **`PS`** | Personal-Site | `jaywedgeworth22/Personal-Site` |
 | **`CTS`** | congress-trading-shared | `jaywedgeworth22/congress-trading-shared` |
@@ -528,13 +528,13 @@ canonical tags: `Socratic.Trade`, `Congress.Trade`, `API-Usage-Monitor`,
 
 | What | Live / repo path | GitHub |
 |------|------------------|--------|
-| Protocol | `/Users/jay/apps/AGENT-SYNC.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/AGENT-SYNC.md |
-| Effort boards | `/Users/jay/apps/EFFORT-LOG-PROTOCOL.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/EFFORT-LOG-PROTOCOL.md |
-| New app | `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-APP.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md |
-| DNS / registrars | `/Users/jay/Code/ai-fleet-coordinator/docs/DNS-AND-REGISTRARS.md` (new app zone on **account** Usage.Jays.Services, not hostname `usage.jays.services`) | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/DNS-AND-REGISTRARS.md |
-| New seat | `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md |
-| This template | coordinator `TEMPLATE-AGENTS.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/TEMPLATE-AGENTS.md |
-| UI copy | `/Users/jay/apps/FLEET-UI-COPY.md` | https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/FLEET-UI-COPY.md |
+| Protocol | `/Users/jay/apps/AGENT-SYNC.md` | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/AGENT-SYNC.md |
+| Effort boards | `/Users/jay/apps/EFFORT-LOG-PROTOCOL.md` | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/EFFORT-LOG-PROTOCOL.md |
+| New app | `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-APP.md` | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-APP.md |
+| DNS / registrars | `/Users/jay/Code/AI-Fleet-Coordinator/docs/DNS-AND-REGISTRARS.md` (new app zone on **account** Usage.Jays.Services, not hostname `usage.jays.services`) | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/DNS-AND-REGISTRARS.md |
+| New seat | `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-AGENT.md` | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md |
+| This template | coordinator `TEMPLATE-AGENTS.md` | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/TEMPLATE-AGENTS.md |
+| UI copy | `/Users/jay/apps/FLEET-UI-COPY.md` | https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/FLEET-UI-COPY.md |
 
 ## Delegation & model economics (fleet rule — binding for every agent)
 
@@ -825,4 +825,4 @@ The script calls `GET /api/ops/snapshot` (token via `x-ops-token`). See
 
 ## Fleet recall (shared agent memory)
 
-Search before re-deriving.  **Contribute every reusable lesson** (owner 2026-09-02) — the seat that just burned tokens is the only one that knows.  Mac: MCP `recall_search` / `recall_contribute` / `recall_stats` or CLI `recall "query"`.  Cloud / phone: `https://agents.jays.services/mcp` or REST `/recall/*`.  A hit is a lead, not a verdict.  Do not bulk-ingest chat transcripts as lessons.  Canonical: `ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md`.
+Search before re-deriving.  **Contribute every reusable lesson** (owner 2026-09-02) — the seat that just burned tokens is the only one that knows.  Mac: MCP `recall_search` / `recall_contribute` / `recall_stats` or CLI `recall "query"`.  Cloud / phone: `https://agents.jays.services/mcp` or REST `/recall/*`.  A hit is a lead, not a verdict.  Do not bulk-ingest chat transcripts as lessons.  Canonical: `AI-Fleet-Coordinator/docs/RAG-FLEET-INFRA.md`.

@@ -26,7 +26,7 @@ StartInterval job (the default); --loop for a foreground loop.  --dry-run reads
 everything and writes nothing.
 
 Protocol: ~/apps/AGENT-SYNC.md § Message Structure.  Skim rules mirror
-~/apps/agent-sync-poll.py.  Tracked in ai-fleet-coordinator as
+~/apps/agent-sync-poll.py.  Tracked in AI-Fleet-Coordinator as
 scripts/github-outbox-bridge.py; live copy ~/apps/github-outbox-bridge.py.
 Runs on the Mac's /usr/bin/python3 (3.9): stdlib only, no 3.10+ syntax.
 """

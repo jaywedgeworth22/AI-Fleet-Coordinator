@@ -4,9 +4,9 @@ Policy + steps for joining an existing or brand-new GitHub repo to this fleet
 so agents can work the way we already work on Socratic.Trade, Congress.Trade,
 Usage-Monitor, and DealDex.
 
-**GitHub:** https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md  
-**Sibling (new seat):** [ONBOARDING-NEW-AGENT.md](ONBOARDING-NEW-AGENT.md) · https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md  
-**Protocol:** `/Users/jay/apps/AGENT-SYNC.md` · https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/AGENT-SYNC.md  
+**GitHub:** https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-APP.md  
+**Sibling (new seat):** [ONBOARDING-NEW-AGENT.md](ONBOARDING-NEW-AGENT.md) · https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md  
+**Protocol:** `/Users/jay/apps/AGENT-SYNC.md` · https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/AGENT-SYNC.md  
 Copy `TEMPLATE-AGENTS.md` into the new repo (includes Delegation & model economics + this start-here table).
 
 **Run the script first, then finish the checklist.** The script does the
@@ -15,7 +15,7 @@ registration. The checklist guides adding AGENTS.md, repo effort log mirror, CI,
 and owner-only dashboard steps.
 
 ```bash
-# from an ai-fleet-coordinator worktree (never ~/Code/ai-fleet-coordinator)
+# from an AI-Fleet-Coordinator worktree (never ~/Code/AI-Fleet-Coordinator)
 ./scripts/onboard-new-app.sh \
   --repo DealDex \
   --acronym DD \
@@ -207,7 +207,7 @@ Optional but expected before the app is "done" as a fleet citizen:
 - `/Users/jay/apps/<BOARD>.md` — new live board
 - `ios-fleet/apps.json` + `ios-fleet/README.md` — if native iOS
 
-### This repo (`ai-fleet-coordinator`)
+### This repo (`AI-Fleet-Coordinator`)
 
 - `fleet-apps.json` — **add the row first**
 - `EFFORT-LOG-PROTOCOL.md`, `AGENT-SYNC.md`, `FLEET-UI-COPY.md`,
@@ -244,7 +244,7 @@ Run `python3 scripts/check-fleet-registry.py` until it is clean.
 
    ```
    [GROK] sync-N
-   repo: <slackRepo>, ai-fleet-coordinator, fleet-infra
+   repo: <slackRepo>, AI-Fleet-Coordinator, fleet-infra
    claim: <branch>
    state: WIP
    work: onboard <App> as a fleet app
@@ -279,7 +279,7 @@ as app `COOLIFY_API_TOKEN`. See `AGENT-SYNC.md`.
 ## Phase 7 — land
 
 1. PR on the **new app** (bootstrap files).
-2. PR on **ai-fleet-coordinator** (registries + this doc if you changed it).
+2. PR on **AI-Fleet-Coordinator** (registries + this doc if you changed it).
 3. Merge both when CI is green.
 4. `workflow_dispatch` Effort Issues Sync on the new app so the first board
    row becomes a GitHub issue.

@@ -376,10 +376,10 @@ class ConfigCacheTests(RecallBase):
 
 
 class EvalMatchTests(unittest.TestCase):
-    HIT = {"doc_id": "doc/ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md", "text": "Set --max-batch-tokens lower."}
+    HIT = {"doc_id": "doc/AI-Fleet-Coordinator/docs/RAG-FLEET-INFRA.md", "text": "Set --max-batch-tokens lower."}
 
     def test_prefix_only(self):
-        self.assertTrue(ev.matches({"expect_doc_id_prefix": "doc/ai-fleet-coordinator/"}, self.HIT))
+        self.assertTrue(ev.matches({"expect_doc_id_prefix": "doc/AI-Fleet-Coordinator/"}, self.HIT))
         self.assertFalse(ev.matches({"expect_doc_id_prefix": "doc/local/"}, self.HIT))
 
     def test_text_only_str_or_list_case_insensitive(self):
@@ -388,7 +388,7 @@ class EvalMatchTests(unittest.TestCase):
         self.assertFalse(ev.matches({"expect_text_contains": ["nope", ""]}, self.HIT))
 
     def test_both_present_both_must_hold(self):
-        both = {"expect_doc_id_prefix": "doc/ai-fleet-coordinator/", "expect_text_contains": ["max-batch-tokens"]}
+        both = {"expect_doc_id_prefix": "doc/AI-Fleet-Coordinator/", "expect_text_contains": ["max-batch-tokens"]}
         self.assertTrue(ev.matches(both, self.HIT))
         self.assertFalse(ev.matches({**both, "expect_doc_id_prefix": "doc/local/"}, self.HIT))
         self.assertFalse(ev.matches({**both, "expect_text_contains": ["warmup"]}, self.HIT))

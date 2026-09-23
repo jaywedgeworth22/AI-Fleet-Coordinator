@@ -5,7 +5,7 @@
 # Why: pm2 entries that share a port with a manually-started orphan process
 # enter an errored-restart loop (agy-acp / grok-acp / seat-mcp / vision-worker
 # have all hit 100-4600+ restarts).  The canonical owner is pm2 per
-# /Users/jay/Code/ai-fleet-coordinator/scripts/pm2-ecosystem.config.cjs.
+# /Users/jay/Code/AI-Fleet-Coordinator/scripts/pm2-ecosystem.config.cjs.
 #
 # Usage:
 #   bash scripts/pm2-orphan-cleanup.sh             # clean up all errored entries

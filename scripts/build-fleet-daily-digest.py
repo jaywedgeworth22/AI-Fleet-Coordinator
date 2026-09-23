@@ -20,7 +20,7 @@ Env:
   DIGEST_TZ (default America/Chicago)  — day bucketing only
   SITE_OUT (default site)
   ICS_OUT (default calendar/daily-digest.ics)
-  SITE_BASE_URL (optional, e.g. https://jaywedgeworth22.github.io/ai-fleet-coordinator/)
+  SITE_BASE_URL (optional, e.g. https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/)
   EFFORT_LOG_DIR (optional local dir of live boards, e.g. /Users/jay/apps)
 """
 from __future__ import annotations
@@ -53,7 +53,7 @@ DEFAULT_REPOS = [
     "Personal-Site",
     "Autorotate",
     "ContactLogo",
-    "ai-fleet-coordinator",
+    "AI-Fleet-Coordinator",
     "BotFleet",
     "HogHunter",
     "fleet-ops",
@@ -72,7 +72,7 @@ LIVE_EFFORT_FILES = {
     "Personal-Site": "PERSONAL-SITE-EFFORT-LOG.md",
     "Autorotate": "AUTOROTATE-EFFORT-LOG.md",
     "ContactLogo": "CONTACTLOGO-EFFORT-LOG.md",
-    "ai-fleet-coordinator": "FLEET-INFRA-EFFORT-LOG.md",
+    "AI-Fleet-Coordinator": "FLEET-INFRA-EFFORT-LOG.md",
     "BotFleet": "BOTFLEET-EFFORT-LOG.md",
     "HogHunter": "HOGHUNTER-EFFORT-LOG.md",
     "fleet-ops": "FLEET-OPS-EFFORT-LOG.md",
@@ -149,7 +149,7 @@ def gh_get(url: str, tok: str) -> Any:
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {tok}",
             "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "ai-fleet-coordinator-daily-digest",
+            "User-Agent": "AI-Fleet-Coordinator-daily-digest",
         },
     )
     with urllib.request.urlopen(req, timeout=60) as resp:
@@ -163,7 +163,7 @@ def gh_get_text(url: str, tok: str) -> str | None:
             "Accept": "application/vnd.github.raw",
             "Authorization": f"Bearer {tok}",
             "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "ai-fleet-coordinator-daily-digest",
+            "User-Agent": "AI-Fleet-Coordinator-daily-digest",
         },
     )
     try:
@@ -474,7 +474,7 @@ REPO_BADGE: dict[str, tuple[str, str]] = {
     "Personal-Site": ("PS", "repo-ps"),
     "Autorotate": ("AR", "repo-ar"),
     "ContactLogo": ("CL", "repo-cl"),
-    "ai-fleet-coordinator": ("AFC", "repo-fleet"),
+    "AI-Fleet-Coordinator": ("AFC", "repo-fleet"),
     "BotFleet": ("BF", "repo-bf"),
     "HogHunter": ("HH", "repo-hh"),
     "fleet-ops": ("OPS", "repo-ops"),
@@ -565,9 +565,9 @@ REPO_STRIP_ALIASES: dict[str, tuple[str, ...]] = {
         "contact-logo",
         "CL",
     ),
-    "ai-fleet-coordinator": (
+    "AI-Fleet-Coordinator": (
         "AI Fleet Coordinator",
-        "ai-fleet-coordinator",
+        "AI-Fleet-Coordinator",
         "fleet-coordinator",
         "fleet-infra",
         "fleet",
@@ -1383,7 +1383,7 @@ def build_html(days: list[DayBucket], generated: datetime, tz: ZoneInfo, base_ur
   {body}
   <footer>
     Built by <code>scripts/build-fleet-daily-digest.py</code> in
-    <code>ai-fleet-coordinator</code>. Agent seat names (Grok/Codex/Claude/…) are
+    <code>AI-Fleet-Coordinator</code>. Agent seat names (Grok/Codex/Claude/…) are
     shown as logos only. Owner/Jay is not badged (not a coding seat). Subscribe
     to the daily ICS in Apple Calendar (Add Subscription Calendar) or Google
     Calendar (From URL).
@@ -1402,7 +1402,7 @@ def build_daily_ics(days: list[DayBucket], now: datetime, base_url: str) -> str:
         "CALSCALE:GREGORIAN",
         "METHOD:PUBLISH",
         "X-WR-CALNAME:Jay's Daily Coding-Related Activities",
-        "X-WR-CALDESC:One all-day entry per day: merged PRs, issues opened/closed, effort board. Hosted by ai-fleet-coordinator.",
+        "X-WR-CALDESC:One all-day entry per day: merged PRs, issues opened/closed, effort board. Hosted by AI-Fleet-Coordinator.",
         "X-WR-TIMEZONE:America/Chicago",
         "REFRESH-INTERVAL;VALUE=DURATION:PT6H",
         "X-PUBLISHED-TTL:PT6H",
@@ -1413,7 +1413,7 @@ def build_daily_ics(days: list[DayBucket], now: datetime, base_url: str) -> str:
         d = day.day
         next_d = d + timedelta(days=1)
         # VALUE=DATE all-day: DTEND is exclusive next day
-        uid = f"fleet-daily-{d.isoformat()}@ai-fleet-coordinator"
+        uid = f"fleet-daily-{d.isoformat()}@AI-Fleet-Coordinator"
         url = f"{base_url.rstrip('/')}/#{d.isoformat()}" if base_url else ""
         lines.extend(
             [
@@ -1452,7 +1452,7 @@ def main() -> int:
     base_url = os.environ.get("SITE_BASE_URL", "").strip()
     # Default GitHub Pages URL if not set
     if not base_url:
-        base_url = f"https://{owner}.github.io/ai-fleet-coordinator"
+        base_url = f"https://{owner}.github.io/AI-Fleet-Coordinator"
 
     tok = token()
     now = datetime.now(timezone.utc)

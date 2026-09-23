@@ -40,7 +40,7 @@ DEFAULT_REPOS = [
     "Personal-Site",
     "Autorotate",
     "ContactLogo",
-    "ai-fleet-coordinator",
+    "AI-Fleet-Coordinator",
     "BotFleet",
     "HogHunter",
     "fleet-ops",
@@ -70,7 +70,7 @@ def gh_get(url: str, token: str) -> Any:
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {token}",
             "X-GitHub-Api-Version": "2022-11-28",
-            "User-Agent": "ai-fleet-coordinator-agent-calendar",
+            "User-Agent": "AI-Fleet-Coordinator-agent-calendar",
         },
     )
     with urllib.request.urlopen(req, timeout=45) as resp:
@@ -127,7 +127,7 @@ def build_ics(events: list[dict[str, Any]], now: datetime) -> str:
         "CALSCALE:GREGORIAN",
         "METHOD:PUBLISH",
         "X-WR-CALNAME:AI Fleet — Agent Coding Activity",
-        "X-WR-CALDESC:Merged commits across fleet repos. Auto-refreshed by GitHub Actions in ai-fleet-coordinator.",
+        "X-WR-CALDESC:Merged commits across fleet repos. Auto-refreshed by GitHub Actions in AI-Fleet-Coordinator.",
         "X-WR-TIMEZONE:America/Chicago",
         "REFRESH-INTERVAL;VALUE=DURATION:PT6H",
         "X-PUBLISHED-TTL:PT6H",
@@ -193,7 +193,7 @@ def main() -> int:
             subject = first_line(msg)
             events.append(
                 {
-                    "uid": f"{full_sha or sha}-{repo}@ai-fleet-coordinator",
+                    "uid": f"{full_sha or sha}-{repo}@AI-Fleet-Coordinator",
                     "start": start,
                     "end": end,
                     "summary": f"[{repo}] {subject}",

@@ -2,7 +2,7 @@
 
 ## Context & Objective
 
-GitHub About for `ai-fleet-coordinator` was empty.  The README still described a
+GitHub About for `AI-Fleet-Coordinator` was empty.  The README still described a
 generic “autonomous multi-agent framework.”  The live fleet is Mac collab
 (`mac.jays.services`), Shellular, `#agent-sync`, and coding seats in
 `fleet-apps.json` — with **no app-specific Grok Bot seats**.
@@ -31,7 +31,7 @@ Docs and repo metadata only.  No product code.
 ## Verification State
 
 - `python3 scripts/check-fleet-registry.py` (must exit 0).
-- `gh repo view jaywedgeworth22/ai-fleet-coordinator --json description,homepageUrl`
+- `gh repo view jaywedgeworth22/AI-Fleet-Coordinator --json description,homepageUrl`
 
 ## Next Steps & Blockers
 

@@ -66,7 +66,7 @@ resolve secrets only when identities are injected by a later, private path.
 
 ## Fleet recall in a cloud sandbox
 
-`scripts/cloud-setup.sh` in `ai-fleet-coordinator` also wires the sandbox into the
+`scripts/cloud-setup.sh` in `AI-Fleet-Coordinator` also wires the sandbox into the
 shared fleet corpus, so a cloud seat stops concluding that the corpus is
 unreachable when it meets the Cloudflare Access login page.
 
@@ -104,7 +104,7 @@ cloud environment. Suggested environment name = repo name.
 | `jaywedgeworth22/Personal-Site` | Personal-Site | `npm ci --include=dev` in `site/` |
 | `jaywedgeworth22/Autorotate` | Autorotate | `npm ci --include=dev` in `apps/web/` |
 | `jaywedgeworth22/ContactLogo` | ContactLogo | `npm ci --include=dev` in `web/` |
-| `jaywedgeworth22/ai-fleet-coordinator` | ai-fleet-coordinator | registry check, then fleet-recall credentials + remote MCP (see below) |
+| `jaywedgeworth22/AI-Fleet-Coordinator` | AI-Fleet-Coordinator | registry check, then fleet-recall credentials + remote MCP (see below) |
 | `jaywedgeworth22/congress-trading-shared` | congress-trading-shared | `npm ci --include=dev` + build |
 | `jaywedgeworth22/fleet-ops` | fleet-ops | docs-only no-op |
 
