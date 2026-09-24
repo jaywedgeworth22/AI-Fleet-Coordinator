@@ -13,7 +13,7 @@ description: >-
 > Cursor, Grok, Grok Bot, Codex, AG, DeepSeek, Kimi, and Fx have their own skill dirs and must not take identity from here.
 
 
-Source of truth: `/Users/jay/Code/ai-fleet-coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md`
+Source of truth: `/Users/jay/Code/AI-Fleet-Coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md`
 
 The block below is Monet's protocol, pasted verbatim. Follow it exactly. Do not weaken it. Cloud agents without the Mac filesystem still have the full protocol in this file.
 

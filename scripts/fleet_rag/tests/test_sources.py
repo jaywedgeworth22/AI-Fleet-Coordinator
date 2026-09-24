@@ -352,7 +352,7 @@ class HelperTests(unittest.TestCase):
         self.assertEqual(sources.seat_tag("monet"), "MONET")
         self.assertEqual(sources.seat_tag("GB-CONDUCTOR"), "GB-CONDUCTOR")
         self.assertEqual(sources.seat_tag(None), "FLEET")
-        self.assertEqual(sources.project_slug("-Users-jay-Code-ai-fleet-coordinator"), "code-ai-fleet-coordinator")
+        self.assertEqual(sources.project_slug("-Users-jay-Code-AI-Fleet-Coordinator"), "code-ai-fleet-coordinator")
         self.assertEqual(sources.app_from_project("code-congress-trading-shared"), "congress-trading-shared")
         self.assertEqual(sources.app_from_project("code-congress-trade-app"), "congress-trade")
         self.assertEqual(sources.app_from_path(pathlib.Path("/Users/jay/Code/Socratic.Trade/README.md")),
@@ -382,7 +382,7 @@ class ExtraDocWalkerTests(unittest.TestCase):
         self.code = self.root / "Code"
         self.apps = self.root / "apps"
         self.grok = self.root / "grok"
-        self.fleet = self.code / "ai-fleet-coordinator"
+        self.fleet = self.code / "AI-Fleet-Coordinator"
         self.ops = self.code / "fleet-ops"
         (self.fleet / "docs").mkdir(parents=True)
         (self.fleet / "README.md").write_text("# Fleet coordinator\n")
@@ -475,7 +475,7 @@ class MirrorSkipTests(unittest.TestCase):
         self.code = self.root / "Code"
         self.apps = self.root / "apps"
         self.grok = self.root / ".grok"
-        self.fleet = self.code / "ai-fleet-coordinator"
+        self.fleet = self.code / "AI-Fleet-Coordinator"
         self.ops = self.code / "fleet-ops"
         self.st = self.code / "Socratic.Trade"
         for d in (self.fleet / "docs", self.ops, self.st / "docs", self.apps, self.grok / "skills"):
@@ -601,7 +601,7 @@ class MirrorSkipTests(unittest.TestCase):
 
     def test_mirror_skip_reason_unit(self):
         r = sources.mirror_skip_reason
-        fleet = pathlib.Path("/x/Code/ai-fleet-coordinator")
+        fleet = pathlib.Path("/x/Code/AI-Fleet-Coordinator")
         self.assertEqual(r(pathlib.Path("/x/Code/Socratic.Trade/docs/EFFORT-LOG.md")), sources.SKIP_EFFORT_LOG)
         self.assertEqual(r(pathlib.Path("/x/apps/BOTFLEET-EFFORT-LOG.md")), sources.SKIP_EFFORT_LOG)
         self.assertEqual(r(pathlib.Path("/x/.claude/skills/a/SKILL.md")), sources.SKIP_SKILL_COPY)

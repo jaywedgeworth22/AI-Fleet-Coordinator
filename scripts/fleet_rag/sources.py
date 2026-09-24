@@ -8,7 +8,7 @@ Sources (payload `source` value):
   board          ~/apps/mac-collab/findings.db   (read-only sqlite; findings + comments)
   effort-log     ~/apps/*-EFFORT-LOG.md + EFFORT-LOG-PROTOCOL.md
   doc            markdown in fleet app repos (README/AGENTS/STATUS/CLAUDE + docs/**/*.md),
-                 ai-fleet-coordinator, fleet-ops, top-level ~/apps/*.md (not effort logs),
+                 AI-Fleet-Coordinator, fleet-ops, top-level ~/apps/*.md (not effort logs),
                  ~/.claude/CLAUDE.md, ~/.grok/docs/**/*.md, ~/.grok/skills/**/SKILL.md
   skill          ~/.claude/skills/*/SKILL.md and ~/.cursor/skills/*/SKILL.md
                  (doc_id skill/<tree>/<name>; byte-identical copies collapse to the first tree)
@@ -41,7 +41,7 @@ APPS_DIR = HOME / "apps"
 CODE_DIR = HOME / "Code"
 BOARD_DB = APPS_DIR / "mac-collab" / "findings.db"
 BOARD_URL = "https://mac.jays.services/board"
-FLEET_REPO = CODE_DIR / "ai-fleet-coordinator"
+FLEET_REPO = CODE_DIR / "AI-Fleet-Coordinator"
 FLEET_OPS_REPO = CODE_DIR / "fleet-ops"
 GROK_HOME = HOME / ".grok"
 GROK_SESSIONS = GROK_HOME / "sessions"
@@ -68,11 +68,11 @@ DOC_APP_REPOS = (
     "API-usage-monitor", "Usage-Monitor", "DealDex", "Personal-Site",
     "BotFleet", "BotFleet/openmausbot", "openmausbot",
     "ContactLogo", "AutoRotate", "Autorotate",
-    "ai-fleet-coordinator", "fleet-ops", "agentic-trading",
+    "AI-Fleet-Coordinator", "fleet-ops", "agentic-trading",
 )
 
 # Doc-walk mirror rules (2026-09-02).  The same text used to be ingested several times over:
-# the live ~/apps copy AND the ai-fleet-coordinator mirror of a protocol file, every by-seat /
+# the live ~/apps copy AND the AI-Fleet-Coordinator mirror of a protocol file, every by-seat /
 # universal / dot-dir copy of a skill on top of the skill source, and each repo's
 # docs/EFFORT-LOG.md mirror on top of the effort-log source.  mirror_skip_reason() names the
 # rule that drops a file; iter_docs logs a per-rule summary through warn().
@@ -620,7 +620,7 @@ def _doc_files(fleet_repo: pathlib.Path, fleet_ops: pathlib.Path,
     fleet_repos = [fleet_repo]
     if code_dir is not None:
         code_dir = pathlib.Path(code_dir)
-        fleet_repos.append(code_dir / "ai-fleet-coordinator")
+        fleet_repos.append(code_dir / "AI-Fleet-Coordinator")
         for repo_dir in _unique_repo_dirs(code_dir):
             files += _collect_repo_docs(repo_dir, root_all_md=False)
     live: list[pathlib.Path] = [pathlib.Path(x) for x in extra if pathlib.Path(x).exists()]

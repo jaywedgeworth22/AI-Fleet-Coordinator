@@ -75,11 +75,11 @@
       "kind": "product"
     },
     {
-      "repo": "ai-fleet-coordinator",
+      "repo": "AI-Fleet-Coordinator",
       "acronym": "AFC",
       "displayName": "AI Fleet Coordinator",
-      "slackRepo": "ai-fleet-coordinator",
-      "codeDir": "ai-fleet-coordinator",
+      "slackRepo": "AI-Fleet-Coordinator",
+      "codeDir": "AI-Fleet-Coordinator",
       "liveBoard": "FLEET-INFRA-EFFORT-LOG.md",
       "worktreePrefix": "fleet",
       "badgeClass": "repo-fleet",

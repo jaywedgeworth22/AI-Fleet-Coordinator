@@ -3,14 +3,14 @@
 Policy + steps for adding a coding agent (Claude, Codex, Grok, Cursor,
 Antigravity, Monet, Kimi, Copilot, or a future seat) to this fleet.
 
-**GitHub:** https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md  
-**Sibling (new app):** [ONBOARDING-NEW-APP.md](ONBOARDING-NEW-APP.md) · https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md  
-**Protocol:** `/Users/jay/apps/AGENT-SYNC.md` · https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/AGENT-SYNC.md
+**GitHub:** https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md  
+**Sibling (new app):** [ONBOARDING-NEW-APP.md](ONBOARDING-NEW-APP.md) · https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-APP.md  
+**Protocol:** `/Users/jay/apps/AGENT-SYNC.md` · https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/AGENT-SYNC.md
 
 **Run the script for the mechanical worktrees, then finish the checklist.**
 
 ```bash
-# from an ai-fleet-coordinator worktree
+# from an AI-Fleet-Coordinator worktree
 ./scripts/onboard-new-agent.sh \
   --tag KIMI \
   --notes-name Kimi \
@@ -20,7 +20,7 @@ Antigravity, Monet, Kimi, Copilot, or a future seat) to this fleet.
 
 `--help` lists flags. `--apps DealDex,Socratic.Trade` limits which integration
 trees get a lane. Default is every product/library app in `fleet-apps.json`
-(skips `ai-fleet-coordinator` unless you pass `--include-fleet`).
+(skips `AI-Fleet-Coordinator` unless you pass `--include-fleet`).
 
 ---
 
@@ -225,7 +225,7 @@ Naming (from `fleet-apps.json`):
 | Usage-Monitor | `usage` | `~/apps/usage-grok` |
 | DealDex | `dealdex` | `~/apps/dealdex-grok` |
 | congress-trading-shared | `cts` | `~/apps/cts-grok` |
-| ai-fleet-coordinator | `fleet` | `~/apps/fleet-grok-onboard` |
+| AI-Fleet-Coordinator | `fleet` | `~/apps/fleet-grok-onboard` |
 
 Do **not** `npm install` every lane up front. Install when the seat starts
 real work.

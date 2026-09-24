@@ -464,7 +464,7 @@ class CoordinatorSelfIdTests(unittest.TestCase):
         data = json.loads(
             Path(os.path.join(ROOT, "fleet-apps.json")).read_text(encoding="utf-8")
         )
-        rows = [a for a in data["apps"] if a["repo"] == "ai-fleet-coordinator"]
+        rows = [a for a in data["apps"] if a["repo"] == "AI-Fleet-Coordinator"]
         self.assertEqual(len(rows), 1)
         self.assertEqual(rows[0]["acronym"], "AFC")
         self.assertNotEqual(rows[0]["acronym"], "FLEET")
@@ -500,7 +500,7 @@ class CoordinatorSelfIdTests(unittest.TestCase):
     def test_agent_sync_self_id_is_afc_not_fleet(self) -> None:
         text = Path(os.path.join(ROOT, "AGENT-SYNC.md")).read_text(encoding="utf-8")
         self.assertIn("| `AFC` |", text)
-        self.assertIn("jaywedgeworth22/ai-fleet-coordinator", text)
+        self.assertIn("jaywedgeworth22/AI-Fleet-Coordinator", text)
         self.assertIn("[AFC] sync-N", text)
         self.assertIn("every Grok Bot seat", text)
         self.assertNotIn("| `AFL` |", text)
@@ -524,7 +524,7 @@ class CoordinatorSelfIdTests(unittest.TestCase):
             if name == "session-start":
                 self.assertIn("| AFC |", src)
                 self.assertNotIn("| FLEET | `~/apps/fleet-monet`", src)
-                self.assertNotIn("| FLEET |", src.split("ai-fleet-coordinator")[1][:80])
+                self.assertNotIn("| FLEET |", src.split("AI-Fleet-Coordinator")[1][:80])
             if name == "fleet-coordination":
                 self.assertIn("| **`AFC`** |", src)
                 self.assertIn("every Grok Bot seat", src)

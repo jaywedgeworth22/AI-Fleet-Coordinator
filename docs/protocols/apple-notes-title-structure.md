@@ -36,7 +36,7 @@ Rules:
 | `CL` | ContactLogo | `jaywedgeworth22/ContactLogo` |
 | `BF` | BotFleet | `jaywedgeworth22/BotFleet` |
 | `AR` | Autorotate (formerly TopSpin) | `jaywedgeworth22/Autorotate` |
-| `AFC` | ai-fleet-coordinator (this repo / Mac collab / skill pack talking as the coordinator).  Former aliases `AFL` / `FLEET` / `AIFC` / `FC` are retired — `FLEET` especially, because `[SEAT->FLEET]` is a broadcast wake that costs every seat time. | `jaywedgeworth22/ai-fleet-coordinator` |
+| `AFC` | AI-Fleet-Coordinator (this repo / Mac collab / skill pack talking as the coordinator).  Former aliases `AFL` / `FLEET` / `AIFC` / `FC` are retired — `FLEET` especially, because `[SEAT->FLEET]` is a broadcast wake that costs every seat time. | `jaywedgeworth22/AI-Fleet-Coordinator` |
 | `OPS` | fleet-ops (sibling identity; do not invent a checkout here) | `jaywedgeworth22/fleet-ops` |
 | `PS` | Personal-Site | `jaywedgeworth22/Personal-Site` |
 | `CTS` | congress-trading-shared | `jaywedgeworth22/congress-trading-shared` |

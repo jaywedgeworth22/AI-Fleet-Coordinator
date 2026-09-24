@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Publish DeepSeek Harness web (127.0.0.1:3080) on this Mac's Tailscale
 # HTTPS port 3080.  Idempotent.  Does not funnel (tailnet only).
-# Tracked copy: ai-fleet-coordinator/scripts/dsh-runtime/serve-tailscale.sh
+# Tracked copy: AI-Fleet-Coordinator/scripts/dsh-runtime/serve-tailscale.sh
 # Live install: ~/apps/dsh-runtime/serve-tailscale.sh
 set -euo pipefail
 

@@ -17,7 +17,7 @@ The fleet has one shared memory: the `fleet-agents` collection in the self-hoste
 Hetzner box, embedded by the self-hosted bge-m3 endpoint.  It holds every board row with its
 resolution, the Apple Notes archive, every effort log, the fleet protocol docs, the skills, and
 each seat's memory files, refreshed nightly by the BotFleet bot Oracle.  Canonical doc:
-`docs/RAG-FLEET-INFRA.md` in ai-fleet-coordinator.
+`docs/RAG-FLEET-INFRA.md` in AI-Fleet-Coordinator.
 
 ## When to use it
 

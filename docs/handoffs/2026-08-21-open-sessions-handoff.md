@@ -28,7 +28,7 @@ from different angles, and two lanes are blocked on the same owner action.
 | `:8899` holder | orphan deno pid **76761** (not pm2) | same orphan, 08:33 |
 
 Open PRs, all repos: **Socratic.Trade has 6; Congress.Trade, Usage-Monitor and
-ai-fleet-coordinator have zero.**  Session metadata that still shows "PR 61 OPEN" or
+AI-Fleet-Coordinator have zero.**  Session metadata that still shows "PR 61 OPEN" or
 "PR 3004 open" is stale — both are closed out.
 
 ### The single most valuable mechanism to carry forward
@@ -128,7 +128,7 @@ GitHub's own brand assets rather than guessing a path.  Then unblock and land #3
 
 ## Lane 3 — Mac fleet health: two orphans awaiting a yes ⚠️ OWNER-BLOCKED
 
-**Session:** `local_84ffc5a0-4e5b-43a1-a866-3d5815819202` · cwd `~/Code/ai-fleet-coordinator` ·
+**Session:** `local_84ffc5a0-4e5b-43a1-a866-3d5815819202` · cwd `~/Code/AI-Fleet-Coordinator` ·
 last activity 08:33 CT
 
 The session ended on a direct question to the owner — *"Want me to do #1 now?"* — that was
@@ -250,7 +250,7 @@ the pressure is returning.
 
 ## Lane 6 — Fleet docs: unlanded work + a real drift problem
 
-**Session:** `local_01bfeec0-2bcb-4714-8e2c-2020ebc96336` · cwd `~/Code/ai-fleet-coordinator` ·
+**Session:** `local_01bfeec0-2bcb-4714-8e2c-2020ebc96336` · cwd `~/Code/AI-Fleet-Coordinator` ·
 last activity 16:25 CT
 
 Landed: agent logo fixes (the Grok chip was showing the **xAI company mark** — `grok.svg` was
@@ -273,7 +273,7 @@ digest hardcoded `agent-logos/<slug>.svg`.  The portable sentence-gap skill land
    has Autorotate content the repo copy lacks; the repo copy has the THE BOARD section the live
    copy lacks.  The session added the cross-link to each independently but deliberately did
    **not** pick a winner.  This needs someone to reconcile it on purpose.
-3. **Uncommitted work is sitting in the `ai-fleet-coordinator` worktree right now** on branch
+3. **Uncommitted work is sitting in the `AI-Fleet-Coordinator` worktree right now** on branch
    `deepseek/seat-onboard`: modified `AGENT-SYNC.md`, `TEMPLATE-AGENTS.md`,
    `docs/fleet-skills/README-add-in-app.md`, `docs/fleet-skills/owner-copy/SKILL.md`, plus
    untracked `docs/fleet-skills/sentence-gap/`, `docs/fleet-skills/sentence-gap.zip`,

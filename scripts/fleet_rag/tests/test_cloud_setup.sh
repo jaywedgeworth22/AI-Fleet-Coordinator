@@ -83,7 +83,7 @@ cat > "$CLAUDE_JSON" <<'EOF'
   "mcpServers": {
     "github": {"command": "sh", "args": ["/x/github.sh"]}
   },
-  "projects": {"/home/user/ai-fleet-coordinator": {"allowedTools": []}}
+  "projects": {"/home/user/AI-Fleet-Coordinator": {"allowedTools": []}}
 }
 EOF
 
@@ -155,7 +155,7 @@ assert "no literal credential value in ~/.claude.json" bash -c "! grep -q '$FAKE
 assert "no stdio command smuggled in" bash -c "! python3 -c 'import json,sys;sys.exit(0 if \"command\" in json.load(open(sys.argv[1]))[\"mcpServers\"][\"fleet-recall\"] else 1)' '$CLAUDE_JSON'"
 assert "existing github server preserved" test "$(json_get "$CLAUDE_JSON" mcpServers.github.command)" = '"sh"'
 assert "unrelated top-level key preserved" test "$(json_get "$CLAUDE_JSON" numStartups)" = "7"
-assert "projects key preserved" test "$(json_get "$CLAUDE_JSON" 'projects./home/user/ai-fleet-coordinator.allowedTools')" = "[]"
+assert "projects key preserved" test "$(json_get "$CLAUDE_JSON" 'projects./home/user/AI-Fleet-Coordinator.allowedTools')" = "[]"
 assert "backup made before rewriting" bash -c "ls '$CLAUDE_JSON'.bak-fleet-recall-* >/dev/null 2>&1"
 
 echo "== second run is a no-op"

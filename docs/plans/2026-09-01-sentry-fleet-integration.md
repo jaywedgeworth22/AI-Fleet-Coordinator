@@ -129,7 +129,7 @@ Do **not** add a second Mac host monitor.  Extend `fleet-sentry-monitor`.
 
 ### 2. CI
 
-- `sentry-ci-report.yml` is fleet-standard and currently only live on ST + CT.  Copy from `ai-fleet-coordinator/github-workflows-template/workflows/sentry-ci-report.yml` onto UM, DD, BF, CL, AR, AFC.  Personal-Site / CTS / fleet-ops do not get a Sentry *app* project; a `fleet-infra` CI reporter is optional and still fingerprints `[app, workflow]` only.
+- `sentry-ci-report.yml` is fleet-standard and currently only live on ST + CT.  Copy from `AI-Fleet-Coordinator/github-workflows-template/workflows/sentry-ci-report.yml` onto UM, DD, BF, CL, AR, AFC.  Personal-Site / CTS / fleet-ops do not get a Sentry *app* project; a `fleet-infra` CI reporter is optional and still fingerprints `[app, workflow]` only.
 - Fingerprint stays `[ci-failure, app, workflow]` — never the branch or SHA (that minted ~85 zombie `fleet-infra` issues once).
 - Pause or delete cron monitors whose workflows were renamed or whose schedule no longer matches (`ci-deploy-freshness`, `ci-ios-testflight-ship`, weekly security jobs that check in error, `ci-ios-testflight-ship-mac-runner` with empty environments).
 - `getsentry/action-release` or the bundler plugin — **one** of them, not both — with `fetch-depth: 0` so commits attach.

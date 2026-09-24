@@ -68,7 +68,7 @@ REPOS=(
   /Users/jay/Code/Personal-Site
   /Users/jay/Code/Autorotate
   /Users/jay/Code/ContactLogo
-  /Users/jay/Code/ai-fleet-coordinator
+  /Users/jay/Code/AI-Fleet-Coordinator
   /Users/jay/Code/BotFleet
   /Users/jay/Code/fleet-ops
   /Users/jay/Code/botfleet-site
@@ -82,7 +82,7 @@ REPOS=(
 # Suffixed per-lane trees (trading-grok-litestream-cascade) remain reaped
 # when merged+idle.  Retired-KIMI seat trees reap when idle (not on a "kimi"
 # substring, and never by skipping the idle check).
-KEEP_RE="^(/Users/jay/Code/Socratic.Trade|/Users/jay/Code/Congress.Trade|/Users/jay/Code/Usage-Monitor|/Users/jay/Code/congress-trading-shared|/Users/jay/Code/DealDex|/Users/jay/Code/Personal-Site|/Users/jay/Code/Autorotate|/Users/jay/Code/ContactLogo|/Users/jay/Code/ai-fleet-coordinator|/Users/jay/Code/BotFleet|/Users/jay/Code/fleet-ops|/Users/jay/Code/botfleet-site|/Users/jay/apps/[a-z0-9]+-(claude|codex|live|antigravity|cursor|monet|grok|grok-build|deepseek)|/Users/jay/apps/(grok-acp-runtime|agy-acp-runtime|shellular-runtime|mac-collab|seat-mcp|KIMI-SALVAGE-2026-08-22|botfleet-server))$"
+KEEP_RE="^(/Users/jay/Code/Socratic.Trade|/Users/jay/Code/Congress.Trade|/Users/jay/Code/Usage-Monitor|/Users/jay/Code/congress-trading-shared|/Users/jay/Code/DealDex|/Users/jay/Code/Personal-Site|/Users/jay/Code/Autorotate|/Users/jay/Code/ContactLogo|/Users/jay/Code/AI-Fleet-Coordinator|/Users/jay/Code/BotFleet|/Users/jay/Code/fleet-ops|/Users/jay/Code/botfleet-site|/Users/jay/apps/[a-z0-9]+-(claude|codex|live|antigravity|cursor|monet|grok|grok-build|deepseek)|/Users/jay/apps/(grok-acp-runtime|agy-acp-runtime|shellular-runtime|mac-collab|seat-mcp|KIMI-SALVAGE-2026-08-22|botfleet-server))$"
 
 # Retired-KIMI seat, nested agent scratch, or /tmp.  Not a substring:
 # branch cursor/kimi-audit-def (ST #3044, owner-kept) must not match.

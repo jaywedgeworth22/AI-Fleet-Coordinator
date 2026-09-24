@@ -73,8 +73,8 @@ deterministic pieces:
 
 ```bash
 # board: tracked copy -> live copy, then restart
-cp ~/Code/ai-fleet-coordinator/scripts/mac-collab/mac-collab-server.py ~/apps/mac-collab/mac-collab-server.py
-python3 ~/Code/ai-fleet-coordinator/scripts/mac-collab/test_login_form.py
+cp ~/Code/AI-Fleet-Coordinator/scripts/mac-collab/mac-collab-server.py ~/apps/mac-collab/mac-collab-server.py
+python3 ~/Code/AI-Fleet-Coordinator/scripts/mac-collab/test_login_form.py
 pm2 restart mac-collab
 curl -sS -o /dev/null -w '%{http_code}\n' https://mac.jays.services/login   # expect 200
 
@@ -83,10 +83,10 @@ curl -sS -o /dev/null -w '%{http_code}\n' https://mac.jays.services/login   # ex
 
 # bridge: outbox issue first, then config, dry-run, then the LaunchAgent
 # open jaywedgeworth22/fleet-ops issue "[INSTINCT] Slack outbox"; note its number N
-cp ~/Code/ai-fleet-coordinator/scripts/github-outbox-bridge.py ~/apps/github-outbox-bridge.py
+cp ~/Code/AI-Fleet-Coordinator/scripts/github-outbox-bridge.py ~/apps/github-outbox-bridge.py
 printf '{"seats":[{"seat":"INSTINCT","repo":"jaywedgeworth22/fleet-ops","issue":N}]}\n' > ~/apps/github-outbox-bridge.json
 python3 ~/apps/github-outbox-bridge.py --once --dry-run
-cp ~/Code/ai-fleet-coordinator/scripts/launchd/com.jay.github-outbox-bridge.plist ~/Library/LaunchAgents/
+cp ~/Code/AI-Fleet-Coordinator/scripts/launchd/com.jay.github-outbox-bridge.plist ~/Library/LaunchAgents/
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.jay.github-outbox-bridge.plist
 launchctl print gui/$(id -u)/com.jay.github-outbox-bridge | head -5
 ```

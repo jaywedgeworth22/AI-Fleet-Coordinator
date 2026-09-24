@@ -314,7 +314,7 @@ re-runs this measurement, not a retrieval-quality finding.
 `rr-<label>` TEI container on `recall-api`'s own docker network (no published ports), reached
 only via `docker exec -e TEI_RERANK_URL=...`; each was stopped and removed before the next
 started.  Full method, raw JSON, and the full wins/losses list are in
-`/private/tmp/claude-501/-Users-jay-Code-ai-fleet-coordinator/782eb1ae-dcc5-4acf-8fe8-425dc6fe8890/scratchpad/rerank/results.md`.
+`/private/tmp/claude-501/-Users-jay-Code-AI-Fleet-Coordinator/782eb1ae-dcc5-4acf-8fe8-425dc6fe8890/scratchpad/rerank/results.md`.
 This directly answers Part B above, which this session's predecessor could not measure (HF CDN
 was unreachable that day).
 

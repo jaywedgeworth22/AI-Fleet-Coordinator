@@ -79,7 +79,7 @@ Three examples:
    `"owner-verified 2026-09-04"`.
 
 3. **A board finding says a defect is new; a later doc says it isn't.**  Query: *"Was the finding
-   that ai-fleet-coordinator itself has no CI or branch protection actually new when Claude's
+   that AI-Fleet-Coordinator itself has no CI or branch protection actually new when Claude's
    worktree-landing campaign flagged it, or had someone already filed it?"*  Chain:
    `board/c1160c9630f04eaaaa366b572b7e7ff3` (KIMI's original finding, filed 2026-08-20/21) →
    `doc/local/apps/HANDOFF-claude-2026-09-06-worktree-landing-campaign.md` chunk 14 ("the finding

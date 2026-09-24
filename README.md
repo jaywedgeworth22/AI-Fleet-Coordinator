@@ -25,7 +25,7 @@ Inventory: [`fleet-apps.json`](fleet-apps.json).  After any join, `python3 scrip
 | congress-trading-shared | CTS | library |
 | DealDex | DD | product |
 | Personal-Site | PS | product |
-| ai-fleet-coordinator | AFC | infra |
+| AI-Fleet-Coordinator | AFC | infra |
 
 Coding seats in that file: `CLAUDE`, `MONET`, `CODEX`, `AG`, `CURSOR`, `GROK`, `GROK-BUILD`, `DSH` (DeepSeek Harness), `MM` (MiniMax).  Roles: `AGENT-SYNC.md` § Agent Seat Specifics.
 
@@ -65,9 +65,9 @@ Standing procedure (policy + checklist + scripts).  Do not invent a one-off join
 
 | What | Doc | Script |
 |------|-----|--------|
-| New GitHub repo / `~/Code` folder joining the fleet | [`docs/ONBOARDING-NEW-APP.md`](docs/ONBOARDING-NEW-APP.md) ([GitHub](https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md)) | `scripts/onboard-new-app.sh` |
-| DNS / registrars (new app zone on **account** Usage.Jays.Services, not hostname `usage.jays.services`) | [`docs/DNS-AND-REGISTRARS.md`](docs/DNS-AND-REGISTRARS.md) ([GitHub](https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/DNS-AND-REGISTRARS.md)) | — |
-| New coding seat (Claude, Grok, Codex, …) | [`docs/ONBOARDING-NEW-AGENT.md`](docs/ONBOARDING-NEW-AGENT.md) ([GitHub](https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md)) | `scripts/onboard-new-agent.sh` |
+| New GitHub repo / `~/Code` folder joining the fleet | [`docs/ONBOARDING-NEW-APP.md`](docs/ONBOARDING-NEW-APP.md) ([GitHub](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-APP.md)) | `scripts/onboard-new-app.sh` |
+| DNS / registrars (new app zone on **account** Usage.Jays.Services, not hostname `usage.jays.services`) | [`docs/DNS-AND-REGISTRARS.md`](docs/DNS-AND-REGISTRARS.md) ([GitHub](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/DNS-AND-REGISTRARS.md)) | — |
+| New coding seat (Claude, Grok, Codex, …) | [`docs/ONBOARDING-NEW-AGENT.md`](docs/ONBOARDING-NEW-AGENT.md) ([GitHub](https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md)) | `scripts/onboard-new-agent.sh` |
 | Binding protocol (board + Slack + model economics) | [`AGENT-SYNC.md`](AGENT-SYNC.md) § THE BOARD, § Delegation & model economics | — |
 | Cursor chats on desktop + iOS (Grok Bot / Shellular) | [`docs/CURSOR-CHAT-SURFACES.md`](docs/CURSOR-CHAT-SURFACES.md) | `scripts/cursor_chat_surfaces.py` |
 | Universal fleet-ops skills catalog | [`docs/fleet-skills/README-add-in-app.md`](docs/fleet-skills/README-add-in-app.md) | `scripts/install-fleet-skills.py` |
@@ -85,19 +85,19 @@ activity ICS and deploys the site to **GitHub Pages**.
 
 | Artifact | URL |
 |----------|-----|
-| **HTML site** | https://jaywedgeworth22.github.io/ai-fleet-coordinator/ |
-| **Markdown** | https://jaywedgeworth22.github.io/ai-fleet-coordinator/digest.md |
-| **ICS — daily outline** (all-day “what shipped”) | https://jaywedgeworth22.github.io/ai-fleet-coordinator/calendar/daily-digest.ics |
-| **ICS — per-commit activity** | https://jaywedgeworth22.github.io/ai-fleet-coordinator/calendar/agent-activity.ics |
+| **HTML site** | https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/ |
+| **Markdown** | https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/digest.md |
+| **ICS — daily outline** (all-day “what shipped”) | https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/calendar/daily-digest.ics |
+| **ICS — per-commit activity** | https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/calendar/agent-activity.ics |
 | **THE BOARD** (auth) | https://mac.jays.services/board |
 | **THE BOARD short link** | https://board.jays.services (302 → `/board`) |
 
 Raw-from-`main` fallbacks (no Pages required):
 
 ```text
-https://raw.githubusercontent.com/jaywedgeworth22/ai-fleet-coordinator/main/calendar/daily-digest.ics
-https://raw.githubusercontent.com/jaywedgeworth22/ai-fleet-coordinator/main/calendar/agent-activity.ics
-https://raw.githubusercontent.com/jaywedgeworth22/ai-fleet-coordinator/main/site/digest.md
+https://raw.githubusercontent.com/jaywedgeworth22/AI-Fleet-Coordinator/main/calendar/daily-digest.ics
+https://raw.githubusercontent.com/jaywedgeworth22/AI-Fleet-Coordinator/main/calendar/agent-activity.ics
+https://raw.githubusercontent.com/jaywedgeworth22/AI-Fleet-Coordinator/main/site/digest.md
 ```
 
 ### Subscribe (Apple / Google / Outlook)
@@ -113,7 +113,7 @@ https://raw.githubusercontent.com/jaywedgeworth22/ai-fleet-coordinator/main/site
 CDN alternate for the commit feed (sometimes validates more cleanly on mobile):
 
 ```text
-https://cdn.jsdelivr.net/gh/jaywedgeworth22/ai-fleet-coordinator@main/calendar/agent-activity.ics
+https://cdn.jsdelivr.net/gh/jaywedgeworth22/AI-Fleet-Coordinator@main/calendar/agent-activity.ics
 ```
 
 ### Enable GitHub Pages (one-time)

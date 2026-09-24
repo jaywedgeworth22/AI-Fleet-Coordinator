@@ -5,12 +5,12 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:Jay's Daily Coding-Related Activities
 X-WR-CALDESC:One all-day entry per day: merged PRs, issues opened/closed, e
- ffort board. Hosted by ai-fleet-coordinator.
+ ffort board. Hosted by AI-Fleet-Coordinator.
 X-WR-TIMEZONE:America/Chicago
 REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-21@ai-fleet-coordinator
+UID:fleet-daily-2026-09-21@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260921
 DTEND;VALUE=DATE:20260922
@@ -117,13 +117,13 @@ DESCRIPTION:62 PRs merged · 1 issues opened · 0 issues closed · 245 effo
  \n- [Socratic.Trade] Console topCandidates.slice crash fixed via safeTopCa
  ndidates on main\n- [Socratic.Trade] iOS Coach → Insights rename already
   on main (InsightsView)
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-21
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-21
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-20@ai-fleet-coordinator
+UID:fleet-daily-2026-09-20@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260920
 DTEND;VALUE=DATE:20260921
@@ -172,7 +172,7 @@ DESCRIPTION:39 PRs merged · 28 issues opened · 8 issues closed · 5 effor
  er\n- [Usage-Monitor#1514] (claude) chore(scripts): rename — usage-colle
  ctor.mjs to .disabled.mjs to remove dead-code matrix-drift risk\n- [Usage-
  Monitor#1516] (minimax) docs(effort-log): log 2026-09-20 — comprehensive
-  top-to-bottom review (2 of N)\n- [ai-fleet-coordinator#272] Safari start 
+  top-to-bottom review (2 of N)\n- [AI-Fleet-Coordinator#272] Safari start 
  page: URL-bar suggestions\, all fleet repos\, System theme (+ Cloud env)\n
  - [codecaps#20] audit-9: comprehensive review — 22 findings\, tier-1 saf
  e fixes\n- [codecaps#21] feat: add quota reset alarms and iOS companion ap
@@ -245,13 +245,13 @@ DESCRIPTION:39 PRs merged · 28 issues opened · 8 issues closed · 5 effor
  n- [BotFleet] (minimax) 2026-09-20 — IN_PROGRESS — account balance 402
   records only a per-bot cooldown\, so each engine bot re-pages. <! — wb-
  agent-report:555c5227685c4a2c9f1cdfa87cb68dcb — >
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-20
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-20
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-19@ai-fleet-coordinator
+UID:fleet-daily-2026-09-19@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260919
 DTEND;VALUE=DATE:20260920
@@ -295,9 +295,9 @@ DESCRIPTION:36 PRs merged · 5 issues opened · 11 issues closed · 23 effo
  docs(effort-log): mirror — closeout for sqlite-retry followup (#3418)\n-
   [Usage-Monitor#1502] fix(scheduler): skip unconfigured Namecheap polling 
  and reconcile effort log\n- [Usage-Monitor#1506] fix(scheduler): surface f
- ailedProviders in runtime health (#1478)\n- [ai-fleet-coordinator#257] doc
+ ailedProviders in runtime health (#1478)\n- [AI-Fleet-Coordinator#257] doc
  s(housekeeper): ask-first Monet/DriveFS Mac reclaim (DRAFT — do not merg
- e)\n- [ai-fleet-coordinator#269] (ag) docs(effort-log): mirror Fleet-Infra
+ e)\n- [AI-Fleet-Coordinator#269] (ag) docs(effort-log): mirror Fleet-Infra
   + — pickup closeouts (boards d10f0806\, 571ecb63)\n- [ai-fleet-coordina
  tor#270] (minimax\, claude) docs(housekeeper): ask-first — / DriveFS Mac
   reclaim\n- [codecaps#15] (minimax) [CodeCaps\, ] Blue/white — mark and 
@@ -339,14 +339,14 @@ DESCRIPTION:36 PRs merged · 5 issues opened · 11 issues closed · 23 effo
  dinator] (grok\, sentry\, minimax\, deepseek) 2026-09-19 — IN PR — Reg
  ister Harness (HR) as a fleet app and point pm2 at harness-web (`grok/harn
  ess-package`\, worktree `~/apps/fleet — package`\, board `0127d787`). 's
-  local `harness/rollout-2026-09-\n- [ai-fleet-coordinator] (minimax\, clau
+  local `harness/rollout-2026-09-\n- [AI-Fleet-Coordinator] (minimax\, clau
  de) 2026-09-19 — IN PR — a-f-c: housekeeper ask-first — / DriveFS Ma
  c reclaim (`mm/housekeeper-ask-first`\, worktree `~/apps/ai-fleet-coordina
  tor- `). BotFleet Housekeeper and the canonical BotFleet playbo\n- [ai-fle
  et-coordinator] (cursor\, claude) 2026-09-19 — WONTFIX - Small-Repos + C
  loseout lane takeover: Fleet-Infra landing campaign (board `d10f0806`\, la
  ne `~/apps/fleet — landing @ ag/seer-literal-claim`). Re-verified state 
- at 00:35 CT. Of t\n- [ai-fleet-coordinator] (cursor\, ag\, claude) 2026-09
+ at 00:35 CT. Of t\n- [AI-Fleet-Coordinator] (cursor\, ag\, claude) 2026-09
  -19 — WONTFIX - Small-Repos + Closeout lane takeover: — pickup ops lef
  tovers (board `571ecb63`\, lane `~/apps/fleet — landing @ ag/seer-litera
  l-claim`). Re-verified each — pickup item per prior \n- [BotFleet] (mini
@@ -400,13 +400,13 @@ DESCRIPTION:36 PRs merged · 5 issues opened · 11 issues closed · 23 effo
  BotFleet #389 ios-settings: show push sender health + UNTextInputNotificat
  ionAction reply (branch `minimax/389-push-settings-row`\, worktree `~/apps
  /botfleet — 389`\, files `io
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-19
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-19
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-18@ai-fleet-coordinator
+UID:fleet-daily-2026-09-18@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260918
 DTEND;VALUE=DATE:20260919
@@ -567,23 +567,23 @@ DESCRIPTION:120 PRs merged · 16 issues opened · 29 issues closed · 18 ef
  he 15-minute — margin pages at 05:56\n- [ContactLogo] (cursor) 2026-09-1
  8 — COMPLETED — App-health sweep (board `1ed81423`\, branch `cursor/ap
  p-health-20260918`\, worktree `~/apps/contactlogo- `). Owner-directed full
-  sweep. PR #92 static landing prerender merged (e\n- [ai-fleet-coordinator
+  sweep. PR #92 static landing prerender merged (e\n- [AI-Fleet-Coordinator
  ] (grok\, ag) 2026-09-18 — IN PR — Apple Notes MD converter: do not it
  alicize identifiers with underscores (merge_commit_sha)\, skip empty bulle
- ts (board leftover — pickup)\n- [ai-fleet-coordinator] (grok) 2026-09-18
+ ts (board leftover — pickup)\n- [AI-Fleet-Coordinator] (grok) 2026-09-18
   — IN PROGRESS — Install UM subscription quota LaunchAgent (`grok/quot
  a-launchagent-docs`\, worktree `~/apps/fleet — launchagent`\, UM board `
  3482c85e`). Label `com.jays.subscription-quota-col\n- [ai-fleet-coordinato
  r] (claude) 2026-09-18 — COMPLETED/PR — BotFleet launchd wrapper probe
  d a route that does not exist (`claude/r3-fleet-landing`\, boards `571ecb6
  3` / `d10f0806`). `scripts/botfleet-server-start.sh` (installed as `~
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-18
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-18
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-17@ai-fleet-coordinator
+UID:fleet-daily-2026-09-17@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260917
 DTEND;VALUE=DATE:20260918
@@ -613,31 +613,31 @@ DESCRIPTION:51 PRs merged · 12 issues opened · 5 issues closed · 15 effo
  oy Latch margin for GitHub schedule delay\n- [Socratic.Trade#3389] (sentry
  ) fix( -crons): widen Cleanup Actions Caches margin for GitHub schedule de
  lay\n- [Usage-Monitor#1490] Add a subtle Report a Problem trigger on Suppo
- rt and errors\n- [ai-fleet-coordinator#227] (sentry) Port — Crons in_pro
- gress check-in and ALERT_CONCLUSIONS\n- [ai-fleet-coordinator#233] RAG: BM
+ rt and errors\n- [AI-Fleet-Coordinator#227] (sentry) Port — Crons in_pro
+ gress check-in and ALERT_CONCLUSIONS\n- [AI-Fleet-Coordinator#233] RAG: BM
  25 measurement (offline half) — dense-leg parts blocked by infra\n- [ai-
  fleet-coordinator#234] fix(rag): fast-fail the private Qdrant path when Ta
- ilscale is gone on macOS\n- [ai-fleet-coordinator#235] fix(rag): doctor's 
+ ilscale is gone on macOS\n- [AI-Fleet-Coordinator#235] fix(rag): doctor's 
  tei:rerank row skips instead of false-FAILs when Tailscale is down\n- [ai-
  fleet-coordinator#236] (claude) docs(rag): ExecRetrieval review — what a
- rXiv 2609.01865 teaches fleet recall\n- [ai-fleet-coordinator#237] (claude
+ rXiv 2609.01865 teaches fleet recall\n- [AI-Fleet-Coordinator#237] (claude
  ) docs(recall): rank-1-is-resemblance skill bullet + FLEET-UI-COPY desktop
-  sentence-gap correction\n- [ai-fleet-coordinator#238] test(rag): make fle
+  sentence-gap correction\n- [AI-Fleet-Coordinator#238] test(rag): make fle
  et_rag tests hermetic against real ~/.secrets and Infisical\n- [ai-fleet-c
  oordinator#239] (claude) docs(skills): sentence-gap + owner-copy follow th
  e 2026-09-04 desktop ruling — two literal spaces\, entity advice withdra
- wn\n- [ai-fleet-coordinator#240] docs(mac-procs): drop retired UptimeRobot
-  relay rows\n- [ai-fleet-coordinator#241] fix(notes): non-ASCII Apple Note
-  titles no longer duplicate on — update\n- [ai-fleet-coordinator#242] te
+ wn\n- [AI-Fleet-Coordinator#240] docs(mac-procs): drop retired UptimeRobot
+  relay rows\n- [AI-Fleet-Coordinator#241] fix(notes): non-ASCII Apple Note
+  titles no longer duplicate on — update\n- [AI-Fleet-Coordinator#242] te
  st(fleet-rag): pay first-exec cost of fake recall before timed hook calls\
- n- [ai-fleet-coordinator#243] test(rag): add a 24-question multi-hop and c
- orpus-wide golden set\n- [ai-fleet-coordinator#244] Include HogHunter in d
- igest and calendar workflow repo lists\n- [ai-fleet-coordinator#245] (code
+ n- [AI-Fleet-Coordinator#243] test(rag): add a 24-question multi-hop and c
+ orpus-wide golden set\n- [AI-Fleet-Coordinator#244] Include HogHunter in d
+ igest and calendar workflow repo lists\n- [AI-Fleet-Coordinator#245] (code
  x) fix : skip invalid config.toml in fleet-recall installer\n- [ai-fleet-c
  oordinator#246] (deepseek) fix : stop Load failed by refusing .sh self-exe
- c\n- [ai-fleet-coordinator#247] Show HogHunter on the activity digest lege
- nd\n- [ai-fleet-coordinator#248] Fix launchd gdrive File Provider mirror a
- nd BotFleet crash loop\n- [ai-fleet-coordinator#249] fix(fleet): squash-sa
+ c\n- [AI-Fleet-Coordinator#247] Show HogHunter on the activity digest lege
+ nd\n- [AI-Fleet-Coordinator#248] Fix launchd gdrive File Provider mirror a
+ nd BotFleet crash loop\n- [AI-Fleet-Coordinator#249] fix(fleet): squash-sa
  fe landed check\, mac-collab reclaim tests\, token staleness\n- [ai-fleet-
  coordinator#250] docs: name needs-mac label in AGENT-SYNC.md mirror\n- [ai
  -fleet-coordinator#251] (claude) feat(fleet): Instinct onboarding prompt\,
@@ -674,34 +674,34 @@ DESCRIPTION:51 PRs merged · 12 issues opened · 5 issues closed · 15 effo
  nalytics. Live `/_ve\n- [Personal-Site] (grok) 2026-09-17 — COMPLETED 
  — vercel-ignore-hourly watch_args `:(top)` pathspec already on main (PR 
  #61 `1dd093f`\, board `298e80ed`). Nested `site/` uses `:(top)${rel}`. Did
-  not invent a second Vercel proj\n- [ai-fleet-coordinator] (grok\, ag) 202
+  not invent a second Vercel proj\n- [AI-Fleet-Coordinator] (grok\, ag) 202
  6-09-17 — IN PR #249 — pickup: recall verify\, squash-merge detection\
  , mac-collab bind/reclaim tests + token staleness\, small worktree prune (
  ` -pickup`\, worktree `~/apps/fleet — pickup`). Boards `d\n- [ai-fleet-c
  oordinator] (grok) 2026-09-17 — COMPLETED/MERGED #247 — Digest legend 
  still omitted HogHunter after #244 (`grok/digest-hh-legend`\, worktree `~/
  apps/fleet — hoghunter`\, board `eb9a90f7`). FLEET_REPOS fetch list is n
- ot th\n- [ai-fleet-coordinator] (grok) 2026-09-17 — IN PR #248 — Mac l
+ ot th\n- [AI-Fleet-Coordinator] (grok) 2026-09-17 — IN PR #248 — Mac l
  aunchd exit-1 + Datadog coverage (`grok/mac-daemons-datadog`\, worktree `~
  /apps/fleet — daemons`\, board `eb9a90f7`). gdrive File Provider `copy_m
- irror`\; botfleet start wr\n- [ai-fleet-coordinator] (grok\, deepseek\, ag
+ irror`\; botfleet start wr\n- [AI-Fleet-Coordinator] (grok\, deepseek\, ag
  ) 2026-09-17 — IN PR #246 — Load failed all threads (` -load-error`\, 
  worktree `~/apps/fleet — load-error`\, board `eef4315d`). — leftover c
  hat 0c60d4c8. Live ` .sh` exec'd itself\; `node_modules` empty\; D\n- [ai-
  fleet-coordinator] (grok\, codex\, ag) 2026-09-17 — COMPLETED/MERGED #24
  5 — config.toml github mcp-remote quoting (` -syntax`\, worktree `~/apps
  /fleet — config`\, board `080d51bd`). — leftover chat 39d195c7. JSON-s
- tyle `\\\\"` in a TOML basic \n- [ai-fleet-coordinator] (grok) 2026-09-17 
+ tyle `\\\\"` in a TOML basic \n- [AI-Fleet-Coordinator] (grok) 2026-09-17 
  — COMPLETED/MERGED #244 — Digest/calendar GHA FLEET_REPOS omitted HogH
  unter (`grok/digest-hoghunter`\, worktree `~/apps/fleet — hoghunter`\, b
- oard `eb9a90f7`). Python DEFAULT_REPOS already ha\n- [ai-fleet-coordinator
+ oard `eb9a90f7`). Python DEFAULT_REPOS already ha\n- [AI-Fleet-Coordinator
  ] (grok\, sentry) 2026-09-17 — IN PR #227 — Port — Crons in_progress
   check-in + ALERT_CONCLUSIONS (`ag/port — ci-report`\, worktree `~/apps/
  fleet — ci`\, board `5687113a`). Merged origin/main so the PR is no long
- er behin\n- [ai-fleet-coordinator] (claude) 2026-09-17 — COMPLETED/MERGE
+ er behin\n- [AI-Fleet-Coordinator] (claude) 2026-09-17 — COMPLETED/MERGE
  D #237 — fleet-recall skill "rank 1 is resemblance" bullet + `FLEET-UI-C
  OPY.md` desktop/terminal sentence-gap correction (`claude/recall-rank1-bul
- let`\, worktree `~/apps/fle\n- [ai-fleet-coordinator] (claude) 2026-09-17 
+ let`\, worktree `~/apps/fle\n- [AI-Fleet-Coordinator] (claude) 2026-09-17 
  — COMPLETED/MERGED #251 — Paste-ready onboarding prompt for INSTINCT\,
   the iMessage interface seat (`claude/instinct-imessage-onboarding-n6u9oh`
  \, — cloud). Claimed Thu\, Sep 17\, 2026. `docs/I\n- [BotFleet] (ag\, se
@@ -710,13 +710,13 @@ DESCRIPTION:51 PRs merged · 12 issues opened · 5 issues closed · 15 effo
  2dfed7e2032 — >\n- [BotFleet] (ag) 2026-09-17 — COMPLETED - Fix agy st
  din prompt delivery and rebuild dist-server. Landed in PR #461. <! — wb-
  agent-report:3f3b419c1d064b85adfe1b48c809c757 — >
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-17
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-17
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-16@ai-fleet-coordinator
+UID:fleet-daily-2026-09-16@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260916
 DTEND;VALUE=DATE:20260917
@@ -862,13 +862,13 @@ DESCRIPTION:45 PRs merged · 20 issues opened · 6 issues closed · 18 effo
  9-16 — PLANNED - Live ~/apps/botfleet-server checkout 37 commits behind 
  origin/main — missing turn-context byte cap and other fixes. <! — wb-a
  gent-report:efcde7b5c4b343d9a3a1b74e17e8644b — >
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-16
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-16
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-15@ai-fleet-coordinator
+UID:fleet-daily-2026-09-15@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260915
 DTEND;VALUE=DATE:20260916
@@ -937,7 +937,7 @@ DESCRIPTION:105 PRs merged · 151 issues opened · 284 issues closed · 38
  s)\, Native Android Companion App & Apple\n- [Autorotate#206] Web and iOS 
  utility and power enhancements — · PR #48\n- [Autorotate#207] iOS first
  -launch update prompt (fleet) — · COMPLETED/MERGED #36 squash\n- [Autor
- otate#208] Fleet onboarding — join ai-fleet-coordinator as app Autorotat
+ otate#208] Fleet onboarding — join AI-Fleet-Coordinator as app Autorotat
  e (TS)\n- [Autorotate#209] Merge — App Builder PWA with this monorepo 
  — · merged as PR #38\n- [Autorotate#210] Apache-2.0 + — dump backup +
   catalog fold-in — · PR #42\n- [BotFleet#188] first-class ACP backend: 
@@ -1044,10 +1044,10 @@ DESCRIPTION:105 PRs merged · 151 issues opened · 284 issues closed · 38
  eport:9e5328999a984e9b9bbc72f6d4a9e597 — > PR #65 is already merged whic
  h resolves this\n- [ContactLogo] (ag) 2026-09-15 — COMPLETED — [P1] On
  board ContactLogo to the fleet. Board item 3b9ca6cf. Added dependabot conf
- ig and created seat worktrees\n- [ai-fleet-coordinator] (grok) 2026-09-15 
+ ig and created seat worktrees\n- [AI-Fleet-Coordinator] (grok) 2026-09-15 
  — IN PROGRESS — recall-cli skip Tailscale GUI / 120s private Qdrant on
   stats (`grok/recall-skip-private`\, worktree `~/apps/fleet — deadline`)
- . CLIError 3 is down (public twin). `RECALL_SKIP\n- [ai-fleet-coordinator]
+ . CLIError 3 is down (public twin). `RECALL_SKIP\n- [AI-Fleet-Coordinator]
   (ag\, minimax\, sentry) COMPLETED add — and — agents to fleet\, updat
  e ST and BotFleet app icons in activity digest 2026-09-15\n- [BotFleet] (a
  g\, deepseek) 2026-09-15 — COMPLETED — Engine capability parity: toolL
@@ -1066,13 +1066,13 @@ DESCRIPTION:105 PRs merged · 151 issues opened · 284 issues closed · 38
  5 — COMPLETED — models on — with native — branding and model catal
  og expansion. <! — wb-agent-report:f978874c66304ca8b0c17fe3e7677098 — 
  >
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-15
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-15
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-14@ai-fleet-coordinator
+UID:fleet-daily-2026-09-14@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260914
 DTEND;VALUE=DATE:20260915
@@ -1095,8 +1095,8 @@ DESCRIPTION:17 PRs merged · 4 issues opened · 0 issues closed · 6 effort
  Monitor#1462] docs(effort-log): close out the #1460 row with the post-merg
  e gate result\n- [Usage-Monitor#1463] (claude) Fix — macOS keychain read
  ing and add All-at-Once quota view\n- [Usage-Monitor#1465] docs: Note that
-  macos app was extracted to AgentBar\n- [ai-fleet-coordinator#222] Safari 
- start page Settings and real new-tab default\n- [ai-fleet-coordinator#223]
+  macos app was extracted to AgentBar\n- [AI-Fleet-Coordinator#222] Safari 
+ start page Settings and real new-tab default\n- [AI-Fleet-Coordinator#223]
   THE BOARD remembers collab login for 30 days\n\nIssues opened:\n- [Socrat
  ic.Trade#3290] Merge shepherd status\n- [Socratic.Trade#3295] Merge shephe
  rd status\n- [Socratic.Trade#3297] Merge shepherd status\n- [Socratic.Trad
@@ -1107,7 +1107,7 @@ DESCRIPTION:17 PRs merged · 4 issues opened · 0 issues closed · 6 effort
   [Usage-Monitor] (claude\, sentry) 2026-09-14 — COMPLETED (merged) - UM 
  — ci-report hardening: committed harness in CI + guard tying MAX_RUNTIME
  _OVERRIDES to ios-ship.yml timeout-minutes. <! — wb-agent-report:3ccaa57
- e868e4878a0a5b68eca\n- [ai-fleet-coordinator] 2026-09-14 — FX — IN PRO
+ e868e4878a0a5b68eca\n- [AI-Fleet-Coordinator] 2026-09-14 — FX — IN PRO
  GRESS — THE BOARD remembers collab token (`fx/board-remember-token`\, wo
  rktree `~/apps/fleet-fx-board-session`\, board `7d3605e2`)\n- [ai-fleet-co
  ordinator] 2026-09-14 — FX — IN PROGRESS — Safari start page Setting
@@ -1119,13 +1119,13 @@ DESCRIPTION:17 PRs merged · 4 issues opened · 0 issues closed · 6 effort
  cal updater exit 127 (Homebrew PATH) and iOS Live Activity main-thread han
  g (BOTFLEET-E). Landed in #414. Mac desktop exits 127 are fixed by injecti
  ng node paths
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-14
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-14
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-13@ai-fleet-coordinator
+UID:fleet-daily-2026-09-13@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260913
 DTEND;VALUE=DATE:20260914
@@ -1206,10 +1206,10 @@ DESCRIPTION:59 PRs merged · 20 issues opened · 26 issues closed · 60 eff
   — COMPLETED - Native macOS Usage Monitor quota app (#1450\n- [ai-fleet-
  coordinator#43] mac.jays.services collab read (LIVE)\n- [ai-fleet-coordina
  tor#47] [P0] MAC_COLLAB_TOKEN is root-of-everything — replace with per-s
- eat scoped tokens\n- [ai-fleet-coordinator#48] [P0] Board server + finding
+ eat scoped tokens\n- [AI-Fleet-Coordinator#48] [P0] Board server + finding
  s.db (3\,703 rows) are unversioned\, Mac-only\, no automated backup\n- [ai
  -fleet-coordinator#49] [P1] Coordination hub flapped 502 during audit and 
- is neither watched nor monitored\n- [ai-fleet-coordinator#51] [P1] Triple-
+ is neither watched nor monitored\n- [AI-Fleet-Coordinator#51] [P1] Triple-
  claim not atomic\; mirrored statuses overwritten\; deploys de-conflicted b
  y a ~10-min Slack window\n- [congress-trading-shared#279] Cross-app coordi
  nation follow-ups\n- [congress-trading-shared#286] tickerLogoPolicy A/B/C/
@@ -1312,13 +1312,13 @@ DESCRIPTION:59 PRs merged · 20 issues opened · 26 issues closed · 60 eff
  -09-13 — FX — IN PROGRESS — Merge to main is Vercel production (`fx/
  merge-equals-live`\, worktree `~/apps/dealdex-fx-deploy`\, board `ef71d6c1
  `)
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-13
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-13
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-12@ai-fleet-coordinator
+UID:fleet-daily-2026-09-12@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260912
 DTEND;VALUE=DATE:20260913
@@ -1520,13 +1520,13 @@ DESCRIPTION:65 PRs merged · 104 issues opened · 106 issues closed · 25 e
  Correct — quota routing (#283\, PR #338\, board 09d689cb). Merged as `ab
  e978c6`. Maps live opaque model labels to exact catalog identities\, prese
  rves conservative reset bounds\,
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-12
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-12
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-11@ai-fleet-coordinator
+UID:fleet-daily-2026-09-11@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260911
 DTEND;VALUE=DATE:20260912
@@ -1624,13 +1624,13 @@ DESCRIPTION:15 PRs merged · 16 issues opened · 12 issues closed · 16 eff
  - COMPLETED - Same-source/routine re-fires must append\; auto instructions
   not user bubbles. Landed: BotFleet PR #299 merged 2026-09-11 00:13Z (6c39
  5ebd). <! — wb-agent-report:
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-11
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-11
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-10@ai-fleet-coordinator
+UID:fleet-daily-2026-09-10@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260910
 DTEND;VALUE=DATE:20260911
@@ -1660,7 +1660,7 @@ DESCRIPTION:20 PRs merged · 2 issues opened · 0 issues closed · 2 effort
  3208] fix(ops): tini PID1 reaps Docker HEALTHCHECK curls\n- [Usage-Monitor
  #1434] iOS local app: add Learn More tab (server + client overview\, featu
  res\, links)\n- [Usage-Monitor#1436] fix(ios): product copy on the local L
- earn More tab\n- [ai-fleet-coordinator#205] rag: close two silent observab
+ earn More tab\n- [AI-Fleet-Coordinator#205] rag: close two silent observab
  ility gaps in fleet-agents recall\n\nIssues opened:\n- [Socratic.Trade#320
  9] Merge shepherd status\n- [Socratic.Trade#3210] Merge shepherd status\n\
  nEffort board:\n- [BotFleet] (claude) 2026-09-10 — COMPLETED - Redaction
@@ -1670,13 +1670,13 @@ DESCRIPTION:20 PRs merged · 2 issues opened · 0 issues closed · 2 effort
  - BOTFLEET-C grokAgent auth_required while signed in. Landed: BotFleet PR 
  #304 merged 2026-09-10 21:08Z (787a814d). <! — wb-agent-report:e86443a4c
  c2043df90834fafb7
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-10
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-10
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-09@ai-fleet-coordinator
+UID:fleet-daily-2026-09-09@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260909
 DTEND;VALUE=DATE:20260910
@@ -1725,7 +1725,7 @@ DESCRIPTION:34 PRs merged · 40 issues opened · 1 issues closed · 2 effor
  ttempt bounds\, proven restore\n- [Usage-Monitor#1435] (sentry) feat(obser
  vability): full token/model telemetry + — fleet-infra mirror\n- [ai-flee
  t-coordinator#203] (codex) docs: paste-ready prompt that explains fleet RA
- G to — and proves it is used\n- [ai-fleet-coordinator#204] docs: Oracle 
+ G to — and proves it is used\n- [AI-Fleet-Coordinator#204] docs: Oracle 
  RAG routines open recall-tunnel when Tailscale is down\n\nIssues closed:\n
  - [BotFleet#263] September 9 end-to-end iOS\, macOS and integration audit\
  n\nIssues opened:\n- [BotFleet#263] September 9 end-to-end iOS\, macOS and
@@ -1770,13 +1770,13 @@ DESCRIPTION:34 PRs merged · 40 issues opened · 1 issues closed · 2 effor
  g 7d/24h window selector\, and fix disconnected duplicate premium subscrip
  tions (branch `antigravity/admin-error-log-subscriptions`). Expand Source 
  Heal
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-09
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-09
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-08@ai-fleet-coordinator
+UID:fleet-daily-2026-09-08@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260908
 DTEND;VALUE=DATE:20260909
@@ -1865,13 +1865,13 @@ DESCRIPTION:43 PRs merged · 4 issues opened · 1 issues closed · 7 effort
  ESS — Issue #37 drop dead Simple Icons slugs + liveness CI (board 32be84
  ad\, worktree `~/apps/contactlogo — simpleicons` @ `fix/simpleicons-live
  ness`). 23 CDN-404 slugs removed fro
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-08
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-08
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-07@ai-fleet-coordinator
+UID:fleet-daily-2026-09-07@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260907
 DTEND;VALUE=DATE:20260908
@@ -1959,13 +1959,13 @@ DESCRIPTION:45 PRs merged · 7 issues opened · 4 issues closed · 6 effort
  cel auto-deploy rate-limit query (&state=READY) (PR #63 merged `ffa9d90`).
   Added &state=READY filter to `site/vercel-ignore-hourly.sh` and updated V
  ercel dashb
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-07
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-07
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-06@ai-fleet-coordinator
+UID:fleet-daily-2026-09-06@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260906
 DTEND;VALUE=DATE:20260907
@@ -1990,21 +1990,21 @@ DESCRIPTION:18 PRs merged · 2 issues opened · 0 issues closed · 1 effort
   path + Distribution signing for Client TF\n- [Usage-Monitor#1422] fix(ios
  ): drop Apple Distribution identity override on Client archive\n- [Usage-M
  onitor#1423] fix(ios): clear CODE_SIGN_IDENTITY for usage Client archive\n
- - [ai-fleet-coordinator#197] docs(secret-handoff): drop outdated BotFleet 
- Secret Request Card section\n- [ai-fleet-coordinator#198] (deepseek\, curs
+ - [AI-Fleet-Coordinator#197] docs(secret-handoff): drop outdated BotFleet 
+ Secret Request Card section\n- [AI-Fleet-Coordinator#198] (deepseek\, curs
  or) Add — icon to Shellular — chat surfaces entry\n\nIssues opened:\n-
   [BotFleet#226] Settings: Remote Access for named tunnel botfleet.jays.ser
  vices\n- [Socratic.Trade#3175] Merge shepherd status\n\nEffort board:\n- [
  Congress.Trade] 2026-09-06 - PRODUCER - IN_PROGRESS - PR #2324 Congress.Tr
  ade: DIRTY merge conflicts. <! — wb-agent-report:3cd0f4192b254ccfb2c9362
  f09d6ef14 — >
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-06
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-06
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-05@ai-fleet-coordinator
+UID:fleet-daily-2026-09-05@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260905
 DTEND;VALUE=DATE:20260906
@@ -2056,13 +2056,13 @@ DESCRIPTION:30 PRs merged · 3 issues opened · 0 issues closed · 2 effort
  ss.Trade] 2026-09-05 - PRODUCER - IN_PROGRESS - PR #2314 Congress.Trade: B
  LOCKED waiting for required review. <! — wb-agent-report:95c1b72d6d7449d
  f83989d8e037ccf13 — >
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-05
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-05
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-04@ai-fleet-coordinator
+UID:fleet-daily-2026-09-04@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260904
 DTEND;VALUE=DATE:20260905
@@ -2201,24 +2201,24 @@ DESCRIPTION:65 PRs merged · 10 issues opened · 5 issues closed · 26 effo
  rdinator] (claude) 2026-09-17 — IN PROGRESS — sentence-gap + owner-cop
  y skills follow the 2026-09-04 desktop ruling\; entity advice withdrawn (`
  claude/sentence-gap-skill-ruling`\, worktree `~/apps/fleet — sentence-ga
- p-ski\n- [ai-fleet-coordinator] (minimax\, deepseek\, grok\, cursor) 2026-
+ p-ski\n- [AI-Fleet-Coordinator] (minimax\, deepseek\, grok\, cursor) 2026-
  09-04 — IN PROGRESS — Slack tag is \; — Harness is — (` — acrony
  ms`\, worktree `~/apps/fleet — `\, board `f9df420d`). Owner 2026-09-04: 
  anywhere a — acronym is used\, it is ` ` (Slack ` `\; former ` `\n- [ai-
  fleet-coordinator] (grok\, sentry) 2026-09-04 — IN PROGRESS — max-feat
  ures fleet (branch ` -max-features-fleet`\, worktree `~/apps/fleet — max
  -features`\, board `af1ab6e9`). Designer rulings UPDATE: PS/CTS/OPS omit 
- — (approved)\; ST+CT we\n- [ai-fleet-coordinator] (claude) 2026-09-04 
+ — (approved)\; ST+CT we\n- [AI-Fleet-Coordinator] (claude) 2026-09-04 
  — COMPLETED/MERGED #189 — Fleet UI standard: nothing truncated without
   recourse (`claude/no-silent-truncation-standard`\, worktree `~/apps/fleet
   — truncation`\, board `ecab7748`). Owner rulin
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-04
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-04
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-03@ai-fleet-coordinator
+UID:fleet-daily-2026-09-03@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260903
 DTEND;VALUE=DATE:20260904
@@ -2268,8 +2268,8 @@ DESCRIPTION:45 PRs merged · 16 issues opened · 11 issues closed · 15 eff
  408] (ag) feat(agents): $70 net — seat and honest missing telemetry\n- [
  Usage-Monitor#1409] (claude\, codex) fix(agents): — Max $200 / SuperGrok
   Heavy $300 and — history\n- [Usage-Monitor#1412] Quota windows API for 
- remaining % and BotFleet skip\n- [ai-fleet-coordinator#178] docs: sync liv
- e MAC-LOCAL-PROCESSES.md to repo\n- [ai-fleet-coordinator#179] docs(rag): 
+ remaining % and BotFleet skip\n- [AI-Fleet-Coordinator#178] docs: sync liv
+ e MAC-LOCAL-PROCESSES.md to repo\n- [AI-Fleet-Coordinator#179] docs(rag): 
  access-check page every agent platform can be pointed at\n- [ai-fleet-coor
  dinator#180] (cursor) docs(rag): recall prompt block for every platform sl
  ot\, plus a — always-apply rule\n  … +5 more\n\nIssues closed:\n- [Bot
@@ -2346,20 +2346,20 @@ DESCRIPTION:45 PRs merged · 16 issues opened · 11 issues closed · 15 eff
  go] (grok) 2026-09-03 — BF-DIRECTOR / — IN PROGRESS — iOS TestFlight
   background crash: Swift 6 MainActor trap in BGTask handler (issue #59\, b
  oard 35559745\, worktree `~/apps/contactlogo — crash` @ `grok/bgtask-ma\
- n- [ai-fleet-coordinator] (grok) 2026-09-03 — IN PROGRESS — Move iOS v
+ n- [AI-Fleet-Coordinator] (grok) 2026-09-03 — IN PROGRESS — Move iOS v
  ersion manifest off ios-app-versions into this repo (`grok/ios-versions-ho
  me`\, worktree `~/apps/fleet — versions`\, board `ca104839`). Owner dele
- ting the one-file p\n- [ai-fleet-coordinator] (grok) 2026-09-03 — BF-DIR
+ ting the one-file p\n- [AI-Fleet-Coordinator] (grok) 2026-09-03 — BF-DIR
  ECTOR — IN PROGRESS — Owner copy: Title Case chrome + never display &n
  bsp\; in cloud text (`grok/copy-cloud-nbsp`\, worktree `~/apps/fleet — c
  loud`\, board `09e01a3c`). FLEET-UI-COPY +
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-03
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-03
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-02@ai-fleet-coordinator
+UID:fleet-daily-2026-09-02@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260902
 DTEND;VALUE=DATE:20260903
@@ -2484,23 +2484,23 @@ DESCRIPTION:85 PRs merged · 19 issues opened · 14 issues closed · 12 eff
  ator] (grok) 2026-09-02 — IN PROGRESS — Idle MCP unload 36h → 12h (`
  grok/idle-unload-12h`\, worktree `~/apps/fleet — 12h`\, board `09102247`
  ). `/resume` reloads tools. `GROK_IDLE_UNLOAD_HOURS` for shorter trials\n-
-  [ai-fleet-coordinator] (claude) 2026-09-02 — DEPLOYED — Fleet RAG as 
+  [AI-Fleet-Coordinator] (claude) 2026-09-02 — DEPLOYED — Fleet RAG as 
  a memory platform every agent commits lessons to. Board `5c27dffd` (+ `0f9
  a13b1` doc diet via #175). Worktree `~/apps/fleet — rag` @ `claude/fleet
- -rag-platform`. S\n- [ai-fleet-coordinator] (grok) 2026-09-02 — IN PROGR
+ -rag-platform`. S\n- [AI-Fleet-Coordinator] (grok) 2026-09-02 — IN PROGR
  ESS — Fleet RAG adoption: every platform searches and contributes. Board
   `03ee6d8b`. Claimed Tue\, Sep 2\, 2026. Worktree `~/apps/fleet — mine` 
- @ `grok/rag-adopt`. session-start 2b \n- [ai-fleet-coordinator] (grok\, de
+ @ `grok/rag-adopt`. session-start 2b \n- [AI-Fleet-Coordinator] (grok\, de
  epseek) 2026-09-02 — IN PROGRESS — RAG write path: contribute lessons\
  ; chat scan is policy-only. Owner rejected — read-only corpus. Branch `g
  rok/rag-memory-policy`. `ingest — all` skips `chat-log`. Do not bul
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-02
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-02
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-09-01@ai-fleet-coordinator
+UID:fleet-daily-2026-09-01@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260901
 DTEND;VALUE=DATE:20260902
@@ -2574,11 +2574,11 @@ DESCRIPTION:176 PRs merged · 41 issues opened · 19 issues closed · 51 ef
  al-Site stays Datadog-only\; no\n- [Personal-Site#52] 2026-09-01 — COMPL
  ETED/MERGED #49 — Personal-Site stays Datadog-only\; no\n- [Personal-Sit
  e#54] 2026-09-01 — INPROGRESS - Cap automatic Vercel deploys to one prod
- uction\n- [ai-fleet-coordinator#169] [P1] Mine Cursor/Codex/Gemini/Kimi/Bo
+ uction\n- [AI-Fleet-Coordinator#169] [P1] Mine Cursor/Codex/Gemini/Kimi/Bo
  tFleet chats into fleet-rag JSONL\n\nIssues opened:\n- [Autorotate#130] 20
  26-08-27 — COMPLETED — Full-field security & quality audit\n- [Autorot
  ate#131] 2026-08-25 — Pin AppUpdatePrompt.swift from ST fleet\, drop\n- 
- [Autorotate#132] Fleet onboarding — join ai-fleet-coordinator as app Top
+ [Autorotate#132] Fleet onboarding — join AI-Fleet-Coordinator as app Top
  Spin (TS)\n- [Autorotate#133] Apache-2.0 + — dump backup + catalog fold-
  in — · PR\n- [Autorotate#135] 2026-09-01 — IN PROGRESS — Web — SD
  K + rotation cron/metrics (board\n- [Autorotate#142] 2026-09-01 — IN PRO
@@ -2688,13 +2688,13 @@ DESCRIPTION:176 PRs merged · 41 issues opened · 19 issues closed · 51 ef
  (grok) 2026-09-01 — COMPLETED — Cap automatic Vercel deploys to one pr
  oduction build per hour. Board `9051c3ac`. PR #53. Follow-up is site-file 
  watch on `grok/vercel-site-watch`
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-09-01
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-09-01
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:fleet-daily-2026-08-31@ai-fleet-coordinator
+UID:fleet-daily-2026-08-31@AI-Fleet-Coordinator
 DTSTAMP:20260921T232915Z
 DTSTART;VALUE=DATE:20260831
 DTEND;VALUE=DATE:20260901
@@ -2781,14 +2781,14 @@ DESCRIPTION:90 PRs merged · 6 issues opened · 3 issues closed · 11 effor
  — >\n- [Personal-Site] (ag) 2026-08-31 — COMPLETED — Add TestFlight 
  Public Beta links across all fleet apps (branch `ag/testflight-links`). Ad
  ded TestFlight badges to project cards and created dedicated TestFlight Pu
- blic Betas s\n- [ai-fleet-coordinator] (ag\, sentry) 2026-08-31 — COMPLE
+ blic Betas s\n- [AI-Fleet-Coordinator] (ag\, sentry) 2026-08-31 — COMPLE
  TED / PR OPEN — Fleet — monitor expansion & project provisioning (bran
  ch ` -observability-expansion`). Added `dealdex` and `botfleet` to `PROD_H
- EALTH_ENDPOINTS` with JSON/HTTP respo\n- [ai-fleet-coordinator] (claude) 2
+ EALTH_ENDPOINTS` with JSON/HTTP respo\n- [AI-Fleet-Coordinator] (claude) 2
  026-08-31 — DEPLOYED — Self-hosted bge-m3 embeddings + `fleet-agents` 
  Qdrant collection. Board `7dbd6228`. Worktree `~/apps/fleet — embeddings
  ` @ `claude/local-embeddings-fleet-rag`. Coolify service
-URL:https://jaywedgeworth22.github.io/ai-fleet-coordinator/#2026-08-31
+URL:https://jaywedgeworth22.github.io/AI-Fleet-Coordinator/#2026-08-31
 CATEGORIES:fleet-daily,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT

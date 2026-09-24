@@ -12,7 +12,7 @@ Headless dsh prints nothing until the final answer, so this bridge must
 (1) detach the child from ACP stdin, (2) stream heartbeats so Shellular
 leaves Thinking, and (3) kill the process group on timeout/cancel.
 
-Tracked copy: ai-fleet-coordinator/scripts/dsh-acp.py
+Tracked copy: AI-Fleet-Coordinator/scripts/dsh-acp.py
 Live install: ~/apps/dsh-runtime/dsh-acp.py
 """
 

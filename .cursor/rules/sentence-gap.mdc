@@ -9,7 +9,7 @@ Follow the Monet portable protocol below exactly. Do not weaken it. Do not subst
 
 Canonical copies (same protocol):
 - `~/.cursor/skills/sentence-gap/SKILL.md`
-- `/Users/jay/Code/ai-fleet-coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md`
+- `/Users/jay/Code/AI-Fleet-Coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md`
 
 Cursor Agent chat is a Markdown transcript. Default to the chat-UI row in the table (`&nbsp;` plus a space) unless a self-test on this surface says otherwise.
 

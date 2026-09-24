@@ -10,7 +10,7 @@ description: Fleet DNS and registrar playbook.  Cloudflare is DNS for every flee
 
 Cloudflare is the DNS manager for every fleet domain.  Registrar and Cloudflare account are separate.
 
-**Canonical:** `docs/DNS-AND-REGISTRARS.md` in `ai-fleet-coordinator`.
+**Canonical:** `docs/DNS-AND-REGISTRARS.md` in `AI-Fleet-Coordinator`.
 
 Do not change DNS, buy domains, mint Cloudflare accounts, install products, or spend without Jay.
 

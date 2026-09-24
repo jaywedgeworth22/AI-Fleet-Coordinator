@@ -87,12 +87,12 @@ def fleet_apps_path() -> Path:
     here = Path(__file__).resolve()
     candidates = [
         here.parent.parent / "fleet-apps.json",
-        CODE_ROOT / "ai-fleet-coordinator" / "fleet-apps.json",
+        CODE_ROOT / "AI-Fleet-Coordinator" / "fleet-apps.json",
     ]
     for cand in candidates:
         if cand.is_file():
             return cand
-    print("fleet-apps.json not found (repo copy or ~/Code/ai-fleet-coordinator).", file=sys.stderr)
+    print("fleet-apps.json not found (repo copy or ~/Code/AI-Fleet-Coordinator).", file=sys.stderr)
     sys.exit(1)
 
 

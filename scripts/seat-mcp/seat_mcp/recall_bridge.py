@@ -31,7 +31,7 @@ JsonDict = dict[str, Any]
 DEFAULT_FLEET_RAG_HOME = Path("/Users/jay/apps/fleet-rag")
 INSTALL_HINT = (
     "fleet_rag package not installed at %s.  "
-    "Run `bash scripts/install-fleet-rag.sh` from an ai-fleet-coordinator checkout "
+    "Run `bash scripts/install-fleet-rag.sh` from an AI-Fleet-Coordinator checkout "
     "(or set FLEET_RAG_HOME) and restart seat-mcp."
 )
 

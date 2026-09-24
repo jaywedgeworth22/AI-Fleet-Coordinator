@@ -1,7 +1,7 @@
 # Codex: how fleet RAG works, and how to prove you are using it
 
 Owner-facing, paste-ready.  Give Codex (CLI, IDE, or cloud) the prompt in the box below, or link
-it here: https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/CODEX-FLEET-RAG-PROMPT.md
+it here: https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/CODEX-FLEET-RAG-PROMPT.md
 
 ## What Codex already has on the Mac
 
@@ -21,7 +21,7 @@ You are the CODEX seat.  Before anything else, read these two files and keep the
 the whole session:
 
 1. ~/.codex/skills/fleet-recall/SKILL.md  (what fleet recall is and the rules for using it)
-2. ~/Code/ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md  (how the corpus is built, searched, and ingested)
+2. ~/Code/AI-Fleet-Coordinator/docs/RAG-FLEET-INFRA.md  (how the corpus is built, searched, and ingested)
 
 Then prove the tools work from your surface, in this order, and report each result:
 

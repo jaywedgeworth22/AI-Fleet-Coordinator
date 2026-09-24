@@ -5,7 +5,7 @@ CALSCALE:GREGORIAN
 METHOD:PUBLISH
 X-WR-CALNAME:AI Fleet — Agent Coding Activity
 X-WR-CALDESC:Merged commits across fleet repos. Auto-refreshed by GitHub Ac
- tions in ai-fleet-coordinator.
+ tions in AI-Fleet-Coordinator.
 X-WR-TIMEZONE:America/Chicago
 REFRESH-INTERVAL;VALUE=DURATION:PT6H
 X-PUBLISHED-TTL:PT6H
@@ -112,36 +112,36 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:010f1633b6aa6e4cc7bf92ccf219935cc1dd941c-ai-fleet-coordinator@ai-fleet-
+UID:010f1633b6aa6e4cc7bf92ccf219935cc1dd941c-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T175613Z
 DTEND:20260821T183113Z
-SUMMARY:[ai-fleet-coordinator] fix(ops): treat only top-level /api/health o
+SUMMARY:[AI-Fleet-Coordinator] fix(ops): treat only top-level /api/health o
  k as down (#67)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 010f1633\nfix(ops): treat o
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 010f1633\nfix(ops): treat o
  nly top-level /api/health ok as down (#67)\nhttps://github.com/jaywedgewor
- th22/ai-fleet-coordinator/commit/010f1633b6aa6e4cc7bf92ccf219935cc1dd941c
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/010f1633
+ th22/AI-Fleet-Coordinator/commit/010f1633b6aa6e4cc7bf92ccf219935cc1dd941c
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/010f1633
  b6aa6e4cc7bf92ccf219935cc1dd941c
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:05988d3d642a9f0fcbe1609d66f6e6864e3c0fd8-ai-fleet-coordinator@ai-fleet-
+UID:05988d3d642a9f0fcbe1609d66f6e6864e3c0fd8-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T162158Z
 DTEND:20260821T164158Z
-SUMMARY:[ai-fleet-coordinator] docs: portable sentence-gap skill for non-fl
+SUMMARY:[AI-Fleet-Coordinator] docs: portable sentence-gap skill for non-fl
  eet LLM tools
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 05988d3d\ndocs: portable se
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 05988d3d\ndocs: portable se
  ntence-gap skill for non-fleet LLM tools\nhttps://github.com/jaywedgeworth
- 22/ai-fleet-coordinator/commit/05988d3d642a9f0fcbe1609d66f6e6864e3c0fd8
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/05988d3d
+ 22/AI-Fleet-Coordinator/commit/05988d3d642a9f0fcbe1609d66f6e6864e3c0fd8
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/05988d3d
  642a9f0fcbe1609d66f6e6864e3c0fd8
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -235,20 +235,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:ee8a14cd27133f1a833e01327149cd46f72a3fce-ai-fleet-coordinator@ai-fleet-
+UID:ee8a14cd27133f1a833e01327149cd46f72a3fce-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T154903Z
 DTEND:20260821T163403Z
-SUMMARY:[ai-fleet-coordinator] feat(ops): automate Mac watch and Hetzner ST
+SUMMARY:[AI-Fleet-Coordinator] feat(ops): automate Mac watch and Hetzner ST
  /UM health recover (#66)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: ee8a14cd\nfeat(ops): automa
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: ee8a14cd\nfeat(ops): automa
  te Mac watch and Hetzner ST/UM health recover (#66)\nhttps://github.com/ja
- ywedgeworth22/ai-fleet-coordinator/commit/ee8a14cd27133f1a833e01327149cd46
+ ywedgeworth22/AI-Fleet-Coordinator/commit/ee8a14cd27133f1a833e01327149cd46
  f72a3fce
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/ee8a14cd
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/ee8a14cd
  27133f1a833e01327149cd46f72a3fce
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -324,37 +324,37 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:3809e465f16cac87ada607b17ab249d324462d3a-ai-fleet-coordinator@ai-fleet-
+UID:3809e465f16cac87ada607b17ab249d324462d3a-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T154048Z
 DTEND:20260821T160048Z
-SUMMARY:[ai-fleet-coordinator] docs(processes): add pm2 orphan-holds-port r
+SUMMARY:[AI-Fleet-Coordinator] docs(processes): add pm2 orphan-holds-port r
  ecovery runbook (#65)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 3809e465\ndocs(processes): 
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 3809e465\ndocs(processes): 
  add pm2 orphan-holds-port recovery runbook (#65)\nhttps://github.com/jaywe
- dgeworth22/ai-fleet-coordinator/commit/3809e465f16cac87ada607b17ab249d3244
+ dgeworth22/AI-Fleet-Coordinator/commit/3809e465f16cac87ada607b17ab249d3244
  62d3a
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/3809e465
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/3809e465
  f16cac87ada607b17ab249d324462d3a
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:464f056497a542c4ca61b79956fd233de642ec79-ai-fleet-coordinator@ai-fleet-
+UID:464f056497a542c4ca61b79956fd233de642ec79-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T154044Z
 DTEND:20260821T161544Z
-SUMMARY:[ai-fleet-coordinator] fix(watch): do not resurrect a poisoned dump
+SUMMARY:[AI-Fleet-Coordinator] fix(watch): do not resurrect a poisoned dump
  .pm2 (#58)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 464f0564\nfix(watch): do no
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 464f0564\nfix(watch): do no
  t resurrect a poisoned dump.pm2 (#58)\nhttps://github.com/jaywedgeworth22/
- ai-fleet-coordinator/commit/464f056497a542c4ca61b79956fd233de642ec79
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/464f0564
+ AI-Fleet-Coordinator/commit/464f056497a542c4ca61b79956fd233de642ec79
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/464f0564
  97a542c4ca61b79956fd233de642ec79
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -447,20 +447,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:93f22a7ddda8f7af48ddf489d553f7e2af40618b-ai-fleet-coordinator@ai-fleet-
+UID:93f22a7ddda8f7af48ddf489d553f7e2af40618b-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T140355Z
 DTEND:20260821T142355Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 93f22a7d\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 93f22a7d\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/93f22a7ddda8f7af48ddf489d553f7e2af40618
+ orth22/AI-Fleet-Coordinator/commit/93f22a7ddda8f7af48ddf489d553f7e2af40618
  b
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/93f22a7d
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/93f22a7d
  dda8f7af48ddf489d553f7e2af40618b
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -794,20 +794,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:ede6e17ab9c6cbfb769c6a71d56fcaa3f4a82245-ai-fleet-coordinator@ai-fleet-
+UID:ede6e17ab9c6cbfb769c6a71d56fcaa3f4a82245-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T083051Z
 DTEND:20260821T085051Z
-SUMMARY:[ai-fleet-coordinator] docs(effort-log): record the 2026-08-21 shel
+SUMMARY:[AI-Fleet-Coordinator] docs(effort-log): record the 2026-08-21 shel
  lular + pm2 + MCP root-cause (#64)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: ede6e17a\ndocs(effort-log):
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: ede6e17a\ndocs(effort-log):
   record the 2026-08-21 shellular + pm2 + MCP root-cause (#64)\nhttps://git
- hub.com/jaywedgeworth22/ai-fleet-coordinator/commit/ede6e17ab9c6cbfb769c6a
+ hub.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/ede6e17ab9c6cbfb769c6a
  71d56fcaa3f4a82245
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/ede6e17a
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/ede6e17a
  b9c6cbfb769c6a71d56fcaa3f4a82245
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -830,20 +830,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:2dd7429c1fd34ab2075a10bb8c3f547f373607ed-ai-fleet-coordinator@ai-fleet-
+UID:2dd7429c1fd34ab2075a10bb8c3f547f373607ed-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T081127Z
 DTEND:20260821T083127Z
-SUMMARY:[ai-fleet-coordinator] docs(sync): port #agent-sync skim filter int
+SUMMARY:[AI-Fleet-Coordinator] docs(sync): port #agent-sync skim filter int
  o the versioned poller (#63)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 2dd7429c\ndocs(sync): port 
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 2dd7429c\ndocs(sync): port 
  #agent-sync skim filter into the versioned poller (#63)\nhttps://github.co
- m/jaywedgeworth22/ai-fleet-coordinator/commit/2dd7429c1fd34ab2075a10bb8c3f
+ m/jaywedgeworth22/AI-Fleet-Coordinator/commit/2dd7429c1fd34ab2075a10bb8c3f
  547f373607ed
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/2dd7429c
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/2dd7429c
  1fd34ab2075a10bb8c3f547f373607ed
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -866,20 +866,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:6ab5c86eceba1eab41c7bc8958940ec824aa64cb-ai-fleet-coordinator@ai-fleet-
+UID:6ab5c86eceba1eab41c7bc8958940ec824aa64cb-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T080745Z
 DTEND:20260821T082745Z
-SUMMARY:[ai-fleet-coordinator] docs(mac): record that agent worktrees belon
+SUMMARY:[AI-Fleet-Coordinator] docs(mac): record that agent worktrees belon
  g in ~/apps\, not ~/Code (#62)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 6ab5c86e\ndocs(mac): record
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 6ab5c86e\ndocs(mac): record
   that agent worktrees belong in ~/apps\, not ~/Code (#62)\nhttps://github.
- com/jaywedgeworth22/ai-fleet-coordinator/commit/6ab5c86eceba1eab41c7bc8958
+ com/jaywedgeworth22/AI-Fleet-Coordinator/commit/6ab5c86eceba1eab41c7bc8958
  940ec824aa64cb
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/6ab5c86e
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/6ab5c86e
  ceba1eab41c7bc8958940ec824aa64cb
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -902,38 +902,38 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:751c5a43d71794523cadedf61d07badb62c6c2b0-ai-fleet-coordinator@ai-fleet-
+UID:751c5a43d71794523cadedf61d07badb62c6c2b0-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T080610Z
 DTEND:20260821T082610Z
-SUMMARY:[ai-fleet-coordinator] docs(mac): add fleet recovery lessons from t
+SUMMARY:[AI-Fleet-Coordinator] docs(mac): add fleet recovery lessons from t
  he 2026-08-21 degradation (#61)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 751c5a43\ndocs(mac): add fl
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 751c5a43\ndocs(mac): add fl
  eet recovery lessons from the 2026-08-21 degradation (#61)\nhttps://github
- .com/jaywedgeworth22/ai-fleet-coordinator/commit/751c5a43d71794523cadedf61
+ .com/jaywedgeworth22/AI-Fleet-Coordinator/commit/751c5a43d71794523cadedf61
  d07badb62c6c2b0
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/751c5a43
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/751c5a43
  d71794523cadedf61d07badb62c6c2b0
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:c1abd3ca88df11490bfb335036ae78f426450975-ai-fleet-coordinator@ai-fleet-
+UID:c1abd3ca88df11490bfb335036ae78f426450975-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T080248Z
 DTEND:20260821T082248Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: c1abd3ca\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: c1abd3ca\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/c1abd3ca88df11490bfb335036ae78f42645097
+ orth22/AI-Fleet-Coordinator/commit/c1abd3ca88df11490bfb335036ae78f42645097
  5
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/c1abd3ca
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/c1abd3ca
  88df11490bfb335036ae78f426450975
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -955,19 +955,19 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:08f16e0c76572523e0a1a5089175a4ceef1585f9-ai-fleet-coordinator@ai-fleet-
+UID:08f16e0c76572523e0a1a5089175a4ceef1585f9-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T075556Z
 DTEND:20260821T081556Z
-SUMMARY:[ai-fleet-coordinator] docs(notes): preserve sentence gap in Apple 
+SUMMARY:[AI-Fleet-Coordinator] docs(notes): preserve sentence gap in Apple 
  Notes HTML (#60)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 08f16e0c\ndocs(notes): pres
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 08f16e0c\ndocs(notes): pres
  erve sentence gap in Apple Notes HTML (#60)\nhttps://github.com/jaywedgewo
- rth22/ai-fleet-coordinator/commit/08f16e0c76572523e0a1a5089175a4ceef1585f9
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/08f16e0c
+ rth22/AI-Fleet-Coordinator/commit/08f16e0c76572523e0a1a5089175a4ceef1585f9
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/08f16e0c
  76572523e0a1a5089175a4ceef1585f9
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -990,19 +990,19 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:ac3459a095e8a433386a7f2b8230c2e0c80845c6-ai-fleet-coordinator@ai-fleet-
+UID:ac3459a095e8a433386a7f2b8230c2e0c80845c6-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T073316Z
 DTEND:20260821T075316Z
-SUMMARY:[ai-fleet-coordinator] docs(notes): space Apple Notes sections and 
+SUMMARY:[AI-Fleet-Coordinator] docs(notes): space Apple Notes sections and 
  bullets (#59)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: ac3459a0\ndocs(notes): spac
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: ac3459a0\ndocs(notes): spac
  e Apple Notes sections and bullets (#59)\nhttps://github.com/jaywedgeworth
- 22/ai-fleet-coordinator/commit/ac3459a095e8a433386a7f2b8230c2e0c80845c6
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/ac3459a0
+ 22/AI-Fleet-Coordinator/commit/ac3459a095e8a433386a7f2b8230c2e0c80845c6
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/ac3459a0
  95e8a433386a7f2b8230c2e0c80845c6
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1115,37 +1115,37 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:a1a827bf09b0581ef6023625066cc285ef564c22-ai-fleet-coordinator@ai-fleet-
+UID:a1a827bf09b0581ef6023625066cc285ef564c22-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T041709Z
 DTEND:20260821T043709Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: a1a827bf\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: a1a827bf\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/a1a827bf09b0581ef6023625066cc285ef564c2
+ orth22/AI-Fleet-Coordinator/commit/a1a827bf09b0581ef6023625066cc285ef564c2
  2
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/a1a827bf
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/a1a827bf
  09b0581ef6023625066cc285ef564c22
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:95d568071947dc851da9685d6e7f8bad90c24b94-ai-fleet-coordinator@ai-fleet-
+UID:95d568071947dc851da9685d6e7f8bad90c24b94-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T041557Z
 DTEND:20260821T050057Z
-SUMMARY:[ai-fleet-coordinator] feat(fleet): onboard TopSpin (TS) as fleet a
+SUMMARY:[AI-Fleet-Coordinator] feat(fleet): onboard TopSpin (TS) as fleet a
  pp (#57)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 95d56807\nfeat(fleet): onbo
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 95d56807\nfeat(fleet): onbo
  ard TopSpin (TS) as fleet app (#57)\nhttps://github.com/jaywedgeworth22/ai
  -fleet-coordinator/commit/95d568071947dc851da9685d6e7f8bad90c24b94
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/95d56807
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/95d56807
  1947dc851da9685d6e7f8bad90c24b94
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1184,20 +1184,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:1e7c9e3c861e6b6c4da2819a088a3a13fbbfd8d5-ai-fleet-coordinator@ai-fleet-
+UID:1e7c9e3c861e6b6c4da2819a088a3a13fbbfd8d5-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T035437Z
 DTEND:20260821T041437Z
-SUMMARY:[ai-fleet-coordinator] docs(processes): record mac-collab orphan-po
+SUMMARY:[AI-Fleet-Coordinator] docs(processes): record mac-collab orphan-po
  rt self-heal and sync overlap (#56)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 1e7c9e3c\ndocs(processes): 
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 1e7c9e3c\ndocs(processes): 
  record mac-collab orphan-port self-heal and sync overlap (#56)\nhttps://gi
- thub.com/jaywedgeworth22/ai-fleet-coordinator/commit/1e7c9e3c861e6b6c4da28
+ thub.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/1e7c9e3c861e6b6c4da28
  19a088a3a13fbbfd8d5
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/1e7c9e3c
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/1e7c9e3c
  861e6b6c4da2819a088a3a13fbbfd8d5
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1442,39 +1442,39 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:feda003522725c2bd5e62d08893b4ca27f932f34-ai-fleet-coordinator@ai-fleet-
+UID:feda003522725c2bd5e62d08893b4ca27f932f34-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T032919Z
 DTEND:20260821T035919Z
-SUMMARY:[ai-fleet-coordinator] Add fleet-coordination skill (meta protocol 
+SUMMARY:[AI-Fleet-Coordinator] Add fleet-coordination skill (meta protocol 
  for THE BOARD\, triple claim\, Slack\, effort logs\, Notes\, consistency) 
  (#54)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: feda0035\nAdd fleet-coordin
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: feda0035\nAdd fleet-coordin
  ation skill (meta protocol for THE BOARD\, triple claim\, Slack\, effort l
  ogs\, Notes\, consistency) (#54)\nhttps://github.com/jaywedgeworth22/ai-fl
  eet-coordinator/commit/feda003522725c2bd5e62d08893b4ca27f932f34
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/feda0035
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/feda0035
  22725c2bd5e62d08893b4ca27f932f34
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:915656baab942aac416fed7dc14c0b41c58dbb26-ai-fleet-coordinator@ai-fleet-
+UID:915656baab942aac416fed7dc14c0b41c58dbb26-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T032859Z
 DTEND:20260821T035859Z
-SUMMARY:[ai-fleet-coordinator] effort-log: bootstrap + KIMI fleet setup-aud
+SUMMARY:[AI-Fleet-Coordinator] effort-log: bootstrap + KIMI fleet setup-aud
  it rows (2026-08-21) (#46)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 915656ba\neffort-log: boots
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 915656ba\neffort-log: boots
  trap + KIMI fleet setup-audit rows (2026-08-21) (#46)\nhttps://github.com/
- jaywedgeworth22/ai-fleet-coordinator/commit/915656baab942aac416fed7dc14c0b
+ jaywedgeworth22/AI-Fleet-Coordinator/commit/915656baab942aac416fed7dc14c0b
  41c58dbb26
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/915656ba
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/915656ba
  ab942aac416fed7dc14c0b41c58dbb26
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1498,20 +1498,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:f4efecdf4b2d4297eb3ff645100306bcb85e1816-ai-fleet-coordinator@ai-fleet-
+UID:f4efecdf4b2d4297eb3ff645100306bcb85e1816-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T023940Z
 DTEND:20260821T025940Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: f4efecdf\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: f4efecdf\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/f4efecdf4b2d4297eb3ff645100306bcb85e181
+ orth22/AI-Fleet-Coordinator/commit/f4efecdf4b2d4297eb3ff645100306bcb85e181
  6
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/f4efecdf
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/f4efecdf
  4b2d4297eb3ff645100306bcb85e1816
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1534,89 +1534,89 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:f197d12d8c8affc1b3f4c2f4b6f0e3bf15a2ed4b-ai-fleet-coordinator@ai-fleet-
+UID:f197d12d8c8affc1b3f4c2f4b6f0e3bf15a2ed4b-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T021621Z
 DTEND:20260821T023621Z
-SUMMARY:[ai-fleet-coordinator] chore(seats): onboard DEEPSEEK fleet seat (#
+SUMMARY:[AI-Fleet-Coordinator] chore(seats): onboard DEEPSEEK fleet seat (#
  55)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: f197d12d\nchore(seats): onb
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: f197d12d\nchore(seats): onb
  oard DEEPSEEK fleet seat (#55)\nhttps://github.com/jaywedgeworth22/ai-flee
  t-coordinator/commit/f197d12d8c8affc1b3f4c2f4b6f0e3bf15a2ed4b
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/f197d12d
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/f197d12d
  8c8affc1b3f4c2f4b6f0e3bf15a2ed4b
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:f253753ceb9e7fa260e95ff1ea0f91b13b9b2b8c-ai-fleet-coordinator@ai-fleet-
+UID:f253753ceb9e7fa260e95ff1ea0f91b13b9b2b8c-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T015034Z
 DTEND:20260821T021034Z
-SUMMARY:[ai-fleet-coordinator] docs: tighten Monet fleet-skills land/deploy
+SUMMARY:[AI-Fleet-Coordinator] docs: tighten Monet fleet-skills land/deploy
   facts (#53)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: f253753c\ndocs: tighten Mon
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: f253753c\ndocs: tighten Mon
  et fleet-skills land/deploy facts (#53)\nhttps://github.com/jaywedgeworth2
- 2/ai-fleet-coordinator/commit/f253753ceb9e7fa260e95ff1ea0f91b13b9b2b8c
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/f253753c
+ 2/AI-Fleet-Coordinator/commit/f253753ceb9e7fa260e95ff1ea0f91b13b9b2b8c
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/f253753c
  eb9e7fa260e95ff1ea0f91b13b9b2b8c
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:c501ae781068fef3d997f34e9882fb9e161ca255-ai-fleet-coordinator@ai-fleet-
+UID:c501ae781068fef3d997f34e9882fb9e161ca255-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T014708Z
 DTEND:20260821T020708Z
-SUMMARY:[ai-fleet-coordinator] docs: Monet fleet-skills pack (current polic
+SUMMARY:[AI-Fleet-Coordinator] docs: Monet fleet-skills pack (current polic
  y\, all apps) (#52)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: c501ae78\ndocs: Monet fleet
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: c501ae78\ndocs: Monet fleet
  -skills pack (current policy\, all apps) (#52)\nhttps://github.com/jaywedg
- eworth22/ai-fleet-coordinator/commit/c501ae781068fef3d997f34e9882fb9e161ca
+ eworth22/AI-Fleet-Coordinator/commit/c501ae781068fef3d997f34e9882fb9e161ca
  255
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/c501ae78
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/c501ae78
  1068fef3d997f34e9882fb9e161ca255
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:cca1dabe7bd9bddd683bccc711cb217b3424d091-ai-fleet-coordinator@ai-fleet-
+UID:cca1dabe7bd9bddd683bccc711cb217b3424d091-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T013910Z
 DTEND:20260821T015910Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: cca1dabe\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: cca1dabe\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/cca1dabe7bd9bddd683bccc711cb217b3424d09
+ orth22/AI-Fleet-Coordinator/commit/cca1dabe7bd9bddd683bccc711cb217b3424d09
  1
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/cca1dabe
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/cca1dabe
  7bd9bddd683bccc711cb217b3424d091
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:f108e9a4dfc6ec624c386a5164ca8875c54e0bcc-ai-fleet-coordinator@ai-fleet-
+UID:f108e9a4dfc6ec624c386a5164ca8875c54e0bcc-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260821T013756Z
 DTEND:20260821T021256Z
-SUMMARY:[ai-fleet-coordinator] fix(logos): use the real Grok\, Grok Bot\, a
+SUMMARY:[AI-Fleet-Coordinator] fix(logos): use the real Grok\, Grok Bot\, a
  nd Cursor marks
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: f108e9a4\nfix(logos): use t
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: f108e9a4\nfix(logos): use t
  he real Grok\, Grok Bot\, and Cursor marks\nhttps://github.com/jaywedgewor
- th22/ai-fleet-coordinator/commit/f108e9a4dfc6ec624c386a5164ca8875c54e0bcc
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/f108e9a4
+ th22/AI-Fleet-Coordinator/commit/f108e9a4dfc6ec624c386a5164ca8875c54e0bcc
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/f108e9a4
  dfc6ec624c386a5164ca8875c54e0bcc
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -1746,20 +1746,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:58dfa9ff2c83c0e99e79aba9522a2cba624c2598-ai-fleet-coordinator@ai-fleet-
+UID:58dfa9ff2c83c0e99e79aba9522a2cba624c2598-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T195129Z
 DTEND:20260820T201129Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 58dfa9ff\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 58dfa9ff\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/58dfa9ff2c83c0e99e79aba9522a2cba624c259
+ orth22/AI-Fleet-Coordinator/commit/58dfa9ff2c83c0e99e79aba9522a2cba624c259
  8
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/58dfa9ff
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/58dfa9ff
  2c83c0e99e79aba9522a2cba624c2598
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2344,73 +2344,73 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:7c9057f1dcab17f372a258ac3501ccfe217393a7-ai-fleet-coordinator@ai-fleet-
+UID:7c9057f1dcab17f372a258ac3501ccfe217393a7-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T154830Z
 DTEND:20260820T160830Z
-SUMMARY:[ai-fleet-coordinator] docs: board CLI is on PATH\; note the litera
+SUMMARY:[AI-Fleet-Coordinator] docs: board CLI is on PATH\; note the litera
  l-invocation requirement
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 7c9057f1\ndocs: board CLI i
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 7c9057f1\ndocs: board CLI i
  s on PATH\; note the literal-invocation requirement\nhttps://github.com/ja
- ywedgeworth22/ai-fleet-coordinator/commit/7c9057f1dcab17f372a258ac3501ccfe
+ ywedgeworth22/AI-Fleet-Coordinator/commit/7c9057f1dcab17f372a258ac3501ccfe
  217393a7
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/7c9057f1
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/7c9057f1
  dcab17f372a258ac3501ccfe217393a7
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:5c1d4bc55a9084672ec7daeb487574b18f4b649c-ai-fleet-coordinator@ai-fleet-
+UID:5c1d4bc55a9084672ec7daeb487574b18f4b649c-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T140543Z
 DTEND:20260820T142543Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 5c1d4bc5\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 5c1d4bc5\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/5c1d4bc55a9084672ec7daeb487574b18f4b649
+ orth22/AI-Fleet-Coordinator/commit/5c1d4bc55a9084672ec7daeb487574b18f4b649
  c
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/5c1d4bc5
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/5c1d4bc5
  5a9084672ec7daeb487574b18f4b649c
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:e98f24da0befe2ecf9077397f431b811348c5ec8-ai-fleet-coordinator@ai-fleet-
+UID:e98f24da0befe2ecf9077397f431b811348c5ec8-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T135902Z
 DTEND:20260820T141902Z
-SUMMARY:[ai-fleet-coordinator] docs: explain why permission prompts only of
+SUMMARY:[AI-Fleet-Coordinator] docs: explain why permission prompts only of
  fer "Allow Once"
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: e98f24da\ndocs: explain why
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: e98f24da\ndocs: explain why
   permission prompts only offer "Allow Once"\nhttps://github.com/jaywedgewo
- rth22/ai-fleet-coordinator/commit/e98f24da0befe2ecf9077397f431b811348c5ec8
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/e98f24da
+ rth22/AI-Fleet-Coordinator/commit/e98f24da0befe2ecf9077397f431b811348c5ec8
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/e98f24da
  0befe2ecf9077397f431b811348c5ec8
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:3c0c8cf5cc97b654f7273137db198863127b28b7-ai-fleet-coordinator@ai-fleet-
+UID:3c0c8cf5cc97b654f7273137db198863127b28b7-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T080150Z
 DTEND:20260820T082150Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 3c0c8cf5\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 3c0c8cf5\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/3c0c8cf5cc97b654f7273137db198863127b28b
+ orth22/AI-Fleet-Coordinator/commit/3c0c8cf5cc97b654f7273137db198863127b28b
  7
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/3c0c8cf5
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/3c0c8cf5
  cc97b654f7273137db198863127b28b7
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2433,19 +2433,19 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:982936007efbd16268407ba0c26fd4d559174d4b-ai-fleet-coordinator@ai-fleet-
+UID:982936007efbd16268407ba0c26fd4d559174d4b-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T070433Z
 DTEND:20260820T072433Z
-SUMMARY:[ai-fleet-coordinator] docs: STATUS pointer for ST audit #2802 foll
+SUMMARY:[AI-Fleet-Coordinator] docs: STATUS pointer for ST audit #2802 foll
  ow-ups (#44)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 98293600\ndocs: STATUS poin
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 98293600\ndocs: STATUS poin
  ter for ST audit #2802 follow-ups (#44)\nhttps://github.com/jaywedgeworth2
- 2/ai-fleet-coordinator/commit/982936007efbd16268407ba0c26fd4d559174d4b
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/98293600
+ 2/AI-Fleet-Coordinator/commit/982936007efbd16268407ba0c26fd4d559174d4b
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/98293600
  7efbd16268407ba0c26fd4d559174d4b
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2484,109 +2484,109 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:9b2c75a3e4b3608343f987e67154dd6b83875467-ai-fleet-coordinator@ai-fleet-
+UID:9b2c75a3e4b3608343f987e67154dd6b83875467-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T063006Z
 DTEND:20260820T065006Z
-SUMMARY:[ai-fleet-coordinator] docs: match README and About to the live fle
+SUMMARY:[AI-Fleet-Coordinator] docs: match README and About to the live fle
  et (#45)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 9b2c75a3\ndocs: match READM
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 9b2c75a3\ndocs: match READM
  E and About to the live fleet (#45)\nhttps://github.com/jaywedgeworth22/ai
  -fleet-coordinator/commit/9b2c75a3e4b3608343f987e67154dd6b83875467
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/9b2c75a3
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/9b2c75a3
  e4b3608343f987e67154dd6b83875467
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:2eb62cef7895bb5bf3fb06304e02907e31978c76-ai-fleet-coordinator@ai-fleet-
+UID:2eb62cef7895bb5bf3fb06304e02907e31978c76-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T042803Z
 DTEND:20260820T051303Z
-SUMMARY:[ai-fleet-coordinator] feat(board): make it the fleet's primary coo
+SUMMARY:[AI-Fleet-Coordinator] feat(board): make it the fleet's primary coo
  rdination platform
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 2eb62cef\nfeat(board): make
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 2eb62cef\nfeat(board): make
   it the fleet's primary coordination platform\nhttps://github.com/jaywedge
- worth22/ai-fleet-coordinator/commit/2eb62cef7895bb5bf3fb06304e02907e31978c
+ worth22/AI-Fleet-Coordinator/commit/2eb62cef7895bb5bf3fb06304e02907e31978c
  76
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/2eb62cef
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/2eb62cef
  7895bb5bf3fb06304e02907e31978c76
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:b2e6e21a80096ed4be7ba6db5004500ae9592d79-ai-fleet-coordinator@ai-fleet-
+UID:b2e6e21a80096ed4be7ba6db5004500ae9592d79-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T035500Z
 DTEND:20260820T042500Z
-SUMMARY:[ai-fleet-coordinator] security: /health leaked the file allowlist 
+SUMMARY:[AI-Fleet-Coordinator] security: /health leaked the file allowlist 
  + finding counts to anyone
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: b2e6e21a\nsecurity: /health
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: b2e6e21a\nsecurity: /health
   leaked the file allowlist + finding counts to anyone\nhttps://github.com/
- jaywedgeworth22/ai-fleet-coordinator/commit/b2e6e21a80096ed4be7ba6db500450
+ jaywedgeworth22/AI-Fleet-Coordinator/commit/b2e6e21a80096ed4be7ba6db500450
  0ae9592d79
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/b2e6e21a
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/b2e6e21a
  80096ed4be7ba6db5004500ae9592d79
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:d2dc53be98098b8ac862df79efe4de3eef96e262-ai-fleet-coordinator@ai-fleet-
+UID:d2dc53be98098b8ac862df79efe4de3eef96e262-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T035132Z
 DTEND:20260820T041132Z
-SUMMARY:[ai-fleet-coordinator] docs+security: consolidate global-api-keys\,
+SUMMARY:[AI-Fleet-Coordinator] docs+security: consolidate global-api-keys\,
   fix board auth\, expose handoff file
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: d2dc53be\ndocs+security: co
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: d2dc53be\ndocs+security: co
  nsolidate global-api-keys\, fix board auth\, expose handoff file\nhttps://
- github.com/jaywedgeworth22/ai-fleet-coordinator/commit/d2dc53be98098b8ac86
+ github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/d2dc53be98098b8ac86
  2df79efe4de3eef96e262
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/d2dc53be
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/d2dc53be
  98098b8ac862df79efe4de3eef96e262
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:e39277278b9254f8c4d4d16ba1a8e2fc58bf6829-ai-fleet-coordinator@ai-fleet-
+UID:e39277278b9254f8c4d4d16ba1a8e2fc58bf6829-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T033124Z
 DTEND:20260820T035124Z
-SUMMARY:[ai-fleet-coordinator] docs: expand Findings tool section for fleet
+SUMMARY:[AI-Fleet-Coordinator] docs: expand Findings tool section for fleet
  -wide effort-log + issues sync
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: e3927727\ndocs: expand Find
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: e3927727\ndocs: expand Find
  ings tool section for fleet-wide effort-log + issues sync\nhttps://github.
- com/jaywedgeworth22/ai-fleet-coordinator/commit/e39277278b9254f8c4d4d16ba1
+ com/jaywedgeworth22/AI-Fleet-Coordinator/commit/e39277278b9254f8c4d4d16ba1
  a8e2fc58bf6829
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/e3927727
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/e3927727
  8b9254f8c4d4d16ba1a8e2fc58bf6829
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:9f06ee414e50ec3690398c19a9b6e57b7abc9a06-ai-fleet-coordinator@ai-fleet-
+UID:9f06ee414e50ec3690398c19a9b6e57b7abc9a06-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T032946Z
 DTEND:20260820T034946Z
-SUMMARY:[ai-fleet-coordinator] docs: document the expanded findings tool (a
+SUMMARY:[AI-Fleet-Coordinator] docs: document the expanded findings tool (a
  uth\, redesign\, fleet-wide sync)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 9f06ee41\ndocs: document th
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 9f06ee41\ndocs: document th
  e expanded findings tool (auth\, redesign\, fleet-wide sync)\nhttps://gith
- ub.com/jaywedgeworth22/ai-fleet-coordinator/commit/9f06ee414e50ec3690398c1
+ ub.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/9f06ee414e50ec3690398c1
  9a9b6e57b7abc9a06
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/9f06ee41
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/9f06ee41
  4e50ec3690398c19a9b6e57b7abc9a06
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2694,55 +2694,55 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:20c34d0066eaad467ae07bd02a04f078fa8694e1-ai-fleet-coordinator@ai-fleet-
+UID:20c34d0066eaad467ae07bd02a04f078fa8694e1-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T023322Z
 DTEND:20260820T025322Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 20c34d00\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 20c34d00\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/20c34d0066eaad467ae07bd02a04f078fa8694e
+ orth22/AI-Fleet-Coordinator/commit/20c34d0066eaad467ae07bd02a04f078fa8694e
  1
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/20c34d00
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/20c34d00
  66eaad467ae07bd02a04f078fa8694e1
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:705acd9b0af3ce15a4374f48b138dea1dcd5a6ec-ai-fleet-coordinator@ai-fleet-
+UID:705acd9b0af3ce15a4374f48b138dea1dcd5a6ec-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T020814Z
 DTEND:20260820T022814Z
-SUMMARY:[ai-fleet-coordinator] docs: document the mac-collab shared finding
+SUMMARY:[AI-Fleet-Coordinator] docs: document the mac-collab shared finding
  s tool for review findings
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 705acd9b\ndocs: document th
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 705acd9b\ndocs: document th
  e mac-collab shared findings tool for review findings\nhttps://github.com/
- jaywedgeworth22/ai-fleet-coordinator/commit/705acd9b0af3ce15a4374f48b138de
+ jaywedgeworth22/AI-Fleet-Coordinator/commit/705acd9b0af3ce15a4374f48b138de
  a1dcd5a6ec
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/705acd9b
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/705acd9b
  0af3ce15a4374f48b138dea1dcd5a6ec
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:102268253accb4fea9e8ae1e3d43363a7ce87da8-ai-fleet-coordinator@ai-fleet-
+UID:102268253accb4fea9e8ae1e3d43363a7ce87da8-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T020711Z
 DTEND:20260820T022711Z
-SUMMARY:[ai-fleet-coordinator] docs: document the mac-collab shared finding
+SUMMARY:[AI-Fleet-Coordinator] docs: document the mac-collab shared finding
  s tool
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 10226825\ndocs: document th
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 10226825\ndocs: document th
  e mac-collab shared findings tool\nhttps://github.com/jaywedgeworth22/ai-f
  leet-coordinator/commit/102268253accb4fea9e8ae1e3d43363a7ce87da8
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/10226825
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/10226825
  3accb4fea9e8ae1e3d43363a7ce87da8
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2765,20 +2765,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:7dba1066188f71b6530c9d0d4969137817e19684-ai-fleet-coordinator@ai-fleet-
+UID:7dba1066188f71b6530c9d0d4969137817e19684-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T015020Z
 DTEND:20260820T021020Z
-SUMMARY:[ai-fleet-coordinator] docs: correct two-spaces guidance to use lit
+SUMMARY:[AI-Fleet-Coordinator] docs: correct two-spaces guidance to use lit
  eral &nbsp\; entity\, not raw NBSP
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 7dba1066\ndocs: correct two
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 7dba1066\ndocs: correct two
  -spaces guidance to use literal &nbsp\; entity\, not raw NBSP\nhttps://git
- hub.com/jaywedgeworth22/ai-fleet-coordinator/commit/7dba1066188f71b6530c9d
+ hub.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/7dba1066188f71b6530c9d
  0d4969137817e19684
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/7dba1066
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/7dba1066
  188f71b6530c9d0d4969137817e19684
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2801,20 +2801,20 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:25e43fa3be369fdb8e053e81d14932e0ab496995-ai-fleet-coordinator@ai-fleet-
+UID:25e43fa3be369fdb8e053e81d14932e0ab496995-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260820T012239Z
 DTEND:20260820T014239Z
-SUMMARY:[ai-fleet-coordinator] docs: strengthen two-spaces rule to explicit
+SUMMARY:[AI-Fleet-Coordinator] docs: strengthen two-spaces rule to explicit
  ly cover chat replies and internal prose
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 25e43fa3\ndocs: strengthen 
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 25e43fa3\ndocs: strengthen 
  two-spaces rule to explicitly cover chat replies and internal prose\nhttps
- ://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/25e43fa3be369fdb
+ ://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/25e43fa3be369fdb
  8e053e81d14932e0ab496995
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/25e43fa3
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/25e43fa3
  be369fdb8e053e81d14932e0ab496995
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
@@ -2837,160 +2837,160 @@ STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:ad4b3ef079ac0dd86a24f5861353e4e11d846611-ai-fleet-coordinator@ai-fleet-
+UID:ad4b3ef079ac0dd86a24f5861353e4e11d846611-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260819T235027Z
 DTEND:20260820T001027Z
-SUMMARY:[ai-fleet-coordinator] docs: list pm2 mac-collab + mac.jays.service
+SUMMARY:[AI-Fleet-Coordinator] docs: list pm2 mac-collab + mac.jays.service
  s
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: ad4b3ef0\ndocs: list pm2 ma
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: ad4b3ef0\ndocs: list pm2 ma
  c-collab + mac.jays.services\nhttps://github.com/jaywedgeworth22/ai-fleet-
  coordinator/commit/ad4b3ef079ac0dd86a24f5861353e4e11d846611
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/ad4b3ef0
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/ad4b3ef0
  79ac0dd86a24f5861353e4e11d846611
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:af2bf3310d6107308f7f903c265ee2dd2b02eb81-ai-fleet-coordinator@ai-fleet-
+UID:af2bf3310d6107308f7f903c265ee2dd2b02eb81-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260819T194611Z
 DTEND:20260819T200611Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: af2bf331\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: af2bf331\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/af2bf3310d6107308f7f903c265ee2dd2b02eb8
+ orth22/AI-Fleet-Coordinator/commit/af2bf3310d6107308f7f903c265ee2dd2b02eb8
  1
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/af2bf331
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/af2bf331
  0d6107308f7f903c265ee2dd2b02eb81
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:f322d7e6ddbbde188621f9ef86bd2349fbacd7fc-ai-fleet-coordinator@ai-fleet-
+UID:f322d7e6ddbbde188621f9ef86bd2349fbacd7fc-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260819T140308Z
 DTEND:20260819T142308Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: f322d7e6\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: f322d7e6\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/f322d7e6ddbbde188621f9ef86bd2349fbacd7f
+ orth22/AI-Fleet-Coordinator/commit/f322d7e6ddbbde188621f9ef86bd2349fbacd7f
  c
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/f322d7e6
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/f322d7e6
  ddbbde188621f9ef86bd2349fbacd7fc
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:63132d4839921001fc92c14ebb334e94468e249f-ai-fleet-coordinator@ai-fleet-
+UID:63132d4839921001fc92c14ebb334e94468e249f-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260819T075848Z
 DTEND:20260819T081848Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 63132d48\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 63132d48\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/63132d4839921001fc92c14ebb334e94468e249
+ orth22/AI-Fleet-Coordinator/commit/63132d4839921001fc92c14ebb334e94468e249
  f
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/63132d48
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/63132d48
  39921001fc92c14ebb334e94468e249f
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:99870677f832ba83be4134725b61cb9ed3ea1c53-ai-fleet-coordinator@ai-fleet-
+UID:99870677f832ba83be4134725b61cb9ed3ea1c53-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260819T023405Z
 DTEND:20260819T025405Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 99870677\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 99870677\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/99870677f832ba83be4134725b61cb9ed3ea1c5
+ orth22/AI-Fleet-Coordinator/commit/99870677f832ba83be4134725b61cb9ed3ea1c5
  3
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/99870677
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/99870677
  f832ba83be4134725b61cb9ed3ea1c53
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:a8c1bf6776f69afbd09bdb7324e5271803198555-ai-fleet-coordinator@ai-fleet-
+UID:a8c1bf6776f69afbd09bdb7324e5271803198555-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260818T235502Z
 DTEND:20260819T001502Z
-SUMMARY:[ai-fleet-coordinator] docs: shared grok-leader for local chat cont
+SUMMARY:[AI-Fleet-Coordinator] docs: shared grok-leader for local chat cont
  rol (#42)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: a8c1bf67\ndocs: shared grok
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: a8c1bf67\ndocs: shared grok
  -leader for local chat control (#42)\nhttps://github.com/jaywedgeworth22/a
  i-fleet-coordinator/commit/a8c1bf6776f69afbd09bdb7324e5271803198555
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/a8c1bf67
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/a8c1bf67
  76f69afbd09bdb7324e5271803198555
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:41e345319f6357160c3336c50b639a17582307b2-ai-fleet-coordinator@ai-fleet-
+UID:41e345319f6357160c3336c50b639a17582307b2-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260818T212334Z
 DTEND:20260818T214334Z
-SUMMARY:[ai-fleet-coordinator] docs: Shellular Grok ACP argv and grok-acp b
+SUMMARY:[AI-Fleet-Coordinator] docs: Shellular Grok ACP argv and grok-acp b
  ind 12419 (#41)
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 41e34531\ndocs: Shellular G
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 41e34531\ndocs: Shellular G
  rok ACP argv and grok-acp bind 12419 (#41)\nhttps://github.com/jaywedgewor
- th22/ai-fleet-coordinator/commit/41e345319f6357160c3336c50b639a17582307b2
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/41e34531
+ th22/AI-Fleet-Coordinator/commit/41e345319f6357160c3336c50b639a17582307b2
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/41e34531
  9f6357160c3336c50b639a17582307b2
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:3f5e5b935cebc0c1aee3aa315860cb4ba9042edf-ai-fleet-coordinator@ai-fleet-
+UID:3f5e5b935cebc0c1aee3aa315860cb4ba9042edf-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260818T201115Z
 DTEND:20260818T203115Z
-SUMMARY:[ai-fleet-coordinator] docs: list always-on pm2 grok-acp on 127.0.0
+SUMMARY:[AI-Fleet-Coordinator] docs: list always-on pm2 grok-acp on 127.0.0
  .1:2419
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: 3f5e5b93\ndocs: list always
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: 3f5e5b93\ndocs: list always
  -on pm2 grok-acp on 127.0.0.1:2419\nhttps://github.com/jaywedgeworth22/ai-
  fleet-coordinator/commit/3f5e5b935cebc0c1aee3aa315860cb4ba9042edf
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/3f5e5b93
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/3f5e5b93
  5cebc0c1aee3aa315860cb4ba9042edf
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT
 BEGIN:VEVENT
-UID:e46c2c4873d27cdad465b0bcb2de556c36d85b8e-ai-fleet-coordinator@ai-fleet-
+UID:e46c2c4873d27cdad465b0bcb2de556c36d85b8e-AI-Fleet-Coordinator@ai-fleet-
  coordinator
 DTSTAMP:20260821T194315Z
 DTSTART:20260818T194636Z
 DTEND:20260818T200636Z
-SUMMARY:[ai-fleet-coordinator] chore(site): refresh fleet daily digest + ca
+SUMMARY:[AI-Fleet-Coordinator] chore(site): refresh fleet daily digest + ca
  lendars [skip ci]
-DESCRIPTION:Repo: ai-fleet-coordinator\nCommit: e46c2c48\nchore(site): refr
+DESCRIPTION:Repo: AI-Fleet-Coordinator\nCommit: e46c2c48\nchore(site): refr
  esh fleet daily digest + calendars [skip ci]\nhttps://github.com/jaywedgew
- orth22/ai-fleet-coordinator/commit/e46c2c4873d27cdad465b0bcb2de556c36d85b8
+ orth22/AI-Fleet-Coordinator/commit/e46c2c4873d27cdad465b0bcb2de556c36d85b8
  e
-URL:https://github.com/jaywedgeworth22/ai-fleet-coordinator/commit/e46c2c48
+URL:https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/commit/e46c2c48
  73d27cdad465b0bcb2de556c36d85b8e
-CATEGORIES:ai-fleet-coordinator,agent-activity
+CATEGORIES:AI-Fleet-Coordinator,agent-activity
 STATUS:CONFIRMED
 TRANSP:TRANSPARENT
 END:VEVENT

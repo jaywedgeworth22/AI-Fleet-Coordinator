@@ -4,7 +4,7 @@
 agents, and future tools) coordinating work on ALL of the owner's apps** — Socratic.Trade,
 Congress.Trade, congress-trading-shared, Usage-Monitor (API-usage-monitor), DealDex,
 Personal-Site, Autorotate (formerly TopSpin),
-ai-fleet-coordinator, and any repo created later.
+AI-Fleet-Coordinator, and any repo created later.
 
 Slack channel: **#agent-sync** (id `C0BEZDJDNKV` — always key by ID; display name may change).
 Repo pointer files: `AGENTS.md` / `CLAUDE.md` (symlink) in each worktree carry a pointer to this file.
@@ -31,7 +31,7 @@ BEFORE substantial work begins, so parallel agents can see reservations in the g
 | `UM` | Usage-Monitor | `API-USAGE-MONITOR-EFFORT-LOG.md` |
 | `CTS` | congress-trading-shared | `CONGRESS-SHARED-EFFORT-LOG.md` |
 | `DD` | DealDex | `DEALDEX-EFFORT-LOG.md` |
-| `AFC` | ai-fleet-coordinator | `FLEET-INFRA-EFFORT-LOG.md` |
+| `AFC` | AI-Fleet-Coordinator | `FLEET-INFRA-EFFORT-LOG.md` |
 | `PS` | Personal-Site | `PERSONAL-SITE-EFFORT-LOG.md` |
 | `AR` | Autorotate | `AUTOROTATE-EFFORT-LOG.md` |
 | `CL` | ContactLogo | `CONTACTLOGO-EFFORT-LOG.md` |
@@ -265,7 +265,7 @@ printf '%s' "$TOKEN" | wc -c
 ```
 
 Hook (Claude Code Bash PreToolUse): `~/.claude/hooks/secret-guard-pretooluse.py`
-(tracked `scripts/hooks/secret-guard-pretooluse.py` in ai-fleet-coordinator).
+(tracked `scripts/hooks/secret-guard-pretooluse.py` in AI-Fleet-Coordinator).
 Seats without that hook still follow this rule in skills and global config.
 
 ---
@@ -398,7 +398,7 @@ treat Notes as single-app or single-seat policy.
 
 ### Title + structure standard (binding — all seats, all apps; owner 2026-08-09)
 
-Apple Notes title + structure standard (binding, owner 2026-08-09): `[APP, Agent] short topic`, second body row is the local stamp, helper `~/apps/apple-notes-coding.sh`.  **Full text (binding, unchanged):** `docs/protocols/apple-notes-title-structure.md` in ai-fleet-coordinator — or `recall "Title + structure standard"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
+Apple Notes title + structure standard (binding, owner 2026-08-09): `[APP, Agent] short topic`, second body row is the local stamp, helper `~/apps/apple-notes-coding.sh`.  **Full text (binding, unchanged):** `docs/protocols/apple-notes-title-structure.md` in AI-Fleet-Coordinator — or `recall "Title + structure standard"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
 
 ### Completion / work-complete notes (binding — ALL apps, ALL seats)
 
@@ -478,7 +478,7 @@ Codified 2026-08-05; title/timestamp shape **2026-08-09**; shortcut pinning **20
 ## Mac local processes (binding — ALL agents, ALL platforms; 2026-08-14, strengthened 2026-08-15)
 
 **Master list:** `/Users/jay/apps/MAC-LOCAL-PROCESSES.md`
-(GitHub: `ai-fleet-coordinator` `docs/MAC-LOCAL-PROCESSES.md`).
+(GitHub: `AI-Fleet-Coordinator` `docs/MAC-LOCAL-PROCESSES.md`).
 **Owner Note:** `⭐️ Background Jobs Master List` (Coding, pinned)
 — update in place with `apple-notes-coding.sh --update "⭐️ Background Jobs Master List"` when the list changes.
 
@@ -588,7 +588,7 @@ is not enough, the gap has to survive the renderer.
   — don't be fooled by that).
 
 **Teaching this to a non-fleet tool?** Paste the portable block from
-`ai-fleet-coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md` — it carries the
+`AI-Fleet-Coordinator/docs/SENTENCE-GAP-PORTABLE-SKILL.md` — it carries the
 surface-by-surface table, a per-platform self-test, and the list of approaches
 already proven NOT to work, so a new tool does not repeat them.
 
@@ -619,9 +619,9 @@ Copy detail: `/Users/jay/apps/FLEET-UI-COPY.md`.
 
 ## iOS agent build loop (owner ruling 2026-08-13 — ALL seats, ALL apps)
 
-iOS agent build loop (owner ruling 2026-08-13): no Xcode MCP narration, `xcodebuild` / `xcrun simctl` via bash are pre-approved, screenshot the simulator before claiming a user-visible change, never hand-edit `.pbxproj` / entitlements / xibs.  **Full text (binding, unchanged):** `docs/protocols/ios-agent-build-loop.md` in ai-fleet-coordinator — or `recall "iOS agent build loop"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
+iOS agent build loop (owner ruling 2026-08-13): no Xcode MCP narration, `xcodebuild` / `xcrun simctl` via bash are pre-approved, screenshot the simulator before claiming a user-visible change, never hand-edit `.pbxproj` / entitlements / xibs.  **Full text (binding, unchanged):** `docs/protocols/ios-agent-build-loop.md` in AI-Fleet-Coordinator — or `recall "iOS agent build loop"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
 
-**Cloud agent needs `xcodebuild`, the Simulator, or Apple Notes on the Mac?**  Cloud seats cannot run these directly.  Run `scripts/request-mac-seat.sh --repo <repo> --title "..." --prompt "..." --by <SEAT>` from `ai-fleet-coordinator`; it files a GitHub issue titled `[needs-mac] <title>` labeled **`needs-mac`** and posts to `#agent-sync`.  A Mac seat's `mac-seat-claim.sh` launchd poller (`com.jay.mac-seat-watch`) picks up the issue and does the work locally, and the issue stays open until that Mac seat posts results.
+**Cloud agent needs `xcodebuild`, the Simulator, or Apple Notes on the Mac?**  Cloud seats cannot run these directly.  Run `scripts/request-mac-seat.sh --repo <repo> --title "..." --prompt "..." --by <SEAT>` from `AI-Fleet-Coordinator`; it files a GitHub issue titled `[needs-mac] <title>` labeled **`needs-mac`** and posts to `#agent-sync`.  A Mac seat's `mac-seat-claim.sh` launchd poller (`com.jay.mac-seat-watch`) picks up the issue and does the work locally, and the issue stays open until that Mac seat posts results.
 
 ## Mac app builds: exactly one installed copy (owner ruling 2026-09-17 — ALL seats)
 
@@ -702,7 +702,7 @@ This section provides the master reference for all processes used to coordinate 
 ### Process 3: Isolation, Branching, Local Verification, PR & Deployment Discipline
 - **Worktree Isolation:** Work in dedicated feature branches (`<agent>/<short-desc>`) inside isolated worktrees. Never commit directly to `main` or production branches.
 - **Mandatory Local Build & Test Verification:** Always run local compilation and test suite checks (`npm run build`, `pytest`, `cargo test`, `dart analyze`, etc.) before opening a PR or requesting review. Never push or request review for code in a build-breaking state.
-- **Auto-Merging PRs:** Open PRs with clear titles and descriptions (`gh pr create`). Enable auto-merge (`gh pr merge --squash --auto`) so PRs land automatically once CI checks pass and review threads are resolved.
+- **Auto-Merging PRs:** Open PRs with clear titles and descriptions (`gh pr create`). Enable auto-merge (`gh pr merge --squash --auto`) once Codex has reviewed the current head, so PRs land automatically once CI checks pass and review threads are resolved.  Never arm it on a head still awaiting Codex review (see "No merge while Codex review is pending").
 - **Production Deployment by Default:** Once a PR merges to `main`, run the project's standard production deployment script immediately unless explicitly instructed to wait. "Completed" means merged to `main` AND deployed.
 
 ### Process 4: Owner Review Surface via Apple Notes
@@ -828,7 +828,7 @@ In addition to `AGENT-SYNC.md` and repo-specific `AGENTS.md` instructions, the f
 
 **Install/refresh all skills across platforms:**
 ```bash
-python3 /Users/jay/Code/ai-fleet-coordinator/scripts/install-fleet-skills.py
+python3 /Users/jay/Code/AI-Fleet-Coordinator/scripts/install-fleet-skills.py
 ```
 
 ---
@@ -897,8 +897,19 @@ When a substitute agent picks up another agent's in-flight or handoff work (via 
 
 **What this means for you:**
 - The `chatgpt-codex-connector` review bot comments on every PR. An UNRESOLVED thread blocks the merge forever, even with green checks. **Resolve your threads** — for each comment, ADDRESS the finding (fix it, or reply with a concrete reason it's a non-issue) THEN resolve. **Do NOT blind-resolve to force a merge** — some findings are real (e.g. commit-author compliance, missing licenses, money-path bugs). The gate exists to catch these.
-- Arm auto-merge (`gh pr merge <n> --squash --auto`) so it lands the instant checks are green + threads resolved.
+- Arm auto-merge (`gh pr merge <n> --squash --auto`) once Codex has reviewed the current head, so it lands the instant checks are green + threads resolved.  Never arm it while Codex review is pending (next section).
 - "DONE" / "Completed" on a board means **merged to `main`** — not "PR opened" and not "green but blocked". Don't mark Completed until it's actually on `main`.
+
+### No merge while Codex review is pending (owner ruling 2026-09-23 - ALL seats, ALL repos)
+
+**A PR must not be merged while Codex review of its current head commit is pending, or while any of its review threads are unresolved.**  Green checks alone are not enough.  This applies to every merge path: a hand merge in the GitHub UI, `gh pr merge`, admin merges, and auto-merge.
+
+- "Pending" means the `chatgpt-codex-connector` bot has not yet posted its review for the PR's current head SHA.  Every new push to the branch starts a new review, so the wait restarts with each new head.
+- **Branch protection does not enforce this.**  It only blocks on review threads that already exist, so a merge (hand, admin, or auto) can land on green checks before Codex has posted anything.  The gate is yours to hold.
+- **Auto-merge:** do not arm it on a head that is still awaiting Codex review.  Arm it only after Codex has reviewed the current head and its threads are triaged.  If you push a new head while auto-merge is armed, disable it (`gh pr merge <n> --disable-auto`) until Codex has reviewed the new head.
+- **Waiting is not polling.**  Codex review pending is a valid stopping point: do not sleep-wait or poll for it (see "Never idle-watch a PR" below).  End the turn with the PR noted as awaiting Codex, and resume on your next wake or round.  To check once, compare `gh api repos/<owner>/<repo>/pulls/<n>/reviews --jq '.[] | select(.user.login=="chatgpt-codex-connector[bot]") | .commit_id'` against the head SHA from `gh pr view <n> --json headRefOid`.
+- When Codex finishes, triage its threads per the rules above (fix the finding or reply with a concrete reason, then resolve) before merging.
+- Why: Congress.Trade #2549 and #2552 were both hand-merged on 2026-09-23 before Codex finished reviewing.  Codex then found a real bug in #2552 after it was already live in production.
 
 ### Squash-merge vs abandoned-branch detection (2026-09-17)
 
@@ -937,12 +948,12 @@ you fix yourself:
 | Merge conflict (`mergeable: CONFLICTING`) | `gh pr view <n> --json mergeable,mergeStateStatus` | Merge `origin/main` into the branch, resolve, push |
 | Required check failing | `gh pr checks <n>` | Read the failing log, fix the cause, push |
 | Required check never dispatched | `gh run list --branch <branch>` | Re-run the workflow or push to re-trigger it |
-| Auto-merge never armed | `gh pr view <n> --json autoMergeRequest` | `gh pr merge <n> --squash --auto` |
+| Auto-merge never armed | `gh pr view <n> --json autoMergeRequest` | Once Codex has reviewed the current head: `gh pr merge <n> --squash --auto` |
 | Branch behind `main` on a strict repo | `gh pr view <n> --json mergeStateStatus` (`BEHIND`) | Update the branch from `main` |
 
 **The loop you actually run:**
 
-1. Open the PR, then **arm auto-merge immediately**: `gh pr merge <n> --squash --auto`.
+1. Open the PR, then **arm auto-merge as soon as Codex has reviewed the current head** (never while that review is pending): `gh pr merge <n> --squash --auto`.
 2. Go do the next useful thing — the work the PR unblocks, the next lane, the closeout.
    If you genuinely need the result before you can continue, take ONE **bounded** wait:
    `gh pr checks <n> --watch`.
@@ -1268,7 +1279,7 @@ Every post MUST start with a standard header:
    rule). This coordinator/ops system signs as `[AFC]`, never `[FLEET]`, never `[GB-FLEET]`.
 2. **Project(s)** — first body field `repo: <project>` (comma-list if multi-app).
    Canonical names: `Socratic.Trade`, `Congress.Trade`, `congress-trading-shared`,
-   `API-usage-monitor`, `DealDex`, `ContactLogo`, `Personal-Site`, `Autorotate`, `BotFleet`, `HogHunter`, `ai-fleet-coordinator`, `fleet-ops`.
+   `API-usage-monitor`, `DealDex`, `ContactLogo`, `Personal-Site`, `Autorotate`, `BotFleet`, `HogHunter`, `AI-Fleet-Coordinator`, `fleet-ops`.
 3. **Who it is to (optional)** — only when directing a peer. Messages do **not** have
    to be TO anyone; `[GROK]` + `repo:` is valid for claims/closeouts.
 4. **`[SENDER->FLEET]` is a wake for every agent listening on every platform** — Mac
@@ -1280,7 +1291,7 @@ Every post MUST start with a standard header:
    Grok Bot `GB-<NAME>` seats is retired; Grok Bot is largely superseded by BotFleet.)
    Do **not** use `FLEET` as a SENDER. Do **not** use `FLEET` for routine one-lane
    claims; use `[YOUR_TAG]` + `repo:` so peers on that repo can skim-match.
-   Coordinator/ops talking about itself uses `[AFC]` + `repo: ai-fleet-coordinator`.
+   Coordinator/ops talking about itself uses `[AFC]` + `repo: AI-Fleet-Coordinator`.
 
 **Forbidden:** free-prose with no SENDER tag; missing `repo:`; bare `[FLEET]` without
 SENDER; coordinator/ops signing as `[FLEET]` or `[GB-FLEET]`; using `FLEET` for ordinary
@@ -1330,7 +1341,7 @@ repo: <project>
 
 # coordinator / this repo talking about itself (never [FLEET]):
 [AFC] sync-N
-repo: ai-fleet-coordinator
+repo: AI-Fleet-Coordinator
 ```
 
 **State the project name FIRST in the body — owner directive (2026-07-05; reaffirmed
@@ -1738,7 +1749,7 @@ a one-paragraph lesson after you learn something reusable.
   `recall_contribute` one paragraph.  Board / Notes / effort logs / docs still hold facts that
   already have a home.  Never paste secrets or transcripts.  Do **not** bulk-ingest chat logs
   as lessons; chat review is a rare infra/policy scan.
-- Canonical: `ai-fleet-coordinator/docs/RAG-FLEET-INFRA.md`; skill `fleet-recall`.  Do **not**
+- Canonical: `AI-Fleet-Coordinator/docs/RAG-FLEET-INFRA.md`; skill `fleet-recall`.  Do **not**
   point Socratic.Trade's embed provider at the fleet endpoint (embedding spaces differ).
 
 ## Prohibited Behavior
@@ -1774,7 +1785,7 @@ evidence.
 
 ### Production deploys
 
-Production deploys: the sanctioned deploy path per app (Coolify webhook for ST/CT/UM, library-tag flows), what never to do, and how to verify.  **Full text (binding, unchanged):** `docs/protocols/production-deploys.md` in ai-fleet-coordinator — or `recall "Production deploys"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
+Production deploys: the sanctioned deploy path per app (Coolify webhook for ST/CT/UM, library-tag flows), what never to do, and how to verify.  **Full text (binding, unchanged):** `docs/protocols/production-deploys.md` in AI-Fleet-Coordinator — or `recall "Production deploys"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
 
 ### No new GitHub repositories (owner directive, 2026-09-02)
 
@@ -1871,7 +1882,7 @@ KEEPOUT: src/lib/performance.ts (risk scoring — let Codex finish first)
 ## Observability (Sentry + Datadog, all agents)
 
 Standing split (binding, 2026-09-01 adoption report).  Plan:
-`docs/plans/2026-09-01-sentry-fleet-integration.md` in ai-fleet-coordinator.
+`docs/plans/2026-09-01-sentry-fleet-integration.md` in AI-Fleet-Coordinator.
 Rollout: `docs/rollouts/2026-09-01-sentry-fleet-adoption.md`.  Org extras
 (alerts, uptime, dashboard, metric monitors):
 `docs/rollouts/2026-09-01-sentry-org-rollout.md`.  Max-features matrix
@@ -1915,16 +1926,16 @@ on `rca_completed` / `pr_ready_for_review`.  Do not mint extra Seer
 
 ### Datadog vs Sentry (do not double-pay)
 
-Datadog vs Sentry (do not double-pay): which product owns which signal per app and the adoption rollout.  **Full text (binding, unchanged):** `docs/protocols/datadog-vs-sentry.md` in ai-fleet-coordinator — or `recall "Datadog vs Sentry"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
+Datadog vs Sentry (do not double-pay): which product owns which signal per app and the adoption rollout.  **Full text (binding, unchanged):** `docs/protocols/datadog-vs-sentry.md` in AI-Fleet-Coordinator — or `recall "Datadog vs Sentry"`.  Moved out of the always-loaded doc 2026-09-01 (Plan B slice 2); the corpus ingests the full file nightly.
 
 ## Onboarding a new app/repo (self-propagation rule)
 
 Full procedure + script (clone, boards, registries, definition of done):
 
-- New app (local): `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-APP.md` + `scripts/onboard-new-app.sh`
-- New app (GitHub): https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-APP.md
-- New seat (local): `/Users/jay/Code/ai-fleet-coordinator/docs/ONBOARDING-NEW-AGENT.md` + `scripts/onboard-new-agent.sh`
-- New seat (GitHub): https://github.com/jaywedgeworth22/ai-fleet-coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md
+- New app (local): `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-APP.md` + `scripts/onboard-new-app.sh`
+- New app (GitHub): https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-APP.md
+- New seat (local): `/Users/jay/Code/AI-Fleet-Coordinator/docs/ONBOARDING-NEW-AGENT.md` + `scripts/onboard-new-agent.sh`
+- New seat (GitHub): https://github.com/jaywedgeworth22/AI-Fleet-Coordinator/blob/main/docs/ONBOARDING-NEW-AGENT.md
 - Inventory: `fleet-apps.json`. Verify with `python3 scripts/check-fleet-registry.py`.
 - AGENTS template: `TEMPLATE-AGENTS.md` (includes Delegation & model economics + this start-here table).
 
@@ -2082,7 +2093,7 @@ Do not attempt to "fix" or complain about the symlink.
 
 ## Fleet-wide operating rules
 
-These rules apply to every fleet repo, not just ai-fleet-coordinator.  Canonical decision record: Harness `docs/decisions/0003-no-external-contact-and-no-forks.md`.
+These rules apply to every fleet repo, not just AI-Fleet-Coordinator.  Canonical decision record: Harness `docs/decisions/0003-no-external-contact-and-no-forks.md`.
 
 ### No external contact without owner approval
 
