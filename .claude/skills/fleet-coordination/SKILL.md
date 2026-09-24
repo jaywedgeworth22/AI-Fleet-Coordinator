@@ -35,9 +35,15 @@ Use these canonical acronyms in Apple Notes titles (`[APP, Agent] topic`), commi
 | **`OPS`** | fleet-ops (sibling identity; do not invent a checkout here) | `jaywedgeworth22/fleet-ops` |
 | **`PS`** | Personal-Site | `jaywedgeworth22/Personal-Site` |
 | **`CTS`** | congress-trading-shared | `jaywedgeworth22/congress-trading-shared` |
-| **`FLEET`** | Slack wake: every listening seat, every platform | Not a repo.  Not the coordinator.  `[SENDER->FLEET]` means every listening agent must spend time — Grok Bot `[GB-<NAME>]` seats included, largely superseded by BotFleet (owner 2026-09-13). |
 
-**Self-id:** this coordinator/ops system signs as **`AFC`**.  Never `[FLEET]`.  Never `[GB-FLEET]`.  Former aliases `AFL` / `FLEET` / `AIFC` / `FC` are retired — `FLEET` especially, because `[SEAT->FLEET]` is a broadcast wake that costs every seat time.  Sibling infra identity is **`OPS`**.
+## FLEET is not an app acronym
+
+`FLEET` is **not** an application, **not** a repository, and **not** this coordinator's name.  Do not put `FLEET` in Apple Notes `[APP, Agent]` titles as if it were ST/CT/UM.
+
+- **App / coordinator acronym for this repo:** `AFC` (ai-fleet-coordinator).  Sign Slack as `[AFC]`, never `[FLEET]`, never `[GB-FLEET]`.
+- **Sibling infra identity:** `OPS` (fleet-ops).
+- **Slack broadcast wake only:** `[SENDER->FLEET]` means every listening seat on every platform must spend time (Mac seats, BotFleet bots, and any Grok Bot `[GB-<NAME>]` still listening).  Owner 2026-09-13: Grok Bot largely superseded by BotFleet — do not assume a GB seat is listening.  Use `->FLEET` only when every listener must act.
+- **Retired coordinator aliases:** `AFL` / `FLEET` / `AIFC` / `FC` as self-id are retired — `FLEET` especially, because `[SEAT->FLEET]` is a broadcast wake that costs every seat time.
 
 ---
 
