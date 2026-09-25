@@ -39,12 +39,24 @@ or iOS ship tooling. Agents will also work in `~/Code/<App>` and collide with
 the integration tree. This procedure is the self-propagation rule from
 `AGENT-SYNC.md`, expanded so the next app is not a scavenger hunt.
 
+Equally important: once an app **is** onboarded, no further top-level folder
+may be added to `~/Code/` — *except* the integration tree for another
+brand-new fleet app.  Per-seat worktrees, lane checkouts, scratch clones,
+and `*-wt-*` directories all belong in `~/apps/`, never under `~/Code/`.
+`code-main-keeper.sh` (PM2 daemon) scans `~/Code/*` every ~60s and logs a
+`STRAY-WORKTREE` line to `~/apps/logs/code-main-keeper.log` for any linked
+worktree it finds there.  See `AGENT-SYNC.md` § *"Hard rule: `~/Code/` is
+for integration trees only"* (owner ruling 2026-09-25).
+
 ---
 
 ## Hard rules
 
 1. **`~/Code/<App>` is the human integration tree.**  It stays on `origin/main`.
-   Agents work in `~/apps/<worktreePrefix>-<seat>`.
+   Agents work in `~/apps/<worktreePrefix>-<seat>`.  **No new top-level folder
+   may be added to `~/Code/`** unless it is the integration tree for another
+   brand-new fleet app being onboarded via this procedure — strays are
+   detected and logged by `code-main-keeper.sh` and pruned by the owner.
 2. **THE BOARD, then the effort board, then code.**  Create the live board +
    repo mirror in the first commit.  Claim on `https://mac.jays.services/board` (short link `https://board.jays.services`)
    and move the effort row to In Progress before substantial edits.

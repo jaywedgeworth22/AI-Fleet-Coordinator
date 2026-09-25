@@ -366,6 +366,80 @@ Sitting and watching PRs or polling CI in a loop wastes valuable agent tokens, c
 
 ---
 
+## Hard rule: `~/Code/` is for integration trees only (Owner ruling 2026-09-25 — ALL agents, ALL apps, ALL platforms, forever)
+
+`~/Code/<App>` is the canonical **integration tree** for each fleet app — it stays on
+`origin/main` and serves as the human review base (Xcode, beta previews, manual
+builds).  All per-seat worktrees and per-lane checkouts live in `~/apps/`,
+never under `~/Code/`.  This rule extends the long-standing *"never work in
+`~/Code/<App>`"* ruling: do not even **add a folder** there.
+
+**No new top-level folder may be added to `~/Code/`** unless it is the
+integration tree for a brand-new fleet app being onboarded via
+`docs/ONBOARDING-NEW-APP.md` and `scripts/onboard-new-app.sh`.  This is
+binding for every agent on every platform, every app, forever — including the
+owner's interactive sessions.  Stray worktree folders, scratch clones,
+experimental checkouts, per-seat lanes, and `*-wt-*` directories all belong in
+`~/apps/`, not `~/Code/`.
+
+### Forbidden top-level entries under `~/Code/`
+
+1. **Linked git worktrees** of any existing app — these live in
+   `~/apps/<app>-<seat>-<lane>/` or `~/apps/<app>-<seat>/`.
+2. **Scratch copies, experimental clones, or "let me try this here" checkouts**
+   of an existing app's repo.
+3. **Per-seat lanes** that look like worktree dirs (basename matches `*-wt-*`,
+   `*-lane-*`, `*.worktrees/`, `ct-pub-sweep`, etc.).
+4. **Backups or mirrors** of an existing repo (use `~/apps/` or external
+   storage, not `~/Code/`).
+
+### Permitted exceptions
+
+Data-only folders that are **not** git repos at all (`Icons - Logos`,
+`Pionex`, etc.) are already denylisted by `code-main-keeper.sh`
+(`SKIP_NAMES=( … )`).  Do not add app-shaped names to that denylist; a folder
+that is a git checkout is by definition either the integration tree (allowed)
+or a violation (logged, owner-pruned).
+
+### Enforcement
+
+`~/apps/code-main-keeper.sh` (PM2 daemon, every ~60s — `code-main-keeper`
+process in `pm2 status`) scans `~/Code/*`.  If a top-level entry is detected
+as a **linked** git worktree (`.git` is a file pointing at a parent checkout),
+or as a non-primary toplevel via symlink, the daemon logs a `STRAY-WORKTREE`
+line to `~/apps/logs/code-main-keeper.log` for owner review.  The run header
+also reports `stray=<N>` so the count is visible at a glance.
+
+The daemon does **not** auto-prune.  Auto-removing a seat's lane without
+owner review would be destructive on shared worktrees (and could discard the
+only checkout of an in-flight branch on this Mac).  Cleanup is owner-driven:
+
+```bash
+# From the parent integration tree:
+git -C ~/Code/<ParentApp> worktree remove --force ~/Code/<stray-worktree-dir>
+
+# Then prune the administrative ref so the parent stops tracking it:
+git -C ~/Code/<ParentApp> worktree prune
+```
+
+After removal, the branch tip is preserved in the parent's
+`.git/refs/heads/<branch>` and is fully recoverable from the integration tree
+via `git checkout <branch>`.  Any uncommitted dirty work in the worktree at
+removal time is **lost** unless the operator stashed it first (the
+preservation command is `git -C <worktree> stash push -u -m "..."` before the
+`worktree remove`).
+
+### Why "unbreakable"
+
+Every per-app `AGENTS.md` already points at this rule via its `AGENT-SYNC.md`
+reference.  The rule is mirrored in `docs/ONBOARDING-NEW-APP.md` Hard rule
+#1, in `TEMPLATE-AGENTS.md`, and in the `STRAY-WORKTREE` detection block of
+`code-main-keeper.sh`.  The PM2 daemon makes every violation visible in the
+same log every fleet agent already monitors
+(`~/apps/logs/code-main-keeper.log`).
+
+---
+
 ## Apple Notes for owner-facing review docs (owner preference — ALL agents, ALL platforms, ALL apps)
 
 **Owner ruling 2026-08-05 (all apps, forever); title/timestamp reaffirmed 2026-08-09:**
